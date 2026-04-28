@@ -7,41 +7,59 @@ import (
 	"time"
 
 	"rtf/models"
+	"rtf/pkg"
 )
 
 // this handler handles the  user registration. it expects a POST request, and it returns a JSON response with (error or success)
 func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var user models.User
 	defer r.Body.Close()
 
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		http.Error(w, "invalid fields", http.StatusBadRequest)
-		fmt.Println("err1: ",user)
+	if r.Method != http.MethodPost {
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
-		fmt.Println("err2: ", user)
 
-	err = c.DB.InsertUserDB(user)
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
-		switch err.Error() {
-		case "SERVER ERROR":
-			http.Error(w, "SERVER ERROR", http.StatusInternalServerError)
+		fmt.Println("here1")
+		pkg.RespondNotOK(w, "badrequest")
+		return
+	}
+
+	user := pkg.USERDATA(r)
+	fmt.Println(user)
+
+	file, header, err := r.FormFile("avatar")
+	if err == nil && header.Size != 0 {
+		defer file.Close()
+		if !pkg.IsPictureFormatCorrect(file, header) {
+			pkg.RespondNotOK(w, "badrequest")
 			return
-		default:
-			http.Error(w, fmt.Sprintf("%s", err.Error()), http.StatusBadRequest)
 		}
+		filename := pkg.SaveFile(file, header.Filename)
+		if filename == "" {
+			pkg.RespondNotOK(w, "badrequest")
+			return
+		}
+		user.Avatar = filename
+	}
+
+	if err := pkg.CanInsertUser(&user); err != nil {
+		pkg.RespondNotOK(w, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"success": "registered successfully"}`))
+	if err := c.DB.IsUserAlreadyExist(&user); err != nil {
+		pkg.RespondNotOK(w, err.Error())
+		return
+	}
+
+	if err := c.DB.InsertUserDB(user); err != nil {
+		pkg.RespondNotOK(w, "server-error")
+		return
+	}
+
+	pkg.RespondOK(w, nil, "")
 	c.Anounce()
 }
 

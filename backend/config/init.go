@@ -15,10 +15,20 @@ const (
 	Pong                    = 15 * time.Second // if no pong come from the client in 60 sec, conn will be dead
 	Ping                    = 10 * time.Second
 	Try_write               = 8 * time.Second // attemps to write before 10 sec, otherwise close conn
-	MESSAGE_SIZE_READ_LIMIT = 512              // message limit is 512 bytes
+	MESSAGE_SIZE_READ_LIMIT = 512             // message limit is 512 bytes
 )
 
 const (
 	Max_Size_message     = 2 * 1024 * 1024
 	COMMENTS_FETCH_LIMIT = 10
+)
+
+// regiter
+const (
+	MaxEmailLength     = 254
+	MaxFirstnameLength = 12
+	MaxLastnameLength  = 12
+	MaxNicknameLength  = 30
+	MinPasswordLength  = 3
+	MaxPasswordLength  = 32
 )

@@ -14,7 +14,7 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 		"/getcomments":   handler.Cntrlrs.GetComments,
 	}
 	for path, h := range routes {
-		mux.HandleFunc(path, handler.RateLimit(handler.Middleware(h)))
+		mux.HandleFunc(path, handler.CORSMiddleware(handler.RateLimit(handler.Middleware(h))))
 	}
 
 	// home page, login and register routes
@@ -23,24 +23,15 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 		"/api/register": handler.Cntrlrs.Register,
 	}
 	for path, h := range LRroutes {
-		mux.HandleFunc(path, handler.RateLimit(h))
+		mux.HandleFunc(path, handler.CORSMiddleware(handler.RateLimit(h)))
 	}
 
 	//
 	ws := map[string]http.HandlerFunc{
-		"/ws": handler.Cntrlrs.WebSocket,
-
-		"/assets/":           handler.Cntrlrs.StaticsHandler,
-		"/componenets/":      handler.Cntrlrs.StaticsHandler,
-		"/pages/":            handler.Cntrlrs.StaticsHandler,
-		"/confing_theme.css": handler.Cntrlrs.StaticsHandler,
-		"/src/":              handler.Cntrlrs.StaticsHandler,
-		"/packages/":         handler.Cntrlrs.StaticsHandler,
-		"/pics/":             handler.Cntrlrs.ServePictures,
-
+		"/ws":         handler.Cntrlrs.WebSocket,
 		"/hassession": handler.Cntrlrs.HasSession,
 	}
 	for path, h := range ws {
-		mux.HandleFunc(path, h)
+		mux.HandleFunc(path, handler.CORSMiddleware(h))
 	}
 }

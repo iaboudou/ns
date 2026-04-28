@@ -14,19 +14,12 @@ export default function RegisterPage() {
 
     const formData = new FormData(e.currentTarget);
 
-    
-    
-    const [errors, ok] = ValidateInput(formData);
-    
+    const [error, ok] = ValidateInput(formData);
     if (!ok) {
-      const firstError = Object.values(errors)[0];
-      setError(firstError);
+      setError(error || "Please fill in all required fields");
       return;
     }
 
-  console.log('enter: ', formData)
-
-    
     const [fetched, er] = await fetchRegister(formData);
     if (!fetched) {
       setError(er);

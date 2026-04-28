@@ -22,44 +22,49 @@ type Repo struct {
 }
 
 // try to insert the user into the data base, any invalid input will return an error with a specific message
-func (r *Repo) InsertUserDB(user models.User) error {
-	// check the user infos if correct
-	err := pkg.AreUserInfosCorret(user)
-	if err != nil {
-		return err
-	}
-
-	// check the user existance in DB
-	var exist int
-	err = r.Db.QueryRow("SELECT 1 FROM users WHERE nickname=? OR email=?", user.Nickname, user.Email).Scan(&exist)
-	if err != nil && err != sql.ErrNoRows {
-		return errors.New("SERVER ERROR")
-	}
-	if exist > 0 {
-		return errors.New("user alrady exist")
-	}
-
-	//
+func (r *Repo) InsertUserDB(user pkg.U) error {
 	hashed, err := pkg.HashPassword(user.Password)
 	if err != nil {
-		return err
+		return errors.New("SERVER ERROR")
 	}
 
 	userUUID, err := uuid.NewV4()
 	if err != nil {
 		return errors.New("SERVER ERROR")
 	}
-	user.ID = userUUID.String()
 
-	//
 	_, err = r.Db.Exec(
-		"INSERT INTO users(id, nickname, birthday, gender, firstname, lastname, email, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-		user.ID, user.Nickname, user.Birthday, user.Gender, user.Firstname, user.Lastname, user.Email, hashed,
+		`INSERT INTO users(
+			id, 
+			nickname, 
+			firstname, 
+			lastname, 
+			email, 
+			password, 
+			birthday, 
+			gender, 
+			profile_image, 
+			about_me, 
+			account_privacy
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		userUUID.String(), user.Nickname, user.Firstname, user.Lastname, user.Email, hashed, user.Birthday, user.Gender, user.Avatar, user.About, 1,
 	)
 	if err != nil {
 		return errors.New("SERVER ERROR")
 	}
 
+	return nil
+}
+
+func (r *Repo) IsUserAlreadyExist(user *pkg.U) error {
+	var exist int
+	err := r.Db.QueryRow("SELECT 1 FROM users WHERE firstname=? OR lastname=? OR email=?", user.Firstname, user.Lastname, user.Email).Scan(&exist)
+	if err != nil && err != sql.ErrNoRows {
+		return errors.New("SERVER ERROR")
+	}
+	if exist > 0 {
+		return errors.New("user already exist")
+	}
 	return nil
 }
 

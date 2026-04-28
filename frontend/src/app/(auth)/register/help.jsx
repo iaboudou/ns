@@ -1,16 +1,17 @@
 // help.js
 
 export async function fetchRegister(formData) {
-  console.log(process.env.NEXT_PUBLIC_BASE)
-  const response = await fetch(`http://localhost:4001/api/register`, {
+  const response = await fetch(`${"http://localhost:4001"}/api/register`, {
     method: "POST",
     body: formData,
-    cache: "no-store",
   });
+
+  console.log("here", response);
   const er = await response.text();
   if (!response.ok) return [false, er];
   return [true, null];
 }
+
 
 export function ValidateInput(formData) {
   const { email, password, firstname, lastname, dob, gender, nickname, about } =

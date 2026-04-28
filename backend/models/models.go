@@ -1,22 +1,24 @@
 package models
 
-import (
-	"database/sql"
-)
-
 // user
 type User struct {
-	ID             string
-	Nickname       string
-	Birthday       string `json:"Birthday"`
-	Gender         string
-	Firstname      string
-	Lastname       string
-	Email          string
-	Password       string
-	ProfileImage   sql.NullString
-	SessionID      sql.NullString
+	ID                string `json:"id"`
+	Nickname          string `json:"nickname"`
+	Birthday          string `json:"birthday"`
+	Gender            string `json:"gender"`
+	Firstname         string `json:"firstname"`
+	Lastname          string `json:"lastname"`
+	AboutMe           string `json:"aboutme"`
+	Email             string `json:"email"`
+	Password          string
+	ProfileImage      string `json:"profile_image"`
+	IsPublic          bool   `json:"is_public"`
+	IsFreind          bool   `json:"is_freind"`
+	InteractionStatus string `json:"interaction_status"`
+
+	SessionID      string `json:"session_id"`
 	SessionExpired string
+	SessionCreated string
 }
 
 // posts
@@ -51,14 +53,14 @@ type Comment struct {
 
 // messages
 type Message struct {
-	ID         int
-	SenderID   string
-	SenderName string
+	ID           int
+	SenderID     string
+	SenderName   string
 	ReceiverName string
-	ReceiverID string
-	Content    string
-	IsNotRead  int
-	CreatedAt  string
+	ReceiverID   string
+	Content      string
+	IsNotRead    int
+	CreatedAt    string
 
 	SenderNickname   string
 	ReceiverNickname string
