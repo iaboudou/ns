@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+/* LEFT SIDE */
+.left {
+  width: 30%;
+  border-right: 1px solid #333;
+  padding: 10px;
+  background: #000;
+}
+
+/* RIGHT SIDE */
+.right {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #000;
+}
+
+/* USERS */
+.left div {
+  padding: 10px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+.left div:hover {
+  background: #111;
+}
+
+/* INPUT */
+.input {
+  background: #000;
+  border: 1px solid #333;
+  color: #fff;
+}
+
+.button {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #ccc;
+}
