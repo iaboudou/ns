@@ -1,7 +1,8 @@
 // help.js
 
 export async function fetchRegister(formData) {
-  const response = await fetch(`${process.env.BASE}/api/register`, {
+  console.log(process.env.NEXT_PUBLIC_BASE)
+  const response = await fetch(`http://localhost:4001/api/register`, {
     method: "POST",
     body: formData,
     cache: "no-store",

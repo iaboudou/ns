@@ -4,13 +4,15 @@ import (
 	"database/sql"
 
 	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/mattn/go-sqlite3"
+
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
 )
 
 func InitDB() (*sql.DB, error) {
-	m, err := migrate.New(
-		"file://pkg/db/migrations/sqlite/",
-		"sqlite3://pkg/db/db.db",
-	)
+	m, err := migrate.New("file://db/migration", "sqlite3://db/db.db")
 	if err != nil {
 		return nil, err
 	}

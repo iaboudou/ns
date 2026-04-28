@@ -22,8 +22,10 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, "invalid fields", http.StatusBadRequest)
+		fmt.Println("err1: ",user)
 		return
 	}
+		fmt.Println("err2: ", user)
 
 	err = c.DB.InsertUserDB(user)
 	if err != nil {

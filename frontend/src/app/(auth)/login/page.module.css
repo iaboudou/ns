@@ -1,0 +1,91 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+.formLogin {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formLogin h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.formLogin label {
+  font-size: 13px;
+  color: #555;
+}
+
+.formLogin input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: #fafafa;
+}
+
+.formLogin input:focus {
+  outline: none;
+  border-color: #888;
+  background: white;
+}
+
+.formLogin input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.formLogin button {
+  padding: 10px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.formLogin button:hover:not(:disabled) {
+  background: #111;
+}
+
+.formLogin button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.formLogin > div {
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+}
+
+.formLogin > div a {
+  color: #333;
+  font-weight: 500;
+}
+
+.error {
+  color: #c0392b;
+  background: #fdecea;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin: 0;
+}

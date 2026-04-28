@@ -11,15 +11,22 @@ export default function RegisterPage() {
 
   async function onSubmit(e) {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
 
+    
+    
     const [errors, ok] = ValidateInput(formData);
+    
     if (!ok) {
       const firstError = Object.values(errors)[0];
       setError(firstError);
       return;
     }
 
+  console.log('enter: ', formData)
+
+    
     const [fetched, er] = await fetchRegister(formData);
     if (!fetched) {
       setError(er);
