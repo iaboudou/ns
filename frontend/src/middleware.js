@@ -1,43 +1,43 @@
 import { NextResponse } from "next/server";
 
+// this is the middleware of the frontend where we redirect the user based on the session
 export async function middleware(request) {
+  // get the session from the cookies
   const session = request.cookies.get("session_id")?.value;
-  // 
+  
+  // get if the user is in auth page or no based on the path name
   const { pathname } = request.nextUrl;
-
   const isAuthPage = pathname === "/login" || pathname === "/register";
-  const isProtected = pathname === "/" || pathname.startsWith("/post");
 
   // if no session exists
-  if (!session && isProtected) {
+  if (!session && !isAuthPage) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // check session validation
-  if (session && (isAuthPage || isProtected)) {
+  if (session) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE}/hassession`, {
+      const res = await fetch(`${process.env.BACKEND_URL}/hassession`, {
         method: "GET",
         headers: { Cookie: `session_id=${session}` },
       });
 
+      // already connected
       if (res.ok && isAuthPage) {
-        // already connected
         return NextResponse.redirect(new URL("/", request.url));
       }
 
-      if (!res.ok && isProtected) {
-        // session not valid
-        const response = NextResponse.redirect(new URL("/login", request.url));
-        response.cookies.delete("session_id");
-        return response;
-      }
-
-      if (!res.ok && isAuthPage) {
-        // session not valid
-        const response = NextResponse.next();
-        response.cookies.delete("session_id");
-        return response;
+      // session not valid
+      if (!res.ok) {
+        if (!isAuthPage) {
+          const response = NextResponse.redirect(new URL("/login", request.url));
+          response.cookies.delete("session_id");
+          return response;
+        } else {
+          const response = NextResponse.next();
+          response.cookies.delete("session_id");
+          return response;
+        }
       }
     } catch {
       return NextResponse.next();
@@ -48,5 +48,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/register"],
+  matcher: ["/((?!_next|favicon.ico).*)"],
 };
