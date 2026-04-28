@@ -1,0 +1,128 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+.formRegister {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formRegister h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.formRegister label {
+  font-size: 13px;
+  color: #555;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.formRegister input[type="text"],
+.formRegister input[type="email"],
+.formRegister input[type="password"],
+.formRegister input[type="date"],
+.formRegister textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: #fafafa;
+}
+
+.formRegister input:focus,
+.formRegister textarea:focus {
+  outline: none;
+  border-color: #888;
+  background: white;
+}
+
+.formRegister textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.formRegister input[type="file"] {
+  font-size: 13px;
+  color: #555;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+.row > div {
+  flex: 1;
+}
+
+.genderGroup {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  height: 36px;
+}
+
+.genderGroup label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.formRegister button[type="submit"] {
+  padding: 10px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.formRegister button[type="submit"]:hover {
+  background: #111;
+}
+
+.error {
+  color: #c0392b;
+  background: #fdecea;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.formRegister span {
+  color: #888;
+  font-size: 12px;
+}
+
+.formRegister > div:last-child {
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+}
+
+.formRegister > div:last-child a {
+  color: #333;
+  font-weight: 500;
+}

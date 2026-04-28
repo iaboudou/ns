@@ -1,0 +1,1 @@
+DROP TABLE IF NOT EXISTS group_messages;
