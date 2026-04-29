@@ -1,0 +1,85 @@
+.commentscontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+
+.postcard {
+  border-radius: white;
+  padding: 9px 12px 9px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.postcard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.header>div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.header strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.header small {
+  font-size: 11px;
+  color: white;
+}
+
+.postcard>p {
+  font-size: 12px;
+  color: white;
+  line-height: 1.55;
+  margin-left: 42px;
+}
+
+.commentimg {
+  margin-left: 42px;
+  border-radius: 5px;
+  max-height: 180px;
+  width: calc(100% - 42px);
+  object-fit: cover;
+  max-width: 300px;
+}
+
+.NAME {
+  color: white;
+}
+
+.leadmore {
+  align-self: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 6px 12px;
+}

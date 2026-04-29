@@ -133,7 +133,6 @@ func (r *Repo) DisconnectUser(userID string) error {
 
 // this check session sended by the browser if it is included in the DB
 func (r *Repo) CheckSessionExistance(req *http.Request) (models.User, error) {
-
 	var user models.User
 	var expiresAtStr string
 
@@ -142,7 +141,6 @@ func (r *Repo) CheckSessionExistance(req *http.Request) (models.User, error) {
 		return user, errors.New("no session cookie")
 	}
 	user.SessionID = cookie.Value
-
 	//
 	var userID string
 	err = r.Db.QueryRow("SELECT user_id, expires_at FROM sessions WHERE token = ?", cookie.Value).
