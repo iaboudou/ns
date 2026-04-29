@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// this functione to check if the user has session
 func (c *Controller) HasSession(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

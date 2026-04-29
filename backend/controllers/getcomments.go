@@ -6,6 +6,7 @@ import (
 	"rtf/models"
 )
 
+// this functionne to get all the comments 
 func (c *Controller) GetComments(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	w.Header().Set("Content-Type", "application/json")
