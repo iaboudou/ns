@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"rtf/models"
 	"rtf/pkg"
@@ -65,7 +64,6 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Server Error", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(post.UserImageProfile)
 	post.NumberOfComments = 0
 
 	pkg.RespondOK(w, post, "post")

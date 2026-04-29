@@ -1,7 +1,6 @@
 'use client';
 
-let BASE = process.env.BACKEND_URL;
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './createpost.module.css';
 import { createpost, postIsValid } from './actions';
 import Link from 'next/link';
@@ -27,7 +26,8 @@ export default function CreatePost({ CREATEPOST }) {
 
   // profile picture on home
   const imageURL = state.porsonel_info?.Avatar;
-  const fullImageURL = imageURL ? `http://localhost:4001/pics/${imageURL}` : '/avatar.jpg';
+  console.log(state.porsonel_info)
+  const fullImageURL = imageURL ? `http://localhost:4001/pics/${imageURL}` : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,11 +39,6 @@ export default function CreatePost({ CREATEPOST }) {
       setState((prev) => ({ ...prev, privacy: 'public', text: '', picture: null, selectedUsers: [] }));
     }
   };
-
-  useEffect(() => {
-    // fetch 20 users to select  
-  }, [state.privacy])
-
 
   let STATE = {
     state,
@@ -59,8 +54,8 @@ export default function CreatePost({ CREATEPOST }) {
               {imageURL ? (
                 <img className={styles.profileImage} src={`${fullImageURL}`} alt="profile" />
               ) : (
-                <div className={styles.profileImage} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <User size={24} color="var(--text-color)" />
+                <div className={styles.profileImage} >
+                   <User className={styles.IMAGEICON}/>
                 </div>
               )}
             </Link>
@@ -80,9 +75,11 @@ export default function CreatePost({ CREATEPOST }) {
             <input type="file" accept="image/*" onChange={(e) => setState({ ...state, picture: e.target.files?.[0] || null })} className={styles.fileInput} id="fileInput" />
 
             {/* the name of the image chosen */}
-            <label htmlFor="fileInput" className={styles.fileLabel} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-              <ImageIcon size={16} color="var(--text-color)" />
-              {state.picture ? state.picture.name : 'Upload Image'}
+            <label htmlFor="fileInput" className={styles.fileLabel} title={state.picture ? state.picture.name : ""}>
+              <ImageIcon size={16} color="#c4c4c4" style={{ flexShrink: 0 }} />
+              <span className={styles.filename}>
+                {state.picture ? state.picture.name : 'Upload Image'}
+              </span>
             </label>
           </div>
 

@@ -1,36 +1,37 @@
+
 .postcard {
   position: relative;
-  background: var(--surface-color);
-  border: 2px solid var(--border-color);
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 4px 4px 0px 0px var(--shadow-color);
-  transition: transform 0.1s, box-shadow 0.1s;
-  border-radius: 0;
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-top: 1px solid #555;
+  padding: 20px 20px 16px;
+  margin-bottom: 14px;
 }
 
 .postcard:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px var(--shadow-color);
+  background: #1a1a1a;
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 12px;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
 .profileImg {
-  width: 48px;
-  height: 48px;
-  border: 2px solid var(--border-color);
-  border-radius: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #333;
   object-fit: cover;
   flex-shrink: 0;
-  background: var(--surface-color);
+  background: #222;
+  filter: grayscale(100%) contrast(1.1);
+  display: block;
+}
+
+.profileImg:hover {
+  filter: grayscale(0%) contrast(1);
 }
 
 .meta {
@@ -42,119 +43,130 @@
 .nameRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .name {
-  font-size: 14px;
-  font-weight: 900;
+  font-size: 12px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-  color: var(--text-color);
-  max-width: 300px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
+  letter-spacing: 0.08em;
+  color: #e8e8e8;
 }
 
 .handle {
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-color);
-  opacity: 0.6;
-  border: 1px solid var(--border-color);
-  padding: 2px 4px;
+  letter-spacing: 0.1em;
+  color: #555;
+  border: 1px solid #2d2d2d;
+  padding: 1px 6px;
+  background: #1a1a1a;
 }
 
 .date {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 9px;
+  font-weight: 400;
   text-transform: uppercase;
-  color: var(--text-color);
-  opacity: 0.5;
-}
-
-.info {
-  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #3a3a3a;
 }
 
 .content {
-  font-size: 16px;
-  line-height: 1.6;
-  margin: 0 0 16px;
-  color: var(--text-color);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #c4c4c4;
+  margin: 0 0 14px;
+  padding-left: 2px;
 }
 
 .postImage {
   width: 100%;
-  max-height: 600px;
+  max-height: 480px;
   object-fit: cover;
-  border: 2px solid var(--border-color);
+  border: 1px solid #2a2a2a;
   display: block;
-  margin-bottom: 16px;
-  filter: grayscale(100%);
-  transition: filter 0.3s;
+  margin-bottom: 14px;
+  filter: grayscale(100%) contrast(1.05);
+  transition: filter 0.3s ease;
 }
 
 .postImage:hover {
-  filter: grayscale(0%);
+  filter: grayscale(0%) contrast(1);
 }
 
 .postActions {
   display: flex;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 2px solid var(--border-color);
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid #222;
 }
 
 .actionBtn {
   background: transparent;
-  color: var(--text-color);
-  border: 2px solid transparent;
-  font-size: 12px;
+  color: #555;
+  border: 1px solid transparent;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 5px 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.1s;
+  gap: 7px;
 }
-
-.actionBtn:hover {
-  background: var(--primary-color);
-  color: var(--primary-text);
-  border: 2px solid var(--border-color);
-  box-shadow: 2px 2px 0px 0px var(--shadow-color);
-  transform: translate(-1px, -1px);
-}
-
-.actionBtn img {
-  width: 20px;
-  height: 20px;
-  filter: invert(0);
-}
-
-.actionBtn:hover img {
-  filter: invert(1);
-}
-
 
 .commentsSection {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 2px dashed var(--border-color);
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #252525;
 }
 
 .linkprofilename {
-  color: var(--text-color);
+  color: #e8e8e8;
   text-decoration: none;
 }
 
 .linkprofilename:hover {
+  color: #ffffff;
   text-decoration: underline;
   text-underline-offset: 4px;
+  text-decoration-color: #555;
+}
+
+@media (max-width: 640px) {
+  .postcard {
+    padding: 14px 14px 12px;
+    margin-bottom: 10px;
+  }
+
+  .profileImg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .name {
+    font-size: 11px;
+  }
+
+  .content {
+    font-size: 12px;
+  }
+
+  .postImage {
+    max-height: 260px;
+  }
+
+  .actionBtn {
+    font-size: 9px;
+    padding: 4px 8px;
+    gap: 5px;
+  }
+
+  .postcard::before {
+    display: none;
+  }
 }

@@ -1,21 +1,28 @@
 .createpost {
-  background: var(--surface-color);
-  border: 2px solid var(--border-color);
-  box-shadow: 4px 4px 0px 0px var(--shadow-color);
-  padding: 24px;
-  margin-bottom: 32px;
+  background: #1c1c1c;
+  border: 1px solid #333;
+  border-left: 3px solid #444;
+  padding: 20px;
+  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  color: var(--text-color);
+  gap: 14px;
+  color: #e8e8e8;
+  position: relative;
 }
 
 .topRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 16px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 14px;
+}
+
+.IMAGEICON{
+  width: 40px;
+  height: 40px;
+  color: gray;
 }
 
 .userInfo {
@@ -25,18 +32,20 @@
 }
 
 .profileImage {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  border: 2px solid #ccc;
+  border: 1px solid #333;
+  filter: grayscale(100%);
+  display: block;
 }
 
 .userName {
-  font-size: 14px;
-  font-weight: 900;
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-color);
+  letter-spacing: 0.08em;
+  color: #e0e0e0;
   max-width: 200px;
   overflow: hidden;
   white-space: nowrap;
@@ -45,47 +54,48 @@
 }
 
 .postBtn {
-  background: var(--primary-color);
-  color: var(--primary-text);
-  border: 2px solid var(--border-color);
-  padding: 10px 20px;
-  font-size: 12px;
+  background: transparent;
+  color: #888;
+  border: 1px solid #333;
+  padding: 8px 18px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.1em;
   cursor: pointer;
-  transition: all 0.1s;
-}
-
-.postBtn:hover {
-  background: var(--surface-color);
-  color: var(--text-color);
-  box-shadow: 2px 2px 0px 0px var(--shadow-color);
-  transform: translate(-1px, -1px);
 }
 
 .textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 16px;
-  border: 2px solid var(--border-color);
-  font-family: var(--font-body);
-  font-size: 16px;
-  resize: vertical;
+  min-height: 100px;
+  padding: 14px;
+  border: 1px solid #333;
+  font-size: 13px;
+  line-height: 1.7;
+  resize: none;
   outline: none;
-  background: var(--bg-color);
-  color: var(--text-color);
+  background: #111;
+  color: #c4c4c4;
+  scrollbar-width: none;
+}
+
+.textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.textarea::placeholder {
+  color: #3a3a3a;
 }
 
 .textarea:focus {
-  box-shadow: 4px 4px 0px 0px var(--shadow-color);
-  transform: translate(-2px, -2px);
+  border-color: #555;
 }
 
 .bottomRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 8px;
+  padding-top: 6px;
 }
 
 .pictureinput {
@@ -98,54 +108,55 @@
 }
 
 .fileLabel {
-  background: var(--surface-color);
-  border: 2px solid var(--border-color);
-  padding: 8px 16px;
+  border: 1px solid #2a2a2a;
+  padding: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  transition: all 0.1s;
-  color: var(--text-color);
+  color: #555;
   max-width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filename {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  display: inline-block !important;
-  vertical-align: middle;
 }
 
-.fileLabel svg {
-  vertical-align: middle;
-  margin-right: 8px;
-}
-
-.fileLabel:hover {
-  background: var(--primary-color);
-  color: var(--primary-text);
-  box-shadow: 2px 2px 0px 0px var(--shadow-color);
-}
 
 .privacySelect {
-  padding: 8px 12px;
-  border: 2px solid var(--border-color);
-  font-family: var(--font-body);
+  padding: 6px 10px;
+  border: 1px solid #2a2a2a;
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
   outline: none;
   cursor: pointer;
-  background: var(--surface-color);
-  color: var(--text-color);
+  background: #111;
+  color: #666;
 }
 
 .privacySelect:focus {
-  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+  border-color: #555;
+  color: #bbb;
 }
 
-/* Select Friends styles */
 .selectFriendInput {
-  margin-top: 16px;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 100%;
+  max-width: 300px;
+  background: #1c1c1c;
+  border: 1px solid #333;
+  border-left: 3px solid #444;
+  padding: 14px;
+  z-index: 50;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -153,67 +164,120 @@
 
 .searchInput {
   width: 100%;
-  padding: 12px;
-  border: 2px solid var(--border-color);
-  font-family: var(--font-body);
-  font-size: 12px;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  font-size: 11px;
   text-transform: uppercase;
   outline: none;
-  background: var(--bg-color);
-  color: var(--text-color);
+  background: #111;
+  color: #c4c4c4;
+}
+
+.searchInput::placeholder {
+  color: #333;
+}
+
+.searchInput:focus {
+  border-color: #555;
 }
 
 .selectedusers {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  padding: 8px 0;
+  padding: 6px 0;
 }
 
 .NouserSelected {
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  opacity: 0.5;
-  color: var(--text-color);
+  letter-spacing: 0.08em;
+  color: #333;
 }
 
 .selecteduserscontainer {
-  border: 2px solid var(--border-color);
-  padding: 4px;
+  border: 1px solid #2a2a2a;
+  padding: 3px;
   display: flex;
-  background: var(--surface-color);
+  background: #111;
 }
 
-.selecteduseravatar, .userAvatar {
-  width: 32px;
-  height: 32px;
+.selecteduseravatar,
+.userAvatar {
+  width: 30px;
+  height: 30px;
   object-fit: cover;
-  border: 1px solid var(--border-color);
+  border: 1px solid #2a2a2a;
+  filter: grayscale(100%);
 }
 
 .usersList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   max-height: 150px;
   overflow-y: auto;
-  border: 2px solid var(--border-color);
-  padding: 8px;
-  background: var(--bg-color);
+  padding: 6px;
 }
 
 .userItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px;
-  border: 1px solid var(--border-color);
+  gap: 10px;
+  padding: 7px 10px;
+  border: 1px solid transparent;
   cursor: pointer;
-  background: var(--surface-color);
-  color: var(--text-color);
+  color: #888;
+  font-size: 11px;
 }
 
 .activeUser {
-  background: var(--primary-color);
-  color: var(--primary-text);
+  color: #d0d0d0;
+  border-color: #555;
+  background: #1f1f1f;
+}
+
+@media (max-width: 640px) {
+  .createpost {
+    padding: 14px;
+    gap: 10px;
+    border-left-width: 2px;
+  }
+
+  .topRow {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .userName {
+    font-size: 10px;
+    max-width: 140px;
+  }
+
+  .textarea {
+    font-size: 12px;
+    min-height: 80px;
+    padding: 10px;
+  }
+
+  .bottomRow {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .fileLabel {
+    font-size: 9px;
+    padding: 5px 10px;
+    max-width: 160px;
+  }
+
+  .privacySelect {
+    font-size: 9px;
+    padding: 5px 8px;
+  }
+
+  .postBtn {
+    font-size: 9px;
+    padding: 6px 14px;
+  }
 }

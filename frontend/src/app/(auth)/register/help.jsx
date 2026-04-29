@@ -6,7 +6,6 @@ export async function fetchRegister(formData) {
     body: formData,
   });
 
-  console.log("here", response);
   const er = await response.text();
   if (!response.ok) return [false, er];
   return [true, null];

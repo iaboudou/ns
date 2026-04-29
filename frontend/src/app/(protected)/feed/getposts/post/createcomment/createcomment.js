@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "./createcomment.module.css";
 import { createcomment } from "./actions";
+import { Image as ImageIcon } from "lucide-react";
 
 export default function CreateComment({ post, onCommentCreated }) {
 
@@ -15,7 +16,7 @@ export default function CreateComment({ post, onCommentCreated }) {
   })
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    console.log("the state :", state)
     let comment = await createcomment(state, postID)
     setState({ text: "", picture: null })
     onCommentCreated(postID, comment)
@@ -32,8 +33,6 @@ export default function CreateComment({ post, onCommentCreated }) {
         />
 
         <div className={styles.pictureandsubmitcontainer}>
-          {state.picture ? state.picture.name : ""}
-
           <input
             id={`imageInput-${postID}`}
             type="file"
@@ -41,7 +40,12 @@ export default function CreateComment({ post, onCommentCreated }) {
             onChange={(e) => setState({ ...state, picture: e.target.files?.[0] || null })}
           />
 
-          <label htmlFor={`imageInput-${postID}`} title={state.picture}></label>
+          <label htmlFor={`imageInput-${postID}`} title={state.picture ? state.picture.name : ""}>
+            <ImageIcon className={styles.IMAGEICON} />
+            <span className={styles.filename}>
+              {state.picture ? state.picture.name : "Image"}
+            </span>
+          </label>
 
           <button type="submit">comment</button>
         </div>

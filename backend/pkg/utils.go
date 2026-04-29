@@ -125,7 +125,6 @@ func HashPassword(password string) (string, error) {
 
 // check if the post content is valid
 func ArePostInfosCorrect(post models.Post) error {
-	fmt.Println(post.Content, post.ImageURL, post.Privacy)
 	if len(post.Content) > 600 {
 		return errors.New("post too large")
 	}

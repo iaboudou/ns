@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styles from './leftbar.module.css';
-import { Search, Handshake, Users, MessageSquare, Bell, CircleUser, Home } from 'lucide-react';
+import { Handshake, Users, MessageSquare, Bell, CircleUser, Home } from 'lucide-react';
 
 export default function Leftbar() {
   return (

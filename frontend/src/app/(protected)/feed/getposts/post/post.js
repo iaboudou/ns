@@ -1,16 +1,14 @@
 import styles from './post.module.css';
 import Comments from '@/app/(protected)/feed/getposts/post/getcomment/getcomments';
 import CreateComment from '@/app/(protected)/feed/getposts/post/createcomment/createcomment';
-import { createLikeServer, fetchComments, set_comment_in_state } from './actions';
+import { fetchComments, set_comment_in_state } from './actions';
 import { timeAgo } from '@/_lib/timeago';
 import Link from 'next/link';
-let BASE = process.env.BACKEND_URL;
 import { usePathname } from 'next/navigation';
 import { MessageCircle } from 'lucide-react';
 
 export default function Post({ POST }) {
   // if (!POST.post.offset ) POST.post.offset = 0
-  console.log(POST.post)
   //post image
   const imageURL = POST.post.image_url;
   const fullImageURL = imageURL ? `http://localhost:4001/${imageURL}` : null;
@@ -79,7 +77,7 @@ export default function Post({ POST }) {
             }
           }}
         >
-         <MessageCircle size={16} color="var(--text-color)" />
+         <MessageCircle size={16} />
           {POST.post.number_of_comments || 0}
         </button>
       </div>

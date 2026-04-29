@@ -2,28 +2,26 @@ body {
   height: 100vh;
   padding: 0;
   margin: 0;
+  background: #141414;
+  overflow: hidden;
 }
 .page {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-color);
-  font-family: var(--font-body);
-  padding: 2rem 0;
+  background: #141414;
+  overflow: hidden;
 }
 
 .formRegister {
-  background: var(--surface-color);
+  background: #1c1c1c;
   padding: 2rem;
-  border: 2px solid var(--border-color);
-  box-shadow: 8px 8px 0px 0px var(--shadow-color);
   width: 100%;
   max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  border-radius: 0;
 }
 
 .formRegister h2 {
@@ -32,16 +30,17 @@ body {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid #333;
   padding-bottom: 8px;
+  color: #e8e8e8;
 }
 
 .formRegister label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-color);
+  color: #c4c4c4;
   display: block;
   margin-bottom: 4px;
 }
@@ -53,32 +52,30 @@ body {
 .formRegister textarea {
   width: 100%;
   padding: 12px;
-  border: 2px solid var(--border-color);
-  font-size: 14px;
-  font-family: var(--font-body);
-  background: var(--surface-color);
-  color: var(--text-color);
-  box-sizing: border-box;
-  transition: all 0.1s;
-  border-radius: 0;
+  border: 1px solid #333;
+  font-size: 13px;
+  background: #111;
+  color: #e8e8e8;
+  outline: none;
 }
 
 .formRegister input:focus,
 .formRegister textarea:focus {
-  outline: none;
-  box-shadow: 4px 4px 0px 0px var(--shadow-color);
-  transform: translate(-2px, -2px);
+  border-color: #555;
 }
 
 .formRegister textarea {
-  resize: vertical;
+  resize: none;
   min-height: 100px;
+  scrollbar-width: none;
+}
+.formRegister textarea::-webkit-scrollbar {
+  display: none;
 }
 
 .formRegister input[type="file"] {
-  font-size: 12px;
-  font-family: var(--font-body);
-  color: var(--text-color);
+  font-size: 11px;
+  color: #c4c4c4;
   padding: 8px 0;
 }
 
@@ -103,67 +100,103 @@ body {
   align-items: center;
   gap: 8px;
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  color: #e8e8e8;
 }
 
 .formRegister button[type="submit"] {
   padding: 14px;
-  background: var(--primary-color);
-  color: var(--primary-text);
-  border: 2px solid var(--border-color);
-  font-size: 14px;
+  background: transparent;
+  color: #888;
+  border: 1px solid #333;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   cursor: pointer;
   margin-top: 8px;
-  transition: all 0.1s;
-  border-radius: 0;
 }
 
 .formRegister button[type="submit"]:hover {
-  background: var(--surface-color);
-  color: var(--text-color);
-  box-shadow: 4px 4px 0px 0px var(--shadow-color);
-  transform: translate(-2px, -2px);
+  color: #e0e0e0;
+  border-color: #666;
+  background: #1f1f1f;
 }
 
 .error {
-  color: var(--surface-color);
-  background: #ba1a1a;
-  border: 2px solid var(--border-color);
+  color: #ff5555;
+  background: #2a1111;
+  border: 1px solid #ff3333;
   padding: 12px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  box-shadow: 4px 4px 0px 0px var(--shadow-color);
+  margin: 0;
 }
 
 .formRegister span {
-  color: var(--text-color);
-  font-size: 10px;
+  color: #555;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  opacity: 0.7;
 }
 
 .formRegister > div:last-child {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   text-align: center;
   margin-top: 16px;
+  color: #555;
 }
 
 .formRegister > div:last-child a {
-  color: var(--text-color);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: #c4c4c4;
+  text-decoration: none;
 }
 
 .formRegister > div:last-child a:hover {
-  background: var(--primary-color);
-  color: var(--primary-text);
-  text-decoration: none;
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .page {
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 20px;
+    align-items: flex-start;
+  }
+  
+  .page::-webkit-scrollbar {
+    display: none;
+  }
+
+  .formRegister {
+    padding: 16px;
+    gap: 12px;
+    margin-top: 20px;
+    background: #141414;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .genderGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    gap: 12px;
+  }
+
+  .formRegister input[type="text"],
+  .formRegister input[type="email"],
+  .formRegister input[type="password"],
+  .formRegister input[type="date"],
+  .formRegister textarea {
+    padding: 10px;
+  }
 }

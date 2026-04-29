@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -20,7 +19,6 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
-		fmt.Println("here1")
 		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
@@ -89,7 +87,6 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 
 	user, er := c.DB.GetUserInfos(userID)
 	if er != nil {
-		fmt.Println("error getuserinfo: ", er)
 		pkg.RespondNotOK(w, "server-error")
 		return
 	}

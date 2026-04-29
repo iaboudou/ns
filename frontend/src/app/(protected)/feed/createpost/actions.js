@@ -35,14 +35,12 @@ export const createpost = async (state) => {
     if (state.privacy === "private") {
         formData.append("allowed_users", r);
     }
-    console.log("the formData :", state)
     try {
         const res = await fetch(`http://localhost:4001/api/createpost`, {
             method: "POST",
             body: formData,
             credentials: "include",
         });
-        console.log("the response :", res)
         if (handleUnauthorized(res)) return null;
 
         const data = await res.json().catch(() => ({}));

@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"slices"
 	"strings"
@@ -216,7 +217,6 @@ func (r *Repo) InsertPostDB(userID string, post models.Post) (models.Post, error
 	post.ID = id
 	post.UserID = userID
 	post.CreatedAt = now
-
 
 	er := r.Db.QueryRow(`SELECT profile_image FROM users WHERE id = ?`, userID).Scan(&post.UserImageProfile)
 	if er != nil {
@@ -440,7 +440,6 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 	return posts, rows.Err()
 }
 
-
 func (r *Repo) IstheUserFreind(user *models.User, mainuserID string) error {
 	if user.ID == mainuserID {
 		user.IsFreind = true
@@ -460,7 +459,6 @@ func (r *Repo) IstheUserFreind(user *models.User, mainuserID string) error {
 	user.IsFreind = true
 	return nil
 }
-
 
 func (r *Repo) GetTotalComments(PostID string) (int, error) {
 	total := 0
@@ -555,21 +553,6 @@ func (r *Repo) GetPostCategory(postID string) (string, error) {
 	res := strings.Join(categories, ",")
 
 	return res, nil
-}
-
-// get the reaction (likes/dislikes) from DB
-func (r *Repo) getPostReactions(postID string) (int, int, error) {
-	var likes, dislikes int
-
-	err := r.Db.QueryRow(`SELECT COUNT(*) FROM post_reactions WHERE reaction_type = 0 AND post_id = ?`, postID).Scan(&dislikes)
-	if err != nil {
-		return 0, 0, err
-	}
-	err = r.Db.QueryRow(`SELECT COUNT(*) FROM post_reactions WHERE reaction_type = 1 AND post_id = ?`, postID).Scan(&likes)
-	if err != nil {
-		return 0, 0, err
-	}
-	return likes, dislikes, nil
 }
 
 // get all users exists in the DB
@@ -723,7 +706,7 @@ func (r *Repo) GetUserInfos(userID string) (pkg.U, error) {
 	if er != nil {
 		return pkg.U{}, er
 	}
-
+	fmt.Println(user.Avatar)
 	user.ID = userID
 
 	return user, nil

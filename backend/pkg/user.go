@@ -35,7 +35,6 @@ func USERDATA(r *http.Request) U {
 		Birthday:  r.FormValue("dob"),
 		Gender:    r.FormValue("gender"),
 		About:     r.FormValue("about"),
-		Avatar:    "default.webp",
 	}
 }
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-let BASE = process.env.BACKEND_URL;
 import styles from "./createpost.module.css";
 import { fetchFriendsUsers } from "./actions";
 
@@ -41,7 +40,7 @@ export function SelectFreinds({ STATE }) {
             <div className={styles.selectedusers}>
 
                 {(state.selectedUsers || []).length == 0
-                    ? <div className={styles.NouserSelected}>No users selected...</div>
+                    ? <div className={styles.NouserSelected}></div>
                     : state.selectedUsers.map((u) => {
 
                         return (
