@@ -7,12 +7,12 @@ import (
 func Routes(mux *http.ServeMux, handler *Handler) {
 	//
 	routes := map[string]http.HandlerFunc{
-		"/logout":        handler.Cntrlrs.Logout,
-		"/createpost":    handler.Cntrlrs.CreatePost,
-		"/createcomment": handler.Cntrlrs.CreateComment,
-		"/getposts":      handler.Cntrlrs.GetPosts,
-		"/getcomments":   handler.Cntrlrs.GetComments,
-		"/follow":        handler.Cntrlrs.Follow,
+		"/logout":            handler.Cntrlrs.Logout,
+		"/api/createpost":    handler.Cntrlrs.CreatePost,
+		"/api/createcomment": handler.Cntrlrs.CreateComment,
+		"/api/getposts":      handler.Cntrlrs.GetPosts,
+		"/api/getcomments":   handler.Cntrlrs.GetComments,
+		"/api/follow":        handler.Cntrlrs.Follow,
 	}
 
 	for path, h := range routes {
@@ -32,6 +32,7 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 	ws := map[string]http.HandlerFunc{
 		"/ws":         handler.Cntrlrs.WebSocket,
 		"/hassession": handler.Cntrlrs.HasSession,
+		"/pics/":      handler.Cntrlrs.ServePictures,
 	}
 	for path, h := range ws {
 		mux.HandleFunc(path, handler.CORSMiddleware(h))

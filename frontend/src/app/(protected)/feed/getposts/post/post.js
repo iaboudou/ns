@@ -6,23 +6,19 @@ import { timeAgo } from '@/_lib/timeago';
 import Link from 'next/link';
 let BASE = process.env.BACKEND_URL;
 import { usePathname } from 'next/navigation';
+import { MessageCircle } from 'lucide-react';
 
 export default function Post({ POST }) {
   // if (!POST.post.offset ) POST.post.offset = 0
-
+  console.log(POST.post)
   //post image
   const imageURL = POST.post.image_url;
-  const fullImageURL = imageURL ? `${BASE}/${imageURL}` : null;
+  const fullImageURL = imageURL ? `http://localhost:4001/${imageURL}` : null;
 
   // profile image
   const profileimage = POST.post.profile_image;
-  const fullprofileimage = profileimage ? `${BASE}/pics/${profileimage}` : '/profile.png';
+  const fullprofileimage = profileimage ? `http://localhost:4001/pics/${profileimage}` : '/profile.png';
 
-  // in case of submit call the server to create a like in the DB, then updates the UI
-  const handleSubmit = async () => {
-    await createLikeServer(POST.post.id);
-    POST.onLikeCreated(POST.post.id);
-  };
   if (!POST.post) return null;
 
   //  fetch 10 comments from the server for a post starting at its offset,
@@ -72,10 +68,6 @@ export default function Post({ POST }) {
       {fullImageURL && <img src={fullImageURL} className={styles.postImage} />}
 
       <div className={styles.postActions}>
-        <button className={styles.actionBtn} type="button" onClick={handleSubmit}>
-          <img src={POST.post.is_liked ? '/heart.png' : '/like.png'} />
-          {POST.post.number_of_likes || 0}
-        </button>
         <button
           className={styles.actionBtn}
           type="button"
@@ -87,7 +79,7 @@ export default function Post({ POST }) {
             }
           }}
         >
-          <img src="/comments.png" alt="comment" />
+         <MessageCircle size={16} color="var(--text-color)" />
           {POST.post.number_of_comments || 0}
         </button>
       </div>

@@ -1,31 +1,48 @@
 package controllers
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
-
 	"rtf/models"
 	"rtf/pkg"
+	"strings"
 )
 
 // handle create post
 func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-
 	// get the user ID
+
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		pkg.RespondNotOK(w, "unauthorized")
 		return
 	}
 
-	// get the data from the front
-	var post models.Post
-	f, h, er := r.FormFile("Image")
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		pkg.RespondNotOK(w, "badrequest")
+		return
+	}
 
+	var post models.Post
+	post.UserID = userID
+	post.Content = strings.TrimSpace(r.FormValue("text"))
+	post.Privacy = strings.TrimSpace(r.FormValue("privacy"))
+	post.GroupID = strings.TrimSpace(r.FormValue("group_id"))
+
+	if post.Privacy == "private" {
+		post.Alloweduserscreate = r.FormValue("allowed_users")
+	} else {
+		post.AllowedUsers = nil
+	}
+
+	// handle the file upload
+	f, h, er := r.FormFile("Image")
 	if er == nil {
+		defer f.Close()
+
 		if !pkg.IsPictureFormatCorrect(f, h) {
-			http.Error(w, "picture size or type not authorized", http.StatusBadRequest)
+			pkg.RespondNotOK(w, "badrequest")
 			return
 		}
 
@@ -36,40 +53,21 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	post.Content = r.FormValue("Content")
-	post.CategoryType = r.FormValue("CategoryType")
-
-	// check if the post content is correct and the category exists in the DB
-	ids, er := c.DB.IsCategoryCorrect(post.CategoryType)
-	if er != nil {
-		http.Error(w, "categories is mendatory", http.StatusBadRequest)
+	// check if the post content is correct
+	err := pkg.ArePostInfosCorrect(post)
+	if err != nil {
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
-	er = pkg.ArePostInfosCorrect(post)
-	if er != nil {
-		http.Error(w, "post not valid try again", http.StatusBadRequest)
-		return
-	}
-
 	// insert the post into the DB
-	post, er = c.DB.InsertPostDB(userID, post, ids)
+	post, er = c.DB.InsertPostDB(userID, post)
 	if er != nil {
 		http.Error(w, "Server Error", http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(post.UserImageProfile)
+	post.NumberOfComments = 0
 
-	er = c.DB.GetUserNickNameByID(&post.AutherName, userID)
-	if er != nil {
-		http.Error(w, "Server Error", http.StatusInternalServerError)
-		return
-	}
-	post.UserReaction = -1
-	post.NbrOfReactions = 0
+	pkg.RespondOK(w, post, "post")
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"post":    post,
-		"success": "post successfully created",
-	})
 }

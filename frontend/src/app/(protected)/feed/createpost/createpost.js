@@ -26,14 +26,14 @@ export default function CreatePost({ CREATEPOST }) {
   })
 
   // profile picture on home
-  const imageURL = state.porsonel_info?.profile_image;
-  const fullImageURL = imageURL ? `${BASE}/pics/${imageURL}` : '/avatar.jpg';
+  const imageURL = state.porsonel_info?.Avatar;
+  const fullImageURL = imageURL ? `http://localhost:4001/pics/${imageURL}` : '/avatar.jpg';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (postIsValid(state)) {
       let post = await createpost(state);
+
       CREATEPOST.onPostCreated(post);
       CREATEPOST.setState((prev) => ({ ...prev, nbrofPosts: prev.nbrofPosts + 1 }));
       setState((prev) => ({ ...prev, privacy: 'public', text: '', picture: null, selectedUsers: [] }));
@@ -49,7 +49,6 @@ export default function CreatePost({ CREATEPOST }) {
     state,
     setState,
   }
-
   return (
     <div className={styles.createpost}>
       <form onSubmit={handleSubmit}>
@@ -58,7 +57,7 @@ export default function CreatePost({ CREATEPOST }) {
             {/* profile picture */}
             <Link href={`/profile/me`}>
               {imageURL ? (
-                <img className={styles.profileImage} src={`${BASE}/pics/${imageURL}`} alt="profile" />
+                <img className={styles.profileImage} src={`${fullImageURL}`} alt="profile" />
               ) : (
                 <div className={styles.profileImage} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                   <User size={24} color="var(--text-color)" />
@@ -67,7 +66,7 @@ export default function CreatePost({ CREATEPOST }) {
             </Link>
 
             {/* user full name*/}
-            <span className={styles.userName}>{state.porsonel_info?.firstname + ' ' + state.porsonel_info?.lastname}</span>
+            <span className={styles.userName}>{state.porsonel_info?.Firstname + ' ' + state.porsonel_info?.Lastname}</span>
           </div>
           <button type="submit" className={styles.postBtn}>create Post</button>
         </div>

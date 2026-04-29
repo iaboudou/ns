@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 // user
 type User struct {
 	ID                string `json:"id"`
@@ -23,19 +25,27 @@ type User struct {
 
 // posts
 type Post struct {
-	ID             string
-	AutherName     string
-	UserID         string
-	Content        string
-	CategoryType   string
-	CreatedAt      string
-	NbrOfComments  int
-	NbrOfLikes     int
-	NbrOfDislikes  int
-	NbrOfReactions int
-	UserReaction   int
-	Comments       []Comment
-	ImageURL       string
+	ID               string `json:"id"`
+	Nickname         string `json:"nickname"`
+	Firstname        string `json:"firstname"`
+	Lastname         string `json:"lastname"`
+	UserImageProfile string `json:"profile_image"`
+
+	UserID    string    `json:"user_id"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	ImageURL  string    `json:"image_url"`
+	Privacy   string    `json:"privacy"`
+
+	UserReaction     int  `json:"user_reaction"`
+	NumberOfLikes    int  `json:"number_of_likes"`
+	IsLiked          bool `json:"is_liked"`
+	NumberOfComments int  `json:"number_of_comments"`
+
+	AllowedUsers       []string `json:"allowed_users"`
+	Alloweduserscreate string
+	GroupID            string    `json:"group_id"`
+	Comments           []Comment `json:"comments"`
 }
 
 // comments

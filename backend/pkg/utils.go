@@ -125,11 +125,12 @@ func HashPassword(password string) (string, error) {
 
 // check if the post content is valid
 func ArePostInfosCorrect(post models.Post) error {
-	if len(post.Content) == 0 || len(post.CategoryType) == 0 {
-		return errors.New("all feilds are required")
-	}
-	if len(post.Content) > 500 {
+	fmt.Println(post.Content, post.ImageURL, post.Privacy)
+	if len(post.Content) > 600 {
 		return errors.New("post too large")
+	}
+	if len(post.Content) == 0 && len(post.ImageURL) == 0 {
+		return errors.New("post empty")
 	}
 	return nil
 }
@@ -175,12 +176,17 @@ func StatusError(w http.ResponseWriter, er error) {
 
 // this function save a file in the pics folder and return its new name that was generated randomly
 func SaveFile(r io.Reader, originalName string) string {
-	fileUUID, err := uuid.NewV4()
+	randomID, err := uuid.NewV4()
 	if err != nil {
 		return ""
 	}
-	name := fileUUID.String() + filepath.Ext(originalName)
-	fp := "db/pics/" + name
+
+	name := randomID.String() + filepath.Ext(originalName)
+	cwd, _ := os.Getwd()
+	fp := filepath.Join(cwd, "db", "pics", name)
+
+	//
+	os.MkdirAll("db/pics", os.ModePerm)
 
 	out, err := os.Create(fp)
 	if err != nil {
@@ -197,12 +203,12 @@ func SaveFile(r io.Reader, originalName string) string {
 }
 
 func IsPictureFormatCorrect(file multipart.File, header *multipart.FileHeader) bool {
-	// check max size of the picture
+	// check taille max 5MB
 	if header.Size > 5<<20 {
 		return false
 	}
 
-	// format accepted
+	//
 	allowedTypes := map[string]bool{
 		"image/jpeg": true,
 		"image/png":  true,
@@ -211,27 +217,28 @@ func IsPictureFormatCorrect(file multipart.File, header *multipart.FileHeader) b
 	}
 
 	buf := make([]byte, 512)
-	_, er := file.Read(buf)
-	if er != nil {
+	_, err := file.Read(buf)
+	if err != nil {
 		return false
 	}
-	filetype := http.DetectContentType(buf)
-	if !allowedTypes[filetype] {
+	fileType := http.DetectContentType(buf)
+	if !allowedTypes[fileType] {
 		return false
 	}
+
+	// reset read pointer
 	file.Seek(0, io.SeekStart)
 
 	// check extension
 	ext := strings.ToLower(filepath.Ext(header.Filename))
-	allowedEx := map[string]bool{
+	allowedExt := map[string]bool{
 		".jpg":  true,
 		".jpeg": true,
 		".png":  true,
 		".gif":  true,
 		".webp": true,
 	}
-
-	if !allowedEx[ext] {
+	if !allowedExt[ext] {
 		return false
 	}
 

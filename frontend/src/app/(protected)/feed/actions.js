@@ -73,7 +73,7 @@ export async function loadPosts(state, pathname, section, profileId) {
     group_id,
   })
 
-  const res = await fetch(`${BASE}/api/getposts?${params.toString()}`, {
+  const res = await fetch(`http://localhost:4001/api/getposts?${params.toString()}`, {
     method: "GET",
     credentials: "include",
   })

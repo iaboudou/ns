@@ -1,51 +1,43 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
+	"rtf/models"
+	"rtf/pkg"
+	"strconv"
 )
 
 // get a list of posts from the DB and render it to the front
 func (c *Controller) GetPosts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	userID, ok := r.Context().Value("userID").(string)
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`{"error":"unauthorized"}`))
+	viewerID, ok := r.Context().Value("userID").(string)
+	if !ok || viewerID == "" {
+		pkg.RespondNotOK(w, "unauthorized")
 		return
 	}
 
-	var req struct {
-		Offset int `json:"offset"`
+	q := r.URL.Query()
+	offset, _ := strconv.Atoi(q.Get("offset"))
+	page := q.Get("page")
+	section := q.Get("section")
+	reqUserID := q.Get("user_id")
+	groupID := q.Get("group_id")
+
+	if page == "profile-me-posts" || page == "profile-me-activity" {
+		reqUserID = viewerID
 	}
 
-	er := json.NewDecoder(r.Body).Decode(&req)
-	if er != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error":"invalid fields"}`))
-		return
-	}
-
-	posts, er := c.DB.Get10PostsfromDB(userID, req.Offset)
-
-	if er != nil {
-		if er.Error() == "SERVER ERROR" {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(`{"error":"SERVER ERROR"}`))
+	if page == "profille-other-posts" || reqUserID != viewerID {
+		user := models.User{ID: reqUserID}
+		if err := c.DB.IstheUserFreind(&user, viewerID); err != nil {
+			pkg.RespondNotOK(w, "forbidden")
 			return
 		}
-		w.Write([]byte(`{"error":"no posts"}`))
-		return
-	}
-	if len(posts) == 0 {
-		w.Write([]byte(`{"error":"no posts"}`))
-		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"posts":   posts,
-		"success": "Posts fetched successfully",
-	})
+	posts, err := c.DB.Get10PostsfromDB(page, section, viewerID, reqUserID, groupID, offset)
+	if err != nil {
+		pkg.RespondNotOK(w, "server-error")
+		return
+	}
+	pkg.RespondOK(w, posts, "posts")
 }

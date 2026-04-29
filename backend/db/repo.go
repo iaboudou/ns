@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strconv"
+	"slices"
 	"strings"
 	"time"
 
@@ -183,33 +183,46 @@ func (r *Repo) CheckSessionExistance(req *http.Request) (models.User, error) {
 	return user, nil
 }
 
-func (r *Repo) InsertPostDB(userID string, post models.Post, categoryIDs []int) (models.Post, error) {
-	postUUID, err := uuid.NewV7()
+func (r *Repo) InsertPostDB(userID string, post models.Post) (models.Post, error) {
+	postUUID, err := uuid.NewV4()
 	if err != nil {
 		return post, errors.New("SERVER ERROR")
 	}
+
 	id := postUUID.String()
-	t := time.Now().Format("2006-01-02 15:04:05.000000")
+	now := time.Now()
 
-	IDS := ""
-	for _, categoryID := range categoryIDs {
-		IDS += strconv.Itoa(categoryID) + ","
+	groupID := post.GroupID
+	if groupID == "" {
+		groupID = ""
 	}
-
-	if len(IDS) > 0 {
-		IDS = IDS[:len(IDS)-1]
-	}
-
 	_, err = r.Db.Exec(
-		`INSERT INTO posts(id, user_id, category_ids, content, url_image, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-		id, userID, IDS, post.Content, post.ImageURL, t,
+		`INSERT INTO posts (
+			id, user_id, content, image_url, created_at, privacy, allowed_users, group_id
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		id,
+		userID,
+		post.Content,
+		post.ImageURL,
+		now.Format("2006-01-02 15:04:05.000000"),
+		post.Privacy,
+		post.Alloweduserscreate,
+		groupID,
 	)
 	if err != nil {
 		return post, errors.New("SERVER ERROR")
 	}
 
 	post.ID = id
-	post.CreatedAt = t
+	post.UserID = userID
+	post.CreatedAt = now
+
+
+	er := r.Db.QueryRow(`SELECT profile_image FROM users WHERE id = ?`, userID).Scan(&post.UserImageProfile)
+	if er != nil {
+		return post, errors.New("SERVER ERROR")
+	}
+
 	return post, nil
 }
 
@@ -305,56 +318,170 @@ func (r *Repo) CommentExists(commentID string) error {
 }
 
 // this function get 10 posts from DB with its comments, reactions and categories starting from 'endID'
-func (r *Repo) Get10PostsfromDB(userID string, offset int) ([]models.Post, error) {
+func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID string, Offset int) ([]models.Post, error) {
 	posts := []models.Post{}
+	var rows *sql.Rows
+	var err error
 
-	rows, er := r.Db.Query(`SELECT id, user_id, content, url_image, created_at FROM posts ORDER BY created_at DESC LIMIT 10 OFFSET ?`, offset)
-	if er != nil {
-		if er == sql.ErrNoRows {
-			return nil, errors.New("no post exist yet")
-		}
+	switch Page {
+	case "profile-me-posts", "profille-other-posts":
+		rows, err = r.Db.Query(`
+			SELECT id, user_id, content, image_url, created_at, privacy, allowed_users, group_id
+			FROM posts
+			WHERE user_id = ?
+			ORDER BY created_at DESC
+			LIMIT 10 OFFSET ?`, ReqUserID, Offset)
+
+	case "profile-me-activity":
+		rows, err = r.Db.Query(`
+			SELECT p.id, p.user_id, p.content, p.image_url, p.created_at, p.privacy, p.allowed_users, p.group_id
+			FROM posts p
+			WHERE p.id IN (
+				SELECT post_or_comm_id
+				FROM reactions
+				WHERE user_id = ?
+				AND post_or_comm = 'POST'
+
+				UNION
+
+				SELECT post_id
+				FROM comments
+				WHERE user_id = ?
+			)
+			ORDER BY p.created_at DESC
+			LIMIT 10 OFFSET ?`, ReqUserID, ReqUserID, Offset)
+
+	case "goups", "groups":
+		rows, err = r.Db.Query(`
+			SELECT id, user_id, content, image_url, created_at, privacy, allowed_users, group_id
+			FROM posts
+			WHERE group_id = ?
+			ORDER BY created_at DESC
+			LIMIT 10 OFFSET ?`, GroupID, Offset)
+
+	default:
+		rows, err = r.Db.Query(`
+			SELECT id, user_id, content, image_url, created_at, privacy, allowed_users, group_id
+			FROM posts
+			WHERE group_id = ""
+			ORDER BY created_at DESC
+			LIMIT 10 OFFSET ?`, Offset)
+	}
+
+	if err != nil {
 		return nil, errors.New("SERVER ERROR")
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var p models.Post
+		var createdAtStr string
+		var allowedUsersStr string
 
-		er := rows.Scan(&p.ID, &p.UserID, &p.Content, &p.ImageURL, &p.CreatedAt)
-		if er != nil {
-			return nil, er
+		err := rows.Scan(&p.ID, &p.UserID, &p.Content, &p.ImageURL, &createdAtStr, &p.Privacy, &allowedUsersStr, &p.GroupID)
+		if err != nil {
+			return nil, errors.New("SERVER ERROR")
 		}
-		// get the number of comments
-		err := r.Db.QueryRow(`SELECT COUNT(*) FROM comments WHERE post_id = ?`, p.ID).Scan(&p.NbrOfComments)
+
+		p.CreatedAt, err = time.Parse(time.RFC3339Nano, createdAtStr)
+		if err != nil {
+			return nil, errors.New("SERVER ERROR")
+		}
+
+		p.AllowedUsers = pkg.ParseAllowedUsers(allowedUsersStr)
+
+		if err := r.Db.QueryRow(
+			`SELECT nickname, firstname, lastname, profile_image FROM users WHERE id = ?`,
+			p.UserID,
+		).Scan(&p.Nickname, &p.Firstname, &p.Lastname, &p.UserImageProfile); err != nil {
+			return nil, errors.New("SERVER ERROR")
+		}
+
+		if err := r.Db.QueryRow(`
+			SELECT COUNT(*)
+			FROM reactions
+			WHERE post_or_comm_id = ? AND post_or_comm = 'POST' AND type = 1
+		`, p.ID).Scan(&p.NumberOfLikes); err != nil {
+			return nil, errors.New("SERVER ERROR")
+		}
+
+		var liked int
+		err = r.Db.QueryRow(`
+			SELECT 1
+			FROM reactions
+			WHERE post_or_comm_id = ? AND post_or_comm = 'POST' AND user_id = ?
+			LIMIT 1
+		`, p.ID, ViewerID).Scan(&liked)
+		p.IsLiked = err == nil
+
+		show := false
+		if ViewerID != p.UserID {
+			switch p.Privacy {
+			case "public":
+				show = true
+			case "followers", "almost_private":
+				show, _ = r.IsFollower(ViewerID, p.UserID)
+			case "private":
+				show = slices.Contains(p.AllowedUsers, ViewerID)
+			}
+			if !show {
+				continue
+			}
+		}
+
+		p.NumberOfComments, err = r.GetTotalComments(p.ID)
 		if err != nil {
 			return nil, err
 		}
 
-		// get the user nickname
-		p.AutherName, er = r.GetUserAuthernameByID(p.UserID)
-		if er != nil {
-			return nil, errors.New("SERVER ERROR")
-		}
-		// get comments from DB
-		p.Comments, p.NbrOfComments, er = r.Get10PostComments(p.ID, 0)
-
-		if er != nil {
-			return nil, er
-		}
-		// get categories from DB
-		p.CategoryType, er = r.GetPostCategory(p.ID)
-		if er != nil {
-			return nil, er
-		}
-
-		// get the number of likes/dislikes
-		p.NbrOfLikes, p.NbrOfDislikes, er = r.getPostReactions(p.ID)
-		if er != nil {
-			return nil, er
-		}
 		posts = append(posts, p)
 	}
-	return posts, nil
+
+	return posts, rows.Err()
+}
+
+
+func (r *Repo) IstheUserFreind(user *models.User, mainuserID string) error {
+	if user.ID == mainuserID {
+		user.IsFreind = true
+		return nil
+	}
+
+	var exists int
+	err := r.Db.QueryRow(` SELECT 1 FROM followers WHERE follower_id=? AND following_id=? AND status="accepted"`, user.ID, mainuserID).Scan(&exists)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			user.IsFreind = false
+			return nil
+		}
+		return err
+	}
+
+	user.IsFreind = true
+	return nil
+}
+
+
+func (r *Repo) GetTotalComments(PostID string) (int, error) {
+	total := 0
+	er := r.Db.QueryRow(`SELECT COUNT(*) FROM comments WHERE post_id = ?`, PostID).Scan(&total)
+	return total, er
+}
+
+func (r *Repo) IsFollower(userID, otherID string) (bool, error) {
+	var status string
+	err := r.Db.QueryRow(`
+		SELECT status 
+		FROM followers 
+		WHERE follower_id = ? AND following_id = ?`, userID, otherID).Scan(&status)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+	//
+	return status == "accepted", nil
 }
 
 func (r *Repo) GetUserAuthernameByID(userID string) (string, error) {
@@ -707,7 +834,6 @@ func (r *Repo) GetMessagesHistoryBetweenTwoUsers(senderID, receiverID string, of
 // =====================
 // followers
 // =====================
-
 
 // get users that the (userID) does not follow them yet from db
 func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, error) {

@@ -27,8 +27,8 @@
 .profileImage {
   width: 48px;
   height: 48px;
-  border: 2px solid var(--border-color);
   object-fit: cover;
+  border: 2px solid #ccc;
 }
 
 .userName {

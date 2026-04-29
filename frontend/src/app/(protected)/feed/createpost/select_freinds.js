@@ -47,7 +47,7 @@ export function SelectFreinds({ STATE }) {
                         return (
                             <div key={"selected" + u.id} className={styles.selecteduserscontainer}>
                                 <img
-                                    src={`${BASE}/pics/${u.profile_image}`}
+                                    src={`http://localhost:4001/pics/${u.profile_image}`}
                                     alt=""
                                     className={styles.selecteduseravatar}
                                 />
@@ -89,7 +89,7 @@ export function SelectFreinds({ STATE }) {
                                 }}
                             >
                                 <img
-                                    src={`${BASE}/pics/${u.profile_image}`}
+                                    src={`http://localhost:4001/pics/${u.profile_image}`}
                                     alt=""
                                     className={styles.userAvatar}
                                 />
