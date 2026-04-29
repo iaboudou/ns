@@ -62,7 +62,7 @@ export default function CreatePost({ CREATEPOST }) {
             {/* user full name*/}
             <span className={styles.userName}>{state.porsonel_info?.firstname + ' ' + state.porsonel_info?.lastname}</span>
           </div>
-          <button type="submit" className={styles.postBtn}></button>
+          <button type="submit" className={styles.postBtn}>create comment</button>
         </div>
 
         {/* create post */}

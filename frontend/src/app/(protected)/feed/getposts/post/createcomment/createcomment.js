@@ -43,7 +43,7 @@ export default function CreateComment({ post, onCommentCreated }) {
 
           <label htmlFor={`imageInput-${postID}`} title={state.picture}></label>
 
-          <button type="submit"></button>
+          <button type="submit">comment</button>
         </div>
       </form>
     </div>

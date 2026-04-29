@@ -1,77 +1,89 @@
 .leftbar {
+  width: 64px;
+  border-right: 2px solid #000;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
+  align-items: center;
+  padding: 32px 0;
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  z-index: 40;
 }
 
 .barElementContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 10px 0;
-  height: 100%;
+  gap: 4px;
+  width: 100%;
 }
 
 .buttonLink {
-  width: 48px;
-  height: 48px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 24px 24px;
-  border-radius: 10px;
-  background-color: transparent;
-  transition: background-color 0.2s ease;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #000;
+  text-decoration: none;
+  transition: background-color 75ms, color 75ms;
+  border: none;
+  background: transparent;
   cursor: pointer;
+  position: relative;
 }
 
 .buttonLink:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #000;
+  color: #fff;
 }
 
-.buttonLink:nth-child(1) {
-  background-image: url('/home.png');
-}
-.buttonLink:nth-child(2) {
-  background-image: url('/freinds.png');
-}
-.buttonLink:nth-child(3) {
-  background-image: url('/groups.png');
-}
-.buttonLink:nth-child(4) {
-  background-image: url('/chat.png');
-}
-.buttonLink:nth-child(5) {
-  background-image: url('/notification.png');
-}
-.buttonLink:nth-child(6) {
-  background-image: url('/profile.png');
+.buttonLink:hover svg {
+  color: #fff;
+  stroke: #fff;
 }
 
-@media (max-width: 1024px) {
+.buttonLink.active {
+  background-color: #000;
+  color: #fff;
+}
+
+.buttonLink.active svg {
+  color: #fff;
+  stroke: #fff;
+}
+
+.buttonLink svg {
+  width: 20px;
+  height: 20px;
+  stroke: #000;
+  transition: stroke 75ms;
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
   .leftbar {
-    flex-direction: row;
-    height: 4rem;
-  }
-
-  .barElementContainer {
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-    gap: 0;
-    width: 100%;
-    height: 100%;
+    background-color: #000;
+    border-right-color: #fff;
   }
 
   .buttonLink {
-    width: 48px;
-    height: 48px;
+    color: #fff;
+  }
+
+  .buttonLink svg {
+    stroke: #fff;
+  }
+
+  .buttonLink:hover {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .buttonLink:hover svg {
+    stroke: #000;
   }
 }
