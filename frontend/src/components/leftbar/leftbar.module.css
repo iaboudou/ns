@@ -1,7 +1,7 @@
 .leftbar {
-  width: 64px;
-  border-right: 2px solid #000;
-  background-color: #fff;
+  width: 80px;
+  border-right: 2px solid var(--border-color);
+  background-color: var(--surface-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 16px;
   width: 100%;
 }
 
@@ -25,65 +25,47 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  color: #000;
+  width: 48px;
+  height: 48px;
+  color: var(--text-color);
   text-decoration: none;
-  transition: background-color 75ms, color 75ms;
-  border: none;
+  transition: all 0.1s;
+  border: 2px solid transparent;
   background: transparent;
   cursor: pointer;
   position: relative;
+  border-radius: 0;
 }
 
 .buttonLink:hover {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-text);
+  border: 2px solid var(--border-color);
+  box-shadow: 4px 4px 0px 0px var(--shadow-color);
+  transform: translate(-2px, -2px);
 }
 
 .buttonLink:hover svg {
-  color: #fff;
-  stroke: #fff;
+  color: var(--primary-text);
+  stroke: var(--primary-text);
 }
 
 .buttonLink.active {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-text);
+  border: 2px solid var(--border-color);
+  box-shadow: 4px 4px 0px 0px var(--shadow-color);
 }
 
 .buttonLink.active svg {
-  color: #fff;
-  stroke: #fff;
+  color: var(--primary-text);
+  stroke: var(--primary-text);
 }
 
 .buttonLink svg {
-  width: 20px;
-  height: 20px;
-  stroke: #000;
-  transition: stroke 75ms;
+  width: 24px;
+  height: 24px;
+  stroke: var(--text-color);
+  transition: stroke 0.1s;
   flex-shrink: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .leftbar {
-    background-color: #000;
-    border-right-color: #fff;
-  }
-
-  .buttonLink {
-    color: #fff;
-  }
-
-  .buttonLink svg {
-    stroke: #fff;
-  }
-
-  .buttonLink:hover {
-    background-color: #fff;
-    color: #000;
-  }
-
-  .buttonLink:hover svg {
-    stroke: #000;
-  }
 }

@@ -7,6 +7,7 @@ import { createpost, postIsValid } from './actions';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SelectFreinds } from './select_freinds';
+import { User, Image as ImageIcon } from 'lucide-react';
 
 export default function CreatePost({ CREATEPOST }) {
 
@@ -56,13 +57,19 @@ export default function CreatePost({ CREATEPOST }) {
           <div className={styles.userInfo}>
             {/* profile picture */}
             <Link href={`/profile/me`}>
-              <img className={styles.profileImage} src={fullImageURL} alt="profile" />
+              {imageURL ? (
+                <img className={styles.profileImage} src={`${BASE}/pics/${imageURL}`} alt="profile" />
+              ) : (
+                <div className={styles.profileImage} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <User size={24} color="var(--text-color)" />
+                </div>
+              )}
             </Link>
 
             {/* user full name*/}
             <span className={styles.userName}>{state.porsonel_info?.firstname + ' ' + state.porsonel_info?.lastname}</span>
           </div>
-          <button type="submit" className={styles.postBtn}>create comment</button>
+          <button type="submit" className={styles.postBtn}>create Post</button>
         </div>
 
         {/* create post */}
@@ -74,9 +81,9 @@ export default function CreatePost({ CREATEPOST }) {
             <input type="file" accept="image/*" onChange={(e) => setState({ ...state, picture: e.target.files?.[0] || null })} className={styles.fileInput} id="fileInput" />
 
             {/* the name of the image chosen */}
-            <label htmlFor="fileInput" className={styles.fileLabel}>
-              <span className={styles.fileIcon}></span>
-              {state.picture ? state.picture.name : ''}
+            <label htmlFor="fileInput" className={styles.fileLabel} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+              <ImageIcon size={16} color="var(--text-color)" />
+              {state.picture ? state.picture.name : 'Upload Image'}
             </label>
           </div>
 

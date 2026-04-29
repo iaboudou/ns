@@ -1,0 +1,25 @@
+.commentform {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px dashed var(--border-color);
+}
+
+.textarea {
+  flex-grow: 1;
+  border: 2px solid var(--border-color);
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  height: 48px;
+  background: var(--surface-color);
+  color: var(--text-color);
+}
+
+.textarea:focus {
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+  transform: translate(-1px, -1px);
+}

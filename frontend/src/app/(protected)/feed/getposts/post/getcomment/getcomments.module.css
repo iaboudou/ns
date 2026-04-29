@@ -1,85 +1,113 @@
 .commentscontainer {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
   overflow-y: auto;
 }
 
 .postcard {
-  border-radius: white;
-  padding: 9px 12px 9px 15px;
+  background: var(--surface-color);
+  border: 2px solid var(--border-color);
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   position: relative;
+  border-radius: 0;
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
 }
 
 .postcard::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 10px;
-  bottom: 10px;
-  width: 3px;
-  border-radius: 0 2px 2px 0;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary-color);
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border-color);
   object-fit: cover;
   flex-shrink: 0;
+  border-radius: 0;
 }
 
 .header>div {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .header strong {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-color);
 }
 
 .header small {
-  font-size: 11px;
-  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-color);
+  opacity: 0.6;
 }
 
 .postcard>p {
-  font-size: 12px;
-  color: white;
-  line-height: 1.55;
-  margin-left: 42px;
+  font-size: 14px;
+  color: var(--text-color);
+  line-height: 1.6;
+  margin-left: 48px;
 }
 
 .commentimg {
-  margin-left: 42px;
-  border-radius: 5px;
-  max-height: 180px;
-  width: calc(100% - 42px);
+  margin-left: 48px;
+  border: 2px solid var(--border-color);
+  max-height: 200px;
+  width: calc(100% - 48px);
   object-fit: cover;
-  max-width: 300px;
+  max-width: 320px;
+  filter: grayscale(100%);
+  transition: filter 0.3s;
+}
+
+.commentimg:hover {
+  filter: grayscale(0%);
 }
 
 .NAME {
-  color: white;
+  color: var(--text-color);
 }
 
 .leadmore {
   align-self: center;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  padding: 6px 12px;
+  background: var(--surface-color);
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.1s;
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+}
+
+.leadmore:hover {
+  background: var(--primary-color);
+  color: var(--primary-text);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--shadow-color);
 }

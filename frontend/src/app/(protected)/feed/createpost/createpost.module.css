@@ -1,0 +1,219 @@
+.createpost {
+  background: var(--surface-color);
+  border: 2px solid var(--border-color);
+  box-shadow: 4px 4px 0px 0px var(--shadow-color);
+  padding: 24px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--text-color);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 16px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profileImage {
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--border-color);
+  object-fit: cover;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-color);
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.postBtn {
+  background: var(--primary-color);
+  color: var(--primary-text);
+  border: 2px solid var(--border-color);
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.postBtn:hover {
+  background: var(--surface-color);
+  color: var(--text-color);
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+  transform: translate(-1px, -1px);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  border: 2px solid var(--border-color);
+  font-family: var(--font-body);
+  font-size: 16px;
+  resize: vertical;
+  outline: none;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.textarea:focus {
+  box-shadow: 4px 4px 0px 0px var(--shadow-color);
+  transform: translate(-2px, -2px);
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.pictureinput {
+  display: flex;
+  align-items: center;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileLabel {
+  background: var(--surface-color);
+  border: 2px solid var(--border-color);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.1s;
+  color: var(--text-color);
+  max-width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block !important;
+  vertical-align: middle;
+}
+
+.fileLabel svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.fileLabel:hover {
+  background: var(--primary-color);
+  color: var(--primary-text);
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+}
+
+.privacySelect {
+  padding: 8px 12px;
+  border: 2px solid var(--border-color);
+  font-family: var(--font-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+  background: var(--surface-color);
+  color: var(--text-color);
+}
+
+.privacySelect:focus {
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+}
+
+/* Select Friends styles */
+.selectFriendInput {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  font-family: var(--font-body);
+  font-size: 12px;
+  text-transform: uppercase;
+  outline: none;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.selectedusers {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+
+.NouserSelected {
+  font-size: 10px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  color: var(--text-color);
+}
+
+.selecteduserscontainer {
+  border: 2px solid var(--border-color);
+  padding: 4px;
+  display: flex;
+  background: var(--surface-color);
+}
+
+.selecteduseravatar, .userAvatar {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.usersList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 2px solid var(--border-color);
+  padding: 8px;
+  background: var(--bg-color);
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  background: var(--surface-color);
+  color: var(--text-color);
+}
+
+.activeUser {
+  background: var(--primary-color);
+  color: var(--primary-text);
+}
