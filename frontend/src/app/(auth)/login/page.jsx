@@ -24,8 +24,8 @@ export default function Login() {
 
         try {
             const formData = new FormData(e.currentTarget);
-
             const credentials = isValidInput(formData);
+
             if (!credentials) {
                 setError("Invalid credential");
                 return;
@@ -36,7 +36,6 @@ export default function Login() {
                 setError("Invalid credential");
                 return;
             }
-
             router.replace("/");
         } catch {
             setError("Something went wrong");

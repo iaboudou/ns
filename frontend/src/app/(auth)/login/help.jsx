@@ -1,5 +1,5 @@
 export async function handleLogin(email, password) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE}/api/login`, {
+    const response = await fetch(`http://localhost:4001/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

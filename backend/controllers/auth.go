@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"rtf/models"
 	"rtf/pkg"
 )
 
@@ -27,7 +26,6 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := pkg.USERDATA(r)
-	fmt.Println(user)
 
 	file, header, err := r.FormFile("avatar")
 	if err == nil && header.Size != 0 {
@@ -65,58 +63,51 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 
 // this handler is for login. it expects a POST request, and it returns a JSON response with (error or success)
 func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var user models.User
 	defer r.Body.Close()
 
-	err := json.NewDecoder(r.Body).Decode(&user)
+	if r.Method != http.MethodPost {
+		pkg.RespondNotOK(w, "notallowed")
+		return
+	}
+
+	var req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		http.Error(w, "invalid fields", http.StatusBadRequest)
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
 
-	userID, er := c.DB.IsUserExist(&user)
+	userID, er := c.DB.IsUserExist(req.Email, req.Password)
 	if er != nil {
-		switch er.Error() {
-		case "SERVER ERROR":
-			http.Error(w, "SERVER ERROR", http.StatusInternalServerError)
-			return
-		default:
-			http.Error(w, fmt.Sprintf("%s", er.Error()), http.StatusBadRequest)
-		}
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
 
-	user, er = c.DB.GetUserInfos(userID)
+	user, er := c.DB.GetUserInfos(userID)
 	if er != nil {
-		http.Error(w, "SERVER ERROR", http.StatusInternalServerError)
+		fmt.Println("error getuserinfo: ", er)
+		pkg.RespondNotOK(w, "server-error")
 		return
 	}
 
-	a, er := c.DB.SetUserSession(w, userID)
+	sessionID, expiresAt, er := c.DB.SetUserSession(w, userID)
 	if er != nil {
-		http.Error(w, "SERVER ERROR", http.StatusInternalServerError)
+		pkg.RespondNotOK(w, "server-error")
 		return
 	}
-
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
-		Value:    a[0].(string),
+		Value:    sessionID,
 		Path:     "/",
 		HttpOnly: true,
-		Expires:  a[1].(time.Time),
+		SameSite: http.SameSiteLaxMode,
+		Expires:  expiresAt,
 	})
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"user":    user,
-		"success": "logged in successfully",
-	})
+	pkg.RespondOK(w, user, "user")
 }
 
 func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {

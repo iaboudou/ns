@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -69,22 +68,23 @@ func (r *Repo) IsUserAlreadyExist(user *pkg.U) error {
 }
 
 // check existance of the user in the DB
-func (r *Repo) IsUserExist(user *models.User) (string, error) {
+func (r *Repo) IsUserExist(email, password string) (string, error) {
 	var id string
 	var hashedPassword string
 
-	if len(user.Email) > 60 || len(user.Nickname) > 60 || len(user.Password) > 60 {
+	if len(email) > 60 || len(password) > 60 {
 		return "", errors.New("user not exist")
 	}
 
-	err := r.Db.QueryRow("SELECT id, password FROM users WHERE nickname=? OR email=?", user.Nickname, user.Nickname).Scan(&id, &hashedPassword)
+	err := r.Db.QueryRow("SELECT id, password FROM users WHERE email = ?", email).Scan(&id, &hashedPassword)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", errors.New("user not exist")
 		}
 		return "", errors.New("SERVER ERROR")
 	}
-	if bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(user.Password)) != nil {
+
+	if bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)) != nil {
 		return "", errors.New("password invalid")
 	}
 
@@ -92,22 +92,34 @@ func (r *Repo) IsUserExist(user *models.User) (string, error) {
 }
 
 // set new session in case of user login
-func (r *Repo) SetUserSession(w http.ResponseWriter, userID string) ([]interface{}, error) {
+func (r *Repo) SetUserSession(w http.ResponseWriter, userID string) (string, time.Time, error) {
+
+	_, err := r.Db.Exec("DELETE FROM sessions WHERE user_id = ?", userID)
+	if err != nil {
+		return "", time.Time{}, errors.New("SERVER ERROR")
+	}
+
 	sessionUUID, err := uuid.NewV7()
 	if err != nil {
-		return nil, errors.New("SERVER ERROR")
+		return "", time.Time{}, errors.New("SERVER ERROR")
 	}
-	sessionId := sessionUUID.String()
-	now := time.Now()
-	timeExpired := now.Add(24 * time.Hour).Format("2006-01-02 15:04:05")
-	timeNow := now.Format("2006-01-02 15:04:05")
-	e := now.Add(24 * time.Hour)
+	sessionID := sessionUUID.String()
 
-	_, err = r.Db.Exec("UPDATE users SET session_id=?, session_created_at=?, session_expired_at=? WHERE id=?", sessionId, timeNow, timeExpired, userID)
+	now := time.Now()
+	expiredAt := now.Add(24 * time.Hour)
+
+	_, err = r.Db.Exec(`
+	INSERT INTO sessions (id, user_id, token, expires_at)
+	VALUES (?, ?, ?, ?)`,
+		sessionID,
+		userID,
+		sessionID,
+		expiredAt.Format("2006-01-02 15:04:05"),
+	)
 	if err != nil {
-		return nil, errors.New("SERVER ERROR")
+		return "", time.Time{}, errors.New("SERVER ERROR")
 	}
-	return []interface{}{sessionId, e}, nil
+	return sessionID, expiredAt, nil
 }
 
 // delete the session from the DB in case of logout
@@ -121,30 +133,54 @@ func (r *Repo) DisconnectUser(userID string) error {
 
 // this check session sended by the browser if it is included in the DB
 func (r *Repo) CheckSessionExistance(req *http.Request) (models.User, error) {
+
 	var user models.User
+	var expiresAtStr string
 
-	// check in the browser
 	cookie, err := req.Cookie("session_id")
-	if err != nil || cookie == nil || cookie.Value == "" {
-		return user, fmt.Errorf("Error-session")
+	if err != nil || cookie.Value == "" {
+		return user, errors.New("no session cookie")
 	}
+	user.SessionID = cookie.Value
 
-	// check in DB
-	err = r.Db.QueryRow("SELECT id, nickname, birthday, gender, firstname, lastname, email, session_expired_at FROM users WHERE session_id = ?", cookie.Value).
-		Scan(&user.ID, &user.Nickname, &user.Birthday, &user.Gender, &user.Firstname, &user.Lastname, &user.Email, &user.SessionExpired)
+	//
+	var userID string
+	err = r.Db.QueryRow("SELECT user_id, expires_at FROM sessions WHERE token = ?", cookie.Value).
+		Scan(&userID, &expiresAtStr)
 	if err != nil {
-		return user, err
+		if err == sql.ErrNoRows {
+			return user, errors.New("session not found")
+		}
+		return user, errors.New("server error")
 	}
 
-	// check if the session already expired
-	if user.SessionExpired != "" {
-		sessionExpiredTime, err := time.Parse("2006-01-02 15:04:05", user.SessionExpired)
-		if err != nil {
-			return user, err
+	//
+	expiresAt, err := time.Parse("2006-01-02 15:04:05", expiresAtStr)
+	if err != nil {
+		return user, errors.New("invalid session format")
+	}
+	if time.Now().After(expiresAt) {
+		return user, errors.New("session expired")
+	}
+
+	//
+	err = r.Db.QueryRow(`SELECT 
+						id, 
+						nickname, 
+						firstname, 
+						lastname, 
+						email, 
+						birthday, 
+						profile_image, 
+						about_me, 
+						account_privacy 
+					FROM users WHERE id = ?`, userID).
+		Scan(&user.ID, &user.Nickname, &user.Firstname, &user.Lastname, &user.Email, &user.Birthday, &user.ProfileImage, &user.AboutMe, &user.IsPublic)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, errors.New("user not found")
 		}
-		if time.Now().After(sessionExpiredTime) {
-			return user, errors.New("session expired")
-		}
+		return user, errors.New("server error")
 	}
 
 	return user, nil
@@ -545,15 +581,27 @@ func (r *Repo) SetMessageRead(senderID, receiverID string) error {
 }
 
 // get user infos from DB
-func (r *Repo) GetUserInfos(userID string) (models.User, error) {
-	var user models.User
-
-	err := r.Db.QueryRow(`SELECT id, nickname, birthday, gender, firstname, lastname, email 
-		FROM users WHERE id=?`, userID).
-		Scan(&user.ID, &user.Nickname, &user.Birthday, &user.Gender, &user.Firstname, &user.Lastname, &user.Email)
-	if err != nil {
-		return user, err
+func (r *Repo) GetUserInfos(userID string) (pkg.U, error) {
+	user := pkg.U{}
+	er := r.Db.QueryRow(`
+	SELECT 
+		nickname, 
+		firstname, 
+		lastname, 
+		email, 
+		birthday, 
+		gender, 
+		profile_image, 
+		about_me, 
+		account_privacy
+	FROM users WHERE id = ?
+	`, userID).Scan(&user.Nickname, &user.Firstname, &user.Lastname, &user.Email, &user.Birthday, &user.Gender, &user.Avatar, &user.About, &user.AccountPrivacy)
+	if er != nil {
+		return pkg.U{}, er
 	}
+
+	user.ID = userID
+
 	return user, nil
 }
 

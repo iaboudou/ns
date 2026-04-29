@@ -11,6 +11,7 @@ import (
 
 // / USER
 type U struct {
+	ID        string
 	Nickname  string
 	Firstname string
 	Lastname  string
@@ -20,6 +21,8 @@ type U struct {
 	Gender    string
 	About     string
 	Avatar    string
+	SessionID string
+	AccountPrivacy  bool
 }
 
 func USERDATA(r *http.Request) U {
