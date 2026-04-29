@@ -93,7 +93,6 @@ func (r *Repo) IsUserExist(email, password string) (string, error) {
 
 // set new session in case of user login
 func (r *Repo) SetUserSession(w http.ResponseWriter, userID string) (string, time.Time, error) {
-
 	_, err := r.Db.Exec("DELETE FROM sessions WHERE user_id = ?", userID)
 	if err != nil {
 		return "", time.Time{}, errors.New("SERVER ERROR")
@@ -704,3 +703,174 @@ func (r *Repo) GetMessagesHistoryBetweenTwoUsers(senderID, receiverID string, of
 	}
 	return msgs, nil
 }
+
+// =====================
+// followers
+// =====================
+
+
+// get users that the (userID) does not follow them yet from db
+func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, error) {
+	suggestions := []models.FollowSuggestion{}
+
+	rows, er := r.Db.Query(`
+		SELECT id, firstname, lastname, profile_image, account_privacy 
+		FROM users 
+		WHERE id != ? 
+		AND id NOT IN (
+			SELECT following_id FROM followers WHERE follower_id = ?
+		)`, userID, userID)
+	if er != nil {
+		return nil, er
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var follow models.FollowSuggestion
+		er := rows.Scan(&follow.Id, &follow.Firstname, &follow.Lastname, &follow.ProfileImage, &follow.AccountPrivacy)
+		follow.AccountPrivacy = !follow.AccountPrivacy
+		if er != nil {
+			return nil, er
+		}
+		suggestions = append(suggestions, follow)
+	}
+
+	return suggestions, nil
+}
+
+func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
+	// 1. Check if follow relationship already exists
+	var status string
+	err := r.Db.QueryRow(`SELECT status FROM followers WHERE follower_id = ? AND following_id = ?`, userID, followedID).Scan(&status)
+	if err == nil {
+		// If it exists, delete it (unfollow logic)
+		_, err = r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, userID, followedID)
+		if err != nil {
+			return "", err
+		}
+		if status == "pending" {
+			return "follow request deleted", nil
+		}
+		return "follow deleted", nil
+	}
+
+	// 2. If it doesn't exist, check if the targeted account is private
+	var isPrivate bool
+	err = r.Db.QueryRow(`SELECT account_privacy FROM users WHERE id = ?`, followedID).Scan(&isPrivate)
+	if err != nil {
+		return "", err
+	}
+	isPrivate = !isPrivate
+	// 3. Create the follow record with the appropriate status
+	id, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
+
+	finalStatus := "accepted"
+	message := "follow have been successfully"
+	if isPrivate {
+		finalStatus = "pending"
+		message = "request have been sent"
+	}
+
+	_, err = r.Db.Exec(`
+	INSERT INTO followers (id, follower_id, following_id, status)
+	VALUES (?, ?, ?, ?)
+	`, id.String(), userID, followedID, finalStatus)
+	if err != nil {
+		return "", err
+	}
+
+	return message, nil
+}
+
+func (r *Repo) ManageFollowDB(followerID string, followingID string, decision string) error {
+	if decision == "accepted" {
+		_, err := r.Db.Exec(`UPDATE followers SET status = 'accepted' WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
+		return err
+	} else if decision == "rejected" {
+		_, err := r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
+		return err
+	}
+	return nil
+}
+
+func (r *Repo) GetFollowersDB(targetID string) ([]models.FollowSuggestion, error) {
+	followers := []models.FollowSuggestion{}
+
+	rows, er := r.Db.Query(`
+		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
+		FROM users u
+		JOIN followers f ON u.id = f.follower_id
+		WHERE f.following_id = ? AND f.status = 'accepted'
+	`, targetID)
+	if er != nil {
+		return nil, er
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var f models.FollowSuggestion
+		er := rows.Scan(&f.Id, &f.Firstname, &f.Lastname, &f.ProfileImage, &f.AccountPrivacy)
+		if er != nil {
+			return nil, er
+		}
+		followers = append(followers, f)
+	}
+
+	return followers, nil
+}
+
+func (r *Repo) GetFollowingDB(targetID string) ([]models.FollowSuggestion, error) {
+	following := []models.FollowSuggestion{}
+
+	rows, er := r.Db.Query(`
+		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
+		FROM users u
+		JOIN followers f ON u.id = f.following_id
+		WHERE f.follower_id = ? AND f.status = 'accepted'
+	`, targetID)
+	if er != nil {
+		return nil, er
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var f models.FollowSuggestion
+		er := rows.Scan(&f.Id, &f.Firstname, &f.Lastname, &f.ProfileImage, &f.AccountPrivacy)
+		if er != nil {
+			return nil, er
+		}
+		following = append(following, f)
+	}
+
+	return following, nil
+}
+
+func (r *Repo) GetFollowRequestsDB(userID string) ([]models.FollowSuggestion, error) {
+	rows, err := r.Db.Query(`
+		SELECT id, firstname, lastname, profile_image
+		FROM users
+		WHERE id IN (
+			SELECT follower_id FROM followers WHERE following_id = ? AND status = 'pending'
+		)`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.FollowSuggestion
+	for rows.Next() {
+		var u models.FollowSuggestion
+		if err := rows.Scan(&u.Id, &u.Firstname, &u.Lastname, &u.ProfileImage); err != nil {
+			return nil, err
+		}
+		users = append(users, u)
+	}
+	return users, nil
+}
+
+// =====================
+// End followers
+// =====================

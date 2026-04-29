@@ -12,7 +12,7 @@ import (
 )
 
 func InitDB() (*sql.DB, error) {
-	m, err := migrate.New("file://db/migration", "sqlite3://db/db.db")
+	m, err := migrate.New("file://db/migration/sqlite", "sqlite3://db/db.db")
 	if err != nil {
 		return nil, err
 	}

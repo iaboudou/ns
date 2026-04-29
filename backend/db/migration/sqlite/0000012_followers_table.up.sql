@@ -1,4 +1,3 @@
-PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS followers (
     id TEXT PRIMARY KEY,

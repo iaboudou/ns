@@ -1,5 +1,3 @@
-PRAGMA foreign_keys = ON;
-
 CREATE TABLE IF NOT EXISTS messages (
     id TEXT PRIMARY KEY,
     sender_id TEXT NOT NULL,

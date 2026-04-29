@@ -12,7 +12,9 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 		"/createcomment": handler.Cntrlrs.CreateComment,
 		"/getposts":      handler.Cntrlrs.GetPosts,
 		"/getcomments":   handler.Cntrlrs.GetComments,
+		"/follow":        handler.Cntrlrs.Follow,
 	}
+
 	for path, h := range routes {
 		mux.HandleFunc(path, handler.CORSMiddleware(handler.RateLimit(handler.Middleware(h))))
 	}

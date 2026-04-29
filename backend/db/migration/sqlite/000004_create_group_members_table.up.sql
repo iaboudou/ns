@@ -1,5 +1,3 @@
-PRAGMA foreign_keys = ON;
-
 CREATE TABLE IF NOT EXISTS group_members (
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
     group_id TEXT NOT NULL,

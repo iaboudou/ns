@@ -3,6 +3,8 @@ package pkg
 import (
 	"encoding/json"
 	"net/http"
+
+	"rtf/models"
 )
 
 func RespondOK(w http.ResponseWriter, rep any, TYPE string) {
@@ -37,4 +39,19 @@ func RespondNotOK(w http.ResponseWriter, Type string) {
 	case "notfound":
 		http.Error(w, "not found", http.StatusNotFound)
 	}
+}
+
+// send data to the front with a status code
+func Respond(w http.ResponseWriter, resp *models.Response) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.Code)
+	json.NewEncoder(w).Encode(&resp)
+}
+
+// respond to a front request with an internal server error
+func RespondServerError(w http.ResponseWriter) {
+	Respond(w, &models.Response{
+		Code:    http.StatusInternalServerError,
+		Message: "server error",
+	})
 }

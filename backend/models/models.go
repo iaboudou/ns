@@ -85,3 +85,19 @@ type UserInfo struct {
 	NumberOfUnreadMessages int
 	IsOnline               bool
 }
+
+// group struct
+type Response struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    any    `json:"data"`
+}
+
+// followers struct
+type FollowSuggestion struct {
+	Id             string `json:"id"`
+	ProfileImage   string `json:"profile_image"`
+	Firstname      string `json:"firstname"`
+	Lastname       string `json:"lastname"`
+	AccountPrivacy bool   `json:"account_privacy"`
+}
