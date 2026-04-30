@@ -40,7 +40,6 @@ export default function FeedClient({ INFO = {} }) {
     onCommentCreated: (post_id, comment) => {
       return onCommentCreated(setState, post_id, comment);
     },
-    onLikeCreated: (post_id) => onLikeCreated(setState, post_id),
     fetch: async () => {
       if (isFetching.current) return;
       isFetching.current = true;

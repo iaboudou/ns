@@ -1,4 +1,4 @@
-let BASE = process.env.BACKEND_URL;
+
 
 export async function createcomment(state, post_id) {
 
@@ -8,13 +8,14 @@ export async function createcomment(state, post_id) {
     if (state.picture) formdata.append("image_url", state.picture)
 
     try {
-        let res = await fetch(`${BASE}/api/createcomment`, {
+        let res = await fetch(`http://localhost:4001/api/createcomment`, {
             method: "POST",
             credentials: "include",
             body: formdata
         })
         if (!res.ok) {
             console.error("error creating comment");
+            return null
         }
 
         const json = await res.json().catch(() => ({}));

@@ -17,7 +17,8 @@ export function ValidateInput(formData) {
     Object.fromEntries(formData.entries());
 
   if (!email || !password || !firstname || !lastname || !dob || !gender)
-    return [{}, false];
+    return ["all required fields", false];
+
 
   const age = Math.floor(
     (Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365)

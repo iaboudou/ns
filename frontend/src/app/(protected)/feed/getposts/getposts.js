@@ -30,7 +30,6 @@ export default function GetPosts({ GETPOSTS }) {
           openComments: GETPOSTS.state.openComments,
           setOpenComments: () => GETPOSTS.setOpenComments(post.id),
           onCommentCreated: GETPOSTS.onCommentCreated,
-          onLikeCreated: GETPOSTS.onLikeCreated,
           setState: GETPOSTS.setState,
           state : GETPOSTS.state,
         };

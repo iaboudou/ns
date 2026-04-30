@@ -5,7 +5,7 @@ import { fetchComments, set_comment_in_state } from './actions';
 import { timeAgo } from '@/_lib/timeago';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Users } from 'lucide-react';
 
 export default function Post({ POST }) {
   // if (!POST.post.offset ) POST.post.offset = 0
@@ -15,7 +15,7 @@ export default function Post({ POST }) {
 
   // profile image
   const profileimage = POST.post.profile_image;
-  const fullprofileimage = profileimage ? `http://localhost:4001/pics/${profileimage}` : '/profile.png';
+  const fullprofileimage = profileimage ? `http://localhost:4001/pics/${profileimage}` : '';
 
   if (!POST.post) return null;
 
@@ -36,14 +36,16 @@ export default function Post({ POST }) {
 
   let path = usePathname();
   let u = localStorage.getItem('user');
-  let id = u ? JSON.parse(u).id : '';
+  let id = u ? JSON.parse(u).ID : '';
 
   return (
     <div className={styles.postcard}>
       <div className={styles.header}>
         {
           <Link href={id != POST.post.user_id ? `/profile/${POST.post.user_id}` : `/profile/me`}>
-            <img src={fullprofileimage} className={styles.profileImg} />
+            {
+              fullprofileimage? <img src={fullprofileimage} className={styles.profileImg} /> : <Users style={{color: "white"}} />
+            }
           </Link>
         }
 

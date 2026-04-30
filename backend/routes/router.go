@@ -7,12 +7,15 @@ import (
 func Routes(mux *http.ServeMux, handler *Handler) {
 	//
 	routes := map[string]http.HandlerFunc{
-		"/logout":            handler.Cntrlrs.Logout,
-		"/api/createpost":    handler.Cntrlrs.CreatePost,
-		"/api/createcomment": handler.Cntrlrs.CreateComment,
-		"/api/getposts":      handler.Cntrlrs.GetPosts,
-		"/api/getcomments":   handler.Cntrlrs.GetComments,
-		"/api/follow":        handler.Cntrlrs.Follow,
+		"/logout":              handler.Cntrlrs.Logout,
+		"/api/createpost":      handler.Cntrlrs.CreatePost,
+		"/api/createcomment":   handler.Cntrlrs.CreateComment,
+		"/api/getposts":        handler.Cntrlrs.GetPosts,
+		"/api/getcomments":     handler.Cntrlrs.GetComments,
+		"/api/follow":          handler.Cntrlrs.Follow,
+		"/api/getpersonalinfo": handler.Cntrlrs.Getpersonalinfo,
+		"/api/switchaccountprivacy": handler.Cntrlrs.SwitchAccountPrivacy,
+		"/api/getsuggestionfollowers": handler.Cntrlrs.GetSuggestionFollowers,
 	}
 
 	for path, h := range routes {

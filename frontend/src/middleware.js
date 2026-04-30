@@ -17,7 +17,7 @@ export async function middleware(request) {
   // check session validation
   if (session) {
     try {
-      const res = await fetch(`${process.env.BACKEND_URL}/hassession`, {
+      const res = await fetch(`http://localhost:4001/hassession`, {
         method: "GET",
         headers: { Cookie: `session_id=${session}` },
       });

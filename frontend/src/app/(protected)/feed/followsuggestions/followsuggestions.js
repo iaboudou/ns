@@ -1,9 +1,10 @@
 'use client';
-let BASE = process.env.BACKEND_URL;
+const BASE = "http://localhost:4001"
 import Link from 'next/link';
 import styles from './followsuggestions.module.css';
 import { FollowUser, GetUsers } from './actions';
 import { useState, useEffect } from 'react';
+import { Users } from 'lucide-react';
 
 export default function FollowSuggestions() {
   const [suggestions, setUsers] = useState([]);
@@ -43,13 +44,14 @@ export default function FollowSuggestions() {
         {suggestions.map((user) => {
           // get image
           const profileimage = user?.profile_image;
-          const fullprofileimage = profileimage ? `${BASE}/pics/${profileimage}` : '/profile.png';
+          const fullprofileimage = profileimage ? `${BASE}/pics/${profileimage}` : '';
 
           return (
             <li key={user.id} className={styles.item}>
               <Link href={`/profile/${user.id}`}>
-                {' '}
-                <img src={fullprofileimage} className={styles.avatar} />{' '}
+                {
+                  fullprofileimage ? <img src={fullprofileimage} className={styles.avatar} /> : <Users style={{color: "white"}} />
+                }
               </Link>
 
               <div className={styles.meta}>

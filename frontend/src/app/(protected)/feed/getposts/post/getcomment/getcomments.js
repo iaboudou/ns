@@ -1,10 +1,12 @@
 "use client";
 
-let BASE = process.env.BACKEND_URL;
+let BASE = `http://localhost:4001`
 import { timeAgo } from "@/_lib/timeago";
 import styles from "./getcomments.module.css";
+import { Users } from "lucide-react";
 
 export default function Comments({ COMMENTS }) {
+
   return (
     <div className={styles.commentscontainer}>
       {Array.isArray(COMMENTS.comments) &&
@@ -17,14 +19,12 @@ export default function Comments({ COMMENTS }) {
                     src={`${BASE}/pics/${comment.profile_image}`}
                     className={styles.avatar}
                   />
-                  : <img
-                    src="/avatar.jpg"
-                    className={styles.avatar}
-                  />
+                  : 
+                  <Users />
               }
               <div>
                 <strong className={styles.NAME}>{comment.firstname} {comment.lastname}</strong>
-                <small>{timeAgo(comment.created_at)}</small>
+                <small className={styles.NAME}>{timeAgo(comment.created_at)}</small>
               </div>
             </div>
             <p>{comment.content}</p>

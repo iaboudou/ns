@@ -8,16 +8,15 @@ import { Image as ImageIcon } from "lucide-react";
 export default function CreateComment({ post, onCommentCreated }) {
 
   let postID = post.id
-  // post.offset += 1
-  // initialize state for 
   const [state, setState] = useState({
     text: "",
     picture: null,
   })
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("the state :", state)
+    if (!state.text.trim() && !state.picture) return
     let comment = await createcomment(state, postID)
+
     setState({ text: "", picture: null })
     onCommentCreated(postID, comment)
   }

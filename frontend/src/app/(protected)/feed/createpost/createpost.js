@@ -26,7 +26,6 @@ export default function CreatePost({ CREATEPOST }) {
 
   // profile picture on home
   const imageURL = state.porsonel_info?.Avatar;
-  console.log(state.porsonel_info)
   const fullImageURL = imageURL ? `http://localhost:4001/pics/${imageURL}` : null;
 
   const handleSubmit = async (e) => {

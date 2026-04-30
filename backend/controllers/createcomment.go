@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"rtf/models"
@@ -12,55 +10,56 @@ import (
 // create comments handler
 func (c *Controller) CreateComment(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	w.Header().Set("Content-Type", "application/json")
 
 	userID, ok := r.Context().Value("userID").(string)
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`{"error":"unauthorized"}`))
+	if !ok || userID == "" {
+		pkg.RespondNotOK(w, "notallowed")
+		return
+	}
+
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	var comment models.Comment
-	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error":"json input invalid"}`))
-		return
-	}
-
+	comment.Content = r.FormValue("content")
 	comment.UserID = userID
 
+	postID := r.FormValue("post_id")
+	comment.PostID = postID
+
+	file, handler, err := r.FormFile("image_url")
+	if err == nil {
+		defer file.Close()
+
+		if !pkg.IsPictureFormatCorrect(file, handler) {
+			pkg.RespondNotOK(w, "badrequest")
+			return
+		}
+
+		filename := pkg.SaveFile(file, handler.Filename)
+		if filename != "" {
+			comment.ImageURL = "/pics/" + filename
+		}
+	}
+
 	if !pkg.IsvalidComment(comment) {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error":"invalid comment input"}`))
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
 
-	err := c.DB.PostExists(comment.PostID)
-	if err != nil {
-		if err.Error() == "SERVER ERROR" {
-			w.WriteHeader(http.StatusInternalServerError)
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err)))
+	if err := c.DB.PostExists(comment.PostID); err != nil {
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	comment, err = c.DB.InsertCommentDB(comment)
 	if err != nil {
-		if err.Error() == "SERVER ERROR" {
-			w.WriteHeader(http.StatusInternalServerError)
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err)))
+		pkg.RespondNotOK(w, "badrequest")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"comment": comment,
-		"success": "comment successfully created",
-	})
+	pkg.RespondOK(w, comment, "comment")
+
 }

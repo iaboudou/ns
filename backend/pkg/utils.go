@@ -136,7 +136,10 @@ func ArePostInfosCorrect(post models.Post) error {
 
 // check if the comment data is correct
 func IsvalidComment(comment models.Comment) bool {
-	return len(comment.Content) != 0 && len(comment.Content) < 500
+	if len(comment.ImageURL) > 0 && len(comment.Content) == 0 {
+		return true
+	}
+	return len(comment.Content) <= 500 && len(comment.Content) > 0
 }
 
 // this function handle the rate limit for the messages

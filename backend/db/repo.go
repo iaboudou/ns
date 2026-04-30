@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"rtf/config"
 	"rtf/models"
 	"rtf/pkg"
 
@@ -264,29 +263,26 @@ func (r *Repo) IsCategoryCorrect(category string) ([]int, error) {
 
 // insert comment into the DB
 func (r *Repo) InsertCommentDB(comment models.Comment) (models.Comment, error) {
-	commentUUID, err := uuid.NewV7()
+	commentUUID, err := uuid.NewV4()
 	if err != nil {
 		return models.Comment{}, errors.New("SERVER ERROR")
 	}
+
 	id := commentUUID.String()
-	t := time.Now().Format("2006-01-02 15:04:05.000000")
-	_, er := r.Db.Exec(
-		"INSERT INTO comments (id, content, user_id, post_id, created_at) VALUES (?, ?, ?, ?, ?)", id, comment.Content, comment.UserID, comment.PostID, t,
-	)
-	comment.CreatedAt = t
-	comment.NbrOfReactions = 0
-	comment.UserReaction = -1
+	now := time.Now().Format("2006-01-02 15:04:05.000000")
+
+	err = r.Db.QueryRow("SELECT nickname, firstname, lastname, profile_image FROM users WHERE id = ?", comment.UserID).
+		Scan(&comment.AutherName, &comment.FirstName, &comment.LastName, &comment.UserImageProfile)
+
+	_, err = r.Db.Exec(`
+		INSERT INTO comments (id, post_id, user_id, content, image_url, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+		id, comment.PostID, comment.UserID, comment.Content, comment.ImageURL, now)
+	if err != nil {
+		return models.Comment{}, errors.New("SERVER ERROR")
+	}
+
 	comment.ID = id
-
-	if er != nil {
-		return models.Comment{}, errors.New("SERVER ERROR")
-	}
-
-	// get the user nickname
-	comment.AutherName, er = r.GetUserAuthernameByID(comment.UserID)
-	if er != nil {
-		return models.Comment{}, errors.New("SERVER ERROR")
-	}
+	comment.CreatedAt = now
 
 	return comment, nil
 }
@@ -304,20 +300,35 @@ func (r *Repo) PostExists(postID string) error {
 	return nil
 }
 
-// to insert a reaction (like/dislike) to the DB need to check if comment is EXIST in the DB, any error found will be returned
-func (r *Repo) CommentExists(commentID string) error {
-	var id int
-	err := r.Db.QueryRow("SELECT 1 FROM comments WHERE id = ?", commentID).Scan(&id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return errors.New("comment not exist")
-		}
-		return errors.New("SERVER ERROR")
+// get user infos from DB
+func (r *Repo) GetPeronalInfoFromDB(userID string) (models.User, error) {
+	user := models.User{}
+	er := r.Db.QueryRow(`
+	SELECT nickname, firstname, lastname, email, birthday, gender, profile_image, about_me, account_privacy
+	FROM users WHERE id = ?
+	`, userID).Scan(&user.Nickname, &user.Firstname, &user.Lastname, &user.Email, &user.Birthday, &user.Gender, &user.ProfileImage, &user.AboutMe, &user.IsPublic)
+	if er != nil {
+		return models.User{}, er
 	}
+	user.ID = userID
+
+	return user, nil
+}
+
+// switch account privacy between 0 and 1
+func (r *Repo) SwitchAccountPrivacyinDB(userID string) error {
+	_, er := r.Db.Exec(`
+		UPDATE users
+		set account_privacy = 1 - account_privacy
+		WHERE id=?`, userID)
+	if er != nil {
+		return er
+	}
+
 	return nil
 }
 
-// this function get 10 posts from DB with its comments, reactions and categories starting from 'endID'
+// this function get 10 posts from DB with its comments
 func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID string, Offset int) ([]models.Post, error) {
 	posts := []models.Post{}
 	var rows *sql.Rows
@@ -397,23 +408,6 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 			return nil, errors.New("SERVER ERROR")
 		}
 
-		if err := r.Db.QueryRow(`
-			SELECT COUNT(*)
-			FROM reactions
-			WHERE post_or_comm_id = ? AND post_or_comm = 'POST' AND type = 1
-		`, p.ID).Scan(&p.NumberOfLikes); err != nil {
-			return nil, errors.New("SERVER ERROR")
-		}
-
-		var liked int
-		err = r.Db.QueryRow(`
-			SELECT 1
-			FROM reactions
-			WHERE post_or_comm_id = ? AND post_or_comm = 'POST' AND user_id = ?
-			LIMIT 1
-		`, p.ID, ViewerID).Scan(&liked)
-		p.IsLiked = err == nil
-
 		show := false
 		if ViewerID != p.UserID {
 			switch p.Privacy {
@@ -489,38 +483,28 @@ func (r *Repo) GetUserAuthernameByID(userID string) (string, error) {
 }
 
 // this function get the comments post from DB based on an postID
-func (r *Repo) Get10PostComments(postid string, offset int) ([]models.Comment, int, error) {
-	res := []models.Comment{}
+func (r *Repo) Get10PostComments(postID string, offset int) ([]models.Comment, error) {
+	comments := []models.Comment{}
 
-	var t int
-	er := r.Db.QueryRow(`SELECT COUNT(*) FROM comments WHERE post_id = ?`, postid).Scan(&t)
-	if er != nil {
-		return nil, 0, er
-	}
-
-	rows, er := r.Db.Query(` SELECT id, user_id, content, created_at FROM comments WHERE post_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`, postid, config.COMMENTS_FETCH_LIMIT, offset)
-	if er != nil {
-		if er == sql.ErrNoRows {
-			return nil, 0, errors.New("not exists")
-		}
-		return nil, 0, errors.New("SERVER ERROR")
+	rows, err := r.Db.Query(`SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC LIMIT 10 OFFSET ?`, postID, offset)
+	if err != nil {
+		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var c models.Comment
-		er := rows.Scan(&c.ID, &c.UserID, &c.Content, &c.CreatedAt)
+		er := rows.Scan(&c.ID, &c.Content, &c.UserID, &c.PostID, &c.ImageURL, &c.CreatedAt)
 		if er != nil {
-			return nil, 0, er
-		}
-		c.AutherName, er = r.GetUserAuthernameByID(c.UserID)
-		if er != nil {
-			return nil, 0, errors.New("SERVER ERROR")
+			return nil, nil
 		}
 
-		res = append(res, c)
+		er = r.Db.QueryRow("SELECT nickname, firstname, lastname, profile_image FROM users WHERE id = ?", c.UserID).
+			Scan(&c.AutherName, &c.FirstName, &c.LastName, &c.UserImageProfile)
+		comments = append(comments, c)
 	}
-	return res, t, nil
+
+	return comments, nil
 }
 
 // this func get the categories related to the post from DB

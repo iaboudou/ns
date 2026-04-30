@@ -1,4 +1,4 @@
-let BASE = process.env.BACKEND_URL;
+let BASE = "http://localhost:4001"
 import { handleUnauthorized } from "@/_lib/redirect";
 
 /**

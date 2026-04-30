@@ -49,7 +49,6 @@ export default function Login() {
             <form className={styles.formLogin} onSubmit={onSubmit}>
                 <h2>Sign In</h2>
 
-                {error && <p className={styles.error}>{error}</p>}
 
                 <label htmlFor="email">Email</label>
                 <input type="email" id="email" name="email" disabled={submitting} />
@@ -61,7 +60,8 @@ export default function Login() {
                     {submitting ? "Signing in..." : "Sign In"}
                 </button>
 
-                <div>Don't have an account? <Link href="/register">Register</Link></div>
+                <div className={styles.footer}>Don't have an account? <Link href="/register">Register</Link></div>
+                {error && <p className={styles.error}>{error}</p>}
             </form>
         </div>
     );

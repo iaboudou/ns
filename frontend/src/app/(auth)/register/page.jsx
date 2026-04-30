@@ -34,7 +34,6 @@ export default function RegisterPage() {
       <form className={styles.formRegister} onSubmit={onSubmit}>
         <h2>Create Account</h2>
 
-        {error && <span className={styles.error}>{error}</span>}
 
         <div className={styles.row}>
           <div>
@@ -86,9 +85,11 @@ export default function RegisterPage() {
 
         <button type="submit">Register</button>
 
-        <div>
+        <div className={styles.footer}>
           Already have an account? <Link href="/login">Login</Link>
         </div>
+
+      {error && <span className={styles.error}>{error}</span>}
       </form>
     </div>
   );

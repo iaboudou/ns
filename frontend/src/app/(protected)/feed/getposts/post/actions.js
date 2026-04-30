@@ -1,5 +1,5 @@
 import { handleUnauthorized } from "@/_lib/redirect";
-let BASE = process.env.BACKEND_URL;
+let BASE = "http://localhost:4001";
 
 export async function createLikeServer(post_id) {
 

@@ -37,10 +37,7 @@ type Post struct {
 	ImageURL  string    `json:"image_url"`
 	Privacy   string    `json:"privacy"`
 
-	UserReaction     int  `json:"user_reaction"`
-	NumberOfLikes    int  `json:"number_of_likes"`
-	IsLiked          bool `json:"is_liked"`
-	NumberOfComments int  `json:"number_of_comments"`
+	NumberOfComments int `json:"number_of_comments"`
 
 	AllowedUsers       []string `json:"allowed_users"`
 	Alloweduserscreate string
@@ -50,15 +47,16 @@ type Post struct {
 
 // comments
 type Comment struct {
-	ID             string
-	AutherName     string
-	Content        string
-	UserID         string
-	PostID         string
-	CreatedAt      string
-	NbrOfReactions int
-	UserReaction   int
-	Offset         int
+	ID               string `json:"id"`
+	AutherName       string `json:"auther_name"`
+	FirstName        string `json:"firstname"`
+	LastName         string `json:"lastname"`
+	Content          string `json:"content"`
+	UserID           string `json:"user_id"`
+	PostID           string `json:"post_id"`
+	CreatedAt        string `json:"created_at"`
+	ImageURL         string `json:"image_url"`
+	UserImageProfile string `json:"profile_image"`
 }
 
 // messages

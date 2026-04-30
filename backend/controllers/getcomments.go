@@ -3,33 +3,36 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"rtf/models"
+	"rtf/pkg"
 )
 
-// this functionne to get all the comments 
+// this functionne to get all the comments
 func (c *Controller) GetComments(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	w.Header().Set("Content-Type", "application/json")
 
-	var p models.Comment
-	er := json.NewDecoder(r.Body).Decode(&p)
-	if er != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error":"invalid input"}`))
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok || userID == "" {
+		pkg.RespondNotOK(w, "unauthorized")
 		return
 	}
 
-	comments, N_comments, er := c.DB.Get10PostComments(p.PostID, p.Offset)
+	var req struct {
+		Offset int    `json:"offset"`
+		PostID string `json:"post_id"`
+	}
+
+	json.NewDecoder(r.Body).Decode(&req)
+
+	comments, er := c.DB.Get10PostComments(req.PostID, req.Offset)
 	if er != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error":"SERVER ERROR"}`))
+		pkg.RespondNotOK(w, "server-error")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"comments":          comments,
-		"morecommentsexist": N_comments > p.Offset,
-		"success":           "comment successfully fetched",
-	})
+	if len(comments) == 0 {
+		pkg.RespondOK(w, nil, "")
+		return
+	}
+
+	pkg.RespondOK(w, comments, "comments")
 }
