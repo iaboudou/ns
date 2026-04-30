@@ -2,13 +2,19 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
+
 	"rtf/models"
 	"rtf/pkg"
-	"strings"
 )
 
 // handle create post
 func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		pkg.RespondNotOK(w, "notallowed")
+		return
+	}
+
 	defer r.Body.Close()
 	// get the user ID
 
@@ -67,5 +73,4 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	post.NumberOfComments = 0
 
 	pkg.RespondOK(w, post, "post")
-
 }

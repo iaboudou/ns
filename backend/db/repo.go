@@ -831,12 +831,13 @@ func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, e
 	return suggestions, nil
 }
 
+// this function is to follow the user in db and req if his account is privet
 func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
-	// 1. Check if follow relationship already exists
+	// Check if follow already exists
 	var status string
 	err := r.Db.QueryRow(`SELECT status FROM followers WHERE follower_id = ? AND following_id = ?`, userID, followedID).Scan(&status)
 	if err == nil {
-		// If it exists, delete it (unfollow logic)
+		// If it exists, delete it
 		_, err = r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, userID, followedID)
 		if err != nil {
 			return "", err
@@ -847,14 +848,14 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 		return "follow deleted", nil
 	}
 
-	// 2. If it doesn't exist, check if the targeted account is private
+	// If it doesn't exist, check if the targeted account is private
 	var isPrivate bool
 	err = r.Db.QueryRow(`SELECT account_privacy FROM users WHERE id = ?`, followedID).Scan(&isPrivate)
 	if err != nil {
 		return "", err
 	}
 	isPrivate = !isPrivate
-	// 3. Create the follow record with the appropriate status
+	// Create the follow
 	id, err := uuid.NewV4()
 	if err != nil {
 		return "", err
@@ -878,6 +879,7 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 	return message, nil
 }
 
+// this function is to answer to the request wether you accept or now if your profile is privet
 func (r *Repo) ManageFollowDB(followerID string, followingID string, decision string) error {
 	if decision == "accepted" {
 		_, err := r.Db.Exec(`UPDATE followers SET status = 'accepted' WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
@@ -889,6 +891,7 @@ func (r *Repo) ManageFollowDB(followerID string, followingID string, decision st
 	return nil
 }
 
+// this function is to get the all the followers
 func (r *Repo) GetFollowersDB(targetID string) ([]models.FollowSuggestion, error) {
 	followers := []models.FollowSuggestion{}
 
@@ -915,6 +918,7 @@ func (r *Repo) GetFollowersDB(targetID string) ([]models.FollowSuggestion, error
 	return followers, nil
 }
 
+// this function is to get the all the following
 func (r *Repo) GetFollowingDB(targetID string) ([]models.FollowSuggestion, error) {
 	following := []models.FollowSuggestion{}
 
@@ -941,6 +945,7 @@ func (r *Repo) GetFollowingDB(targetID string) ([]models.FollowSuggestion, error
 	return following, nil
 }
 
+// this fuction is to get the dommands of follows you have from db
 func (r *Repo) GetFollowRequestsDB(userID string) ([]models.FollowSuggestion, error) {
 	rows, err := r.Db.Query(`
 		SELECT id, firstname, lastname, profile_image
@@ -962,6 +967,46 @@ func (r *Repo) GetFollowRequestsDB(userID string) ([]models.FollowSuggestion, er
 		users = append(users, u)
 	}
 	return users, nil
+}
+
+// this function is to get the freinds the people who are following and you follow
+func (r *Repo) GetFriendsDB(userID string) ([]models.FollowSuggestion, error) {
+	q := `
+		SELECT u.id, u.profile_image, u.firstname, u.lastname, u.account_privacy
+		FROM followers f
+		JOIN users u ON u.id = f.following_id
+		WHERE f.follower_id = ?
+		AND f.status = 'accepted'
+		AND f.following_id IN (
+			SELECT follower_id FROM followers
+			WHERE following_id = ?
+			AND status = 'accepted'
+		)
+	`
+
+	rows, err := r.Db.Query(q, userID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var friends []models.FollowSuggestion
+	for rows.Next() {
+		var friend models.FollowSuggestion
+		err := rows.Scan(
+			&friend.Id,
+			&friend.ProfileImage,
+			&friend.Firstname,
+			&friend.Lastname,
+			&friend.AccountPrivacy,
+		)
+		if err != nil {
+			return nil, err
+		}
+		friends = append(friends, friend)
+	}
+
+	return friends, nil
 }
 
 // =====================

@@ -7,6 +7,7 @@ import (
 	"rtf/models"
 )
 
+// send data to the front with a status code if its ok
 func RespondOK(w http.ResponseWriter, rep any, TYPE string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

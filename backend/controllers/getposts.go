@@ -9,6 +9,11 @@ import (
 
 // get a list of posts from the DB and render it to the front
 func (c *Controller) GetPosts(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		pkg.RespondNotOK(w, "notallowed")
+		return
+	}
+
 	viewerID, ok := r.Context().Value("userID").(string)
 	if !ok || viewerID == "" {
 		pkg.RespondNotOK(w, "unauthorized")

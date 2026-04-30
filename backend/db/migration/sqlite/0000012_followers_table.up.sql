@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS followers (
     id TEXT PRIMARY KEY,
     follower_id TEXT NOT NULL,
@@ -9,3 +8,6 @@ CREATE TABLE IF NOT EXISTS followers (
     FOREIGN KEY(following_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE(follower_id, following_id)
 );
+
+CREATE INDEX idx_followers_fast
+ON followers(follower_id, following_id, status);

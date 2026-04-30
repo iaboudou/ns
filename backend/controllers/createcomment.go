@@ -9,6 +9,11 @@ import (
 
 // create comments handler
 func (c *Controller) CreateComment(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		pkg.RespondNotOK(w, "notallowed")
+		return
+	}
+
 	defer r.Body.Close()
 
 	userID, ok := r.Context().Value("userID").(string)
