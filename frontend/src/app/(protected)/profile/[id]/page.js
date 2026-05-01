@@ -2,11 +2,11 @@
 import styles from "./profile.module.css"
 import { useState, useEffect } from "react";
 import FeedClient from "@/app/(protected)/feed/feedclient";
-import { fetchFollowers, fetchFollowing } from "../actions";
 import { fetchPersonalInfo } from "@/_lib/personal_info"
 import { about } from "../about/about";
 import { useRouter, useSearchParams } from "next/navigation"
 import { User, Lock } from 'lucide-react';
+import { FollowUser } from "@/app/(protected)/feed/followsuggestions/actions";
 
 
 const BASE = "http://localhost:4001"
@@ -21,8 +21,7 @@ export default function ProfilePage() {
     // states
     const [user, setUser] = useState(null);
     const [section, setSection] = useState(s);
-    const [followers, setFollowers] = useState([]);
-    const [following, setFollowing] = useState([]);
+    const [interactionStatus, setInteractionStatus] = useState();
 
     useEffect(() => {
         const path = window.location.pathname
@@ -32,25 +31,32 @@ export default function ProfilePage() {
         (async () => {
             let data = await fetchPersonalInfo(uuid)
             setUser(data)
+            if (data?.interaction_status) {
+                setInteractionStatus(data.interaction_status);
+            }
         })()
     }, []);
 
     useEffect(() => {
         if (!user?.id) return
 
-        if (section === "followers") {
-            (async () => {
-                const data = await fetchFollowers(user.id);
-                setFollowers(data);
-            })();
-        } else if (section === "following") {
-            (async () => {
-                const data = await fetchFollowing(user.id);
-
-                setFollowing(data);
-            })();
-        }
     }, [section, user?.id]);
+
+    const handleFollow = async () => {
+        if (!user?.id) return;
+        const message = await FollowUser(user.id);
+        if (!message) return;
+
+        if (message === 'follow have been successfully') {
+            setInteractionStatus('following');
+            setUser(prev => ({ ...prev, is_freind: true }));
+        } else if (message === 'request have been sent') {
+            setInteractionStatus('requested');
+        } else if (message === 'follow deleted' || message === 'follow request deleted') {
+            setInteractionStatus('none');
+            setUser(prev => ({ ...prev, is_freind: false }));
+        }
+    };
 
     // loading
     if (!user) return <div className={styles.FATHER}>Loading...</div>;
@@ -85,15 +91,23 @@ export default function ProfilePage() {
                 {/* HEADER */}
                 <header className={styles.header}>
                     <div className={styles.coverPhoto}>
-                        {!user.is_freind && <button className={styles.infoText}>follow </button>}
+                        <button className={styles.infoText} onClick={handleFollow}>
+                            {interactionStatus === 'following' || user.is_freind
+                                ? 'unfollow'
+                                : interactionStatus === 'requested'
+                                    ? 'requested'
+                                    : !user.is_public
+                                        ? 'request'
+                                        : 'follow'}
+                        </button>
                     </div>
 
                     <div className={styles.profileInfo}>
                         {
                             fullImageURL ?
                                 <img className={styles.profileAvatar} src={fullImageURL} />
-                            :
-                            <User className={styles.profileAvatar} />
+                                :
+                                <User className={styles.profileAvatar} />
                         }
                         <div className={styles.nameandprivacybuttoncontainer}>
                             <div className={styles.flnname}>

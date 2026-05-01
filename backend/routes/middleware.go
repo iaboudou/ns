@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"net/http"
+	"rtf/pkg"
 )
 
 // return StatusUnauthorized if the user not loggedin
@@ -13,13 +14,11 @@ func (h *Handler) Middleware(next http.HandlerFunc) http.HandlerFunc {
 		// check session existance
 		user, err := h.Repo.CheckSessionExistance(r)
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte(`{"error":"unauthorized"}`))
+			pkg.RespondNotOK(w, "unauthorized")
 			return
 		}
 		if len(user.ID) == 0 {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte(`{"error":"unauthorized"}`))
+			pkg.RespondNotOK(w, "unauthorized")
 			return
 		}
 		ctx := context.WithValue(r.Context(), "userID", user.ID)

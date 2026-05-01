@@ -11,6 +11,5 @@ export async function fetchPersonalInfo(uuid) {
     if (!res.ok) return {}
     let data = await res.json()
 
-    data.user.itsme = data.itsme
     return data.user || {}
 }

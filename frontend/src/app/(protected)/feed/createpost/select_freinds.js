@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./createpost.module.css";
 import { fetchFriendsUsers } from "./actions";
+import { User } from 'lucide-react';
 
 export function SelectFreinds({ STATE }) {
     const { state, setState } = STATE;
@@ -45,11 +46,17 @@ export function SelectFreinds({ STATE }) {
 
                         return (
                             <div key={"selected" + u.id} className={styles.selecteduserscontainer}>
-                                <img
-                                    src={`http://localhost:4001/pics/${u.profile_image}`}
-                                    alt=""
-                                    className={styles.selecteduseravatar}
-                                />
+                                {u.profile_image ? (
+                                    <img
+                                        src={`http://localhost:4001/pics/${u.profile_image}`}
+                                        alt=""
+                                        className={styles.selecteduseravatar}
+                                    />
+                                ) : (
+                                    <div className={styles.selecteduseravatar}>
+                                        <User size={12} />
+                                    </div>
+                                )}
                                 <span>
                                     {u.firstname} {u.lastname}
                                 </span>
@@ -77,7 +84,7 @@ export function SelectFreinds({ STATE }) {
                             <button
                                 type="button"
                                 key={u.id}
-                                className={`${styles.userItem} ${usersfetched.includes(u.id) ? styles.activeUser : ""}`}
+                                className={`${styles.userItem} ${state.selectedUsers?.some(selected => selected.id === u.id) ? styles.activeUser : ""}`}
                                 onClick={() => {
                                     setState(prev => {
                                         return {
@@ -87,11 +94,17 @@ export function SelectFreinds({ STATE }) {
                                     })
                                 }}
                             >
-                                <img
-                                    src={`http://localhost:4001/pics/${u.profile_image}`}
-                                    alt=""
-                                    className={styles.userAvatar}
-                                />
+                                {u.profile_image ? (
+                                    <img
+                                        src={`http://localhost:4001/pics/${u.profile_image}`}
+                                        alt=""
+                                        className={styles.userAvatar}
+                                    />
+                                ) : (
+                                    <div className={styles.userAvatar}>
+                                        <User size={16} />
+                                    </div>
+                                )}
                                 <span>
                                     {u.firstname} {u.lastname}
                                 </span>

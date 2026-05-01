@@ -32,7 +32,7 @@ func (h *Handler) RateLimit(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// return if too may requests
-		if time.Since(rl.LastTime) < 10*time.Second && rl.Counter >= 100 {
+		if time.Since(rl.LastTime) < 10*time.Second && rl.Counter >= 400 {
 			rl.TimeToUnban = time.Now().Add(60 * time.Second)
 			rl.Counter = 0
 			h.Mu.Unlock()

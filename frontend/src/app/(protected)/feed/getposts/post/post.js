@@ -44,7 +44,7 @@ export default function Post({ POST }) {
         {
           <Link href={id != POST.post.user_id ? `/profile/${POST.post.user_id}` : `/profile/me`}>
             {
-              fullprofileimage? <img src={fullprofileimage} className={styles.profileImg} /> : <Users style={{color: "white"}} />
+              fullprofileimage? <img src={fullprofileimage} className={styles.profileImg} /> : <Users className={styles.placeholderIcon} />
             }
           </Link>
         }

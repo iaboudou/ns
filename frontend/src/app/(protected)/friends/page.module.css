@@ -46,6 +46,10 @@
     letter-spacing: 0.05em;
 }
 
+.requestSection {
+    margin-bottom: 32px;
+}
+
 .list {
     display: flex;
     flex-direction: column;
@@ -129,6 +133,43 @@
     color: #444;
     font-size: 12px;
     font-style: italic;
+}
+
+.requestActions {
+    display: flex;
+    gap: 8px;
+}
+
+.acceptBtn {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.acceptBtn:hover {
+    background: #388e3c;
+}
+
+.rejectBtn {
+    background: #c62828;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.rejectBtn:hover {
+    background: #d32f2f;
 }
 
 @media (max-width: 1024px) {

@@ -18,7 +18,6 @@ export async function GetFriends(setFriends) {
 
     setFriends(Array.isArray(friends) ? friends : []);
     return true;
-    return true;
 
   } catch {
     return false;
@@ -76,5 +75,49 @@ export async function FollowUser(userId) {
 
   } catch {
     return null;
+  }
+}
+
+export async function GetFollowRequests(setRequests) {
+  try {
+    const res = await fetch(`${BASE}/api/get-follow-requests`, {
+      credentials: "include",
+    });
+
+    if (handleUnauthorized(res)) return false;
+
+    if (!res.ok) {
+      return false;
+    }
+
+    const data = await res.json();
+    setRequests(data.data || []);
+    return true;
+
+  } catch {
+    return false;
+  }
+}
+
+export async function ManageFollow(followerId, decision) {
+  try {
+    const res = await fetch(`${BASE}/api/manage-follow`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        follower_id: followerId,
+        decision: decision
+      })
+    });
+
+    if (handleUnauthorized(res)) return false;
+
+    return res.ok;
+
+  } catch {
+    return false;
   }
 }

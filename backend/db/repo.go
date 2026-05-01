@@ -437,20 +437,33 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 func (r *Repo) IstheUserFreind(user *models.User, mainuserID string) error {
 	if user.ID == mainuserID {
 		user.IsFreind = true
+		user.InteractionStatus = "none"
 		return nil
 	}
 
-	var exists int
-	err := r.Db.QueryRow(` SELECT 1 FROM followers WHERE follower_id=? AND following_id=? AND status="accepted"`, user.ID, mainuserID).Scan(&exists)
+	//
+	var status string
+	err := r.Db.QueryRow(` SELECT status FROM followers WHERE follower_id=? AND following_id=?`, mainuserID, user.ID).Scan(&status)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			user.InteractionStatus = "none"
 			user.IsFreind = false
-			return nil
+		} else {
+			return err
 		}
-		return err
+	} else {
+		if status == "accepted" {
+			user.InteractionStatus = "following"
+			user.IsFreind = true
+		} else if status == "pending" {
+			user.InteractionStatus = "requested"
+			user.IsFreind = false
+		} else {
+			user.InteractionStatus = "none"
+			user.IsFreind = false
+		}
 	}
 
-	user.IsFreind = true
 	return nil
 }
 

@@ -29,7 +29,6 @@ export default function ProfilePage() {
         if (!uuid) return
         (async () => {
             let data = await fetchPersonalInfo(uuid)
-            console.log("data: ", data);
             setUser(data)
         })()
     }, []);
@@ -69,7 +68,11 @@ export default function ProfilePage() {
             <div className={styles.userListContainer}>
                 {users.map(u => (
                     <Link key={u.id} href={`/profile/${u.id}`} className={styles.userListItem}>
-                        <img src={u.profile_image ? `${BASE}/pics/${u.profile_image}` : <User />} className={styles.smallAvatar} />
+                        {u.profile_image ? (
+                            <img src={`${BASE}/pics/${u.profile_image}`} className={styles.smallAvatar} />
+                        ) : (
+                            <User className={styles.placeholderIcon} />
+                        )}
                         <span className={styles.userName}>{u.firstname} {u.lastname}</span>
                     </Link>
                 ))}

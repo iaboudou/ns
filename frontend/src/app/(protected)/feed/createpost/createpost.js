@@ -32,9 +32,15 @@ export default function CreatePost({ CREATEPOST }) {
     e.preventDefault();
     if (postIsValid(state)) {
       let post = await createpost(state);
-
-      CREATEPOST.onPostCreated(post);
-      CREATEPOST.setState((prev) => ({ ...prev, nbrofPosts: prev.nbrofPosts + 1 }));
+      if (post) {
+        // take the user info
+        post.firstname = state.porsonel_info?.Firstname;
+        post.lastname = state.porsonel_info?.Lastname;
+        post.profile_image = state.porsonel_info?.Avatar;
+        
+        CREATEPOST.onPostCreated(post);
+        CREATEPOST.setState((prev) => ({ ...prev, nbrofPosts: prev.nbrofPosts + 1 }));
+      }
       setState((prev) => ({ ...prev, privacy: 'public', text: '', picture: null, selectedUsers: [] }));
     }
   };
@@ -75,7 +81,7 @@ export default function CreatePost({ CREATEPOST }) {
 
             {/* the name of the image chosen */}
             <label htmlFor="fileInput" className={styles.fileLabel} title={state.picture ? state.picture.name : ""}>
-              <ImageIcon size={16} color="#c4c4c4" style={{ flexShrink: 0 }} />
+              <ImageIcon size={16} color="#c4c4c4" className={styles.imageIcon} />
               <span className={styles.filename}>
                 {state.picture ? state.picture.name : 'Upload Image'}
               </span>

@@ -281,3 +281,7 @@
     padding: 6px 14px;
   }
 }
+
+.imageIcon {
+  flex-shrink: 0;
+}

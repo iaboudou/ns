@@ -17,6 +17,8 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 		"/api/getpersonalinfo":        handler.Cntrlrs.Getpersonalinfo,
 		"/api/switchaccountprivacy":   handler.Cntrlrs.SwitchAccountPrivacy,
 		"/api/getsuggestionfollowers": handler.Cntrlrs.GetSuggestionFollowers,
+		"/api/get-follow-requests":    handler.Cntrlrs.GetFollowRequests,
+		"/api/manage-follow":          handler.Cntrlrs.ManageFollow,
 	}
 
 	for path, h := range routes {

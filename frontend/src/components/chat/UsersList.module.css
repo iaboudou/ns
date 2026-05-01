@@ -1,0 +1,8 @@
+.usersList {
+    padding: 10px;
+}
+
+.userItem {
+    padding: 10px;
+    cursor: pointer;
+}

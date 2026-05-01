@@ -1,3 +1,5 @@
+import styles from './UsersList.module.css';
+
 export default function UsersList() {
     const users = [
         { id: 1, name: "Alex" },
@@ -8,11 +10,11 @@ export default function UsersList() {
     ];
 
     return (
-        <div>
+        <div className={styles.usersList}>
             <h3>Users</h3>
             {users.map((user) => (
                 <a key={user.id} href={`/chat/${user.id}`}>
-                    <div key={user.id} style={{ padding: "10px", cursor: "pointer" }}>
+                    <div key={user.id} className={styles.userItem}>
                         {user.name}
                     </div>
                 </a>

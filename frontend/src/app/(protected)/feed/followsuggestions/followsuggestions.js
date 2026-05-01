@@ -35,7 +35,7 @@ export default function FollowSuggestions() {
     );
   };
 
-  if (!suggestions || suggestions.length == 0) return;
+  if (!suggestions || suggestions.length == 0) return null;
   return (
     <div className={styles.followsuggestions}>
       <span className={styles.header}>People you may want to follow</span>
@@ -50,7 +50,7 @@ export default function FollowSuggestions() {
             <li key={user.id} className={styles.item}>
               <Link href={`/profile/${user.id}`}>
                 {
-                  fullprofileimage ? <img src={fullprofileimage} className={styles.avatar} /> : <Users style={{color: "white"}} />
+                  fullprofileimage ? <img src={fullprofileimage} className={styles.avatar} /> : <Users className={styles.placeholderIcon} />
                 }
               </Link>
 

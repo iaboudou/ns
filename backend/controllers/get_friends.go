@@ -18,7 +18,7 @@ func (c *Controller) GetFriends(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, er := c.DB.GetFriendsDB(userID)
+	users, er := c.DB.GetFollowersDB(userID)
 	if er != nil {
 		pkg.RespondNotOK(w, "server-error")
 		return

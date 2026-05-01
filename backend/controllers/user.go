@@ -19,7 +19,6 @@ func (c *Controller) Getpersonalinfo(w http.ResponseWriter, r *http.Request) {
 
 	var user models.User
 	var er error
-
 	if id == userID {
 		user, er = c.DB.GetPeronalInfoFromDB(userID)
 		if er != nil {

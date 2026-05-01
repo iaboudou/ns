@@ -13,12 +13,13 @@ function Friends() {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    setLoading(true);
+    await GetFriends(setFriends);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await GetFriends(setFriends);
-      setLoading(false);
-    };
     fetchData();
   }, []);
 
