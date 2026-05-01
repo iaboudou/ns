@@ -18,7 +18,8 @@ func (c *Controller) GetFriends(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, er := c.DB.GetFollowersDB(userID)
+	q := r.URL.Query().Get("q")
+	users, er := c.DB.GetFollowersDB(userID, q)
 	if er != nil {
 		help.RespondNotOK(w, "server-error")
 		return

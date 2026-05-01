@@ -939,15 +939,24 @@ func (r *Repo) ManageFollowDB(followerID string, followingID string, decision st
 }
 
 // this function is to get the all the followers
-func (r *Repo) GetFollowersDB(targetID string) ([]models.FollowSuggestion, error) {
+func (r *Repo) GetFollowersDB(targetID string, query string) ([]models.FollowSuggestion, error) {
 	followers := []models.FollowSuggestion{}
 
-	rows, er := r.Db.Query(`
+	q := `
 		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
 		FROM users u
 		JOIN followers f ON u.id = f.follower_id
 		WHERE f.following_id = ? AND f.status = 'accepted'
-	`, targetID)
+	`
+	args := []any{targetID}
+
+	if query != "" {
+		q += " AND (u.firstname LIKE ? OR u.lastname LIKE ? OR u.firstname || ' ' || u.lastname LIKE ?)"
+		p := "%" + query + "%"
+		args = append(args, p, p, p, p)
+	}
+
+	rows, er := r.Db.Query(q, args...)
 	if er != nil {
 		return nil, er
 	}
@@ -966,15 +975,24 @@ func (r *Repo) GetFollowersDB(targetID string) ([]models.FollowSuggestion, error
 }
 
 // this function is to get the all the following
-func (r *Repo) GetFollowingDB(targetID string) ([]models.FollowSuggestion, error) {
+func (r *Repo) GetFollowingDB(targetID string, query string) ([]models.FollowSuggestion, error) {
 	following := []models.FollowSuggestion{}
 
-	rows, er := r.Db.Query(`
+	q := `
 		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
 		FROM users u
 		JOIN followers f ON u.id = f.following_id
 		WHERE f.follower_id = ? AND f.status = 'accepted'
-	`, targetID)
+	`
+	args := []any{targetID}
+
+	if query != "" {
+		q += " AND (u.firstname LIKE ? OR u.lastname LIKE ? OR u.firstname || ' ' || u.lastname LIKE ? OR u.nickname LIKE ?)"
+		pattern := "%" + query + "%"
+		args = append(args, pattern, pattern, pattern, pattern)
+	}
+
+	rows, er := r.Db.Query(q, args...)
 	if er != nil {
 		return nil, er
 	}
@@ -1017,7 +1035,7 @@ func (r *Repo) GetFollowRequestsDB(userID string) ([]models.FollowSuggestion, er
 }
 
 // this function is to get the freinds the people who are following and you follow
-func (r *Repo) GetFriendsDB(userID string) ([]models.FollowSuggestion, error) {
+func (r *Repo) GetFriendsDB(userID string, query string) ([]models.FollowSuggestion, error) {
 	q := `
 		SELECT u.id, u.profile_image, u.firstname, u.lastname, u.account_privacy
 		FROM followers f
@@ -1030,8 +1048,15 @@ func (r *Repo) GetFriendsDB(userID string) ([]models.FollowSuggestion, error) {
 			AND status = 'accepted'
 		)
 	`
+	args := []any{userID, userID}
 
-	rows, err := r.Db.Query(q, userID, userID)
+	if query != "" {
+		q += " AND (u.firstname LIKE ? OR u.lastname LIKE ? OR u.firstname || ' ' || u.lastname LIKE ? OR u.nickname LIKE ?)"
+		pattern := "%" + query + "%"
+		args = append(args, pattern, pattern, pattern, pattern)
+	}
+
+	rows, err := r.Db.Query(q, args...)
 	if err != nil {
 		return nil, err
 	}

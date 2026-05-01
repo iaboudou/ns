@@ -22,14 +22,15 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var data interface{}
+		var data any
 		var err error
+		q := r.URL.Query().Get("q")
 
 		switch demand {
 		case "followers":
-			data, err = c.DB.GetFollowersDB(targetID)
+			data, err = c.DB.GetFollowersDB(targetID, q)
 		case "following":
-			data, err = c.DB.GetFollowingDB(targetID)
+			data, err = c.DB.GetFollowingDB(targetID, q)
 		default:
 			help.Respond(w, &models.Response{
 				Code:    http.StatusBadRequest,

@@ -1,29 +1,22 @@
-body {
-  height: 100vh;
-  padding: 0;
-  margin: 0;
-  background: #141414;
-  overflow: hidden;
-}
 .page {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #141414;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .formRegister {
   background: #1c1c1c;
   padding: 2rem;
-  padding-bottom: 4rem; /* Room for error at the bottom */
+  padding-bottom: 4rem;
   width: 100%;
   max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  position: relative; /* Base for absolute error positioning */
+  position: relative;
 }
 
 .formRegister h2 {
