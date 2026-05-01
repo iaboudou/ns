@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"rtf/help"
 	"rtf/models"
-	"rtf/pkg"
 )
 
 func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +15,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 		targetID := r.URL.Query().Get("id")
 
 		if targetID == "" {
-			pkg.Respond(w, &models.Response{
+			help.Respond(w, &models.Response{
 				Code:    http.StatusBadRequest,
 				Message: "missing user id",
 			})
@@ -31,7 +31,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 		case "following":
 			data, err = c.DB.GetFollowingDB(targetID)
 		default:
-			pkg.Respond(w, &models.Response{
+			help.Respond(w, &models.Response{
 				Code:    http.StatusBadRequest,
 				Message: "unknown demand",
 			})
@@ -39,11 +39,11 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err != nil {
-			pkg.RespondNotOK(w, "server-error")
+			help.RespondNotOK(w, "server-error")
 			return
 		}
 
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code: http.StatusOK,
 			Data: data,
 		})
@@ -62,7 +62,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 	var body map[string]any
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code:    http.StatusBadRequest,
 			Message: "bad request",
 		})
@@ -71,11 +71,11 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 
 	message, err := c.DB.FollowUserDB(userID, body["followed_id"].(string))
 	if err != nil {
-		pkg.RespondServerError(w)
+		help.RespondServerError(w)
 		return
 	}
 
-	pkg.Respond(w, &models.Response{
+	help.Respond(w, &models.Response{
 		Code:    http.StatusOK,
 		Message: message,
 	})
@@ -84,7 +84,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) GetSuggestionFollowers(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code:    http.StatusUnauthorized,
 			Message: "unauthorized",
 		})
@@ -94,11 +94,11 @@ func (c *Controller) GetSuggestionFollowers(w http.ResponseWriter, r *http.Reque
 	suggestions, err := c.DB.GetSuggestionUsersDB(userID)
 	if err != nil {
 		fmt.Printf("Error getting suggestions: %v\n", err)
-		pkg.RespondServerError(w)
+		help.RespondServerError(w)
 		return
 	}
 
-	pkg.Respond(w, &models.Response{
+	help.Respond(w, &models.Response{
 		Code: http.StatusOK,
 		Data: suggestions,
 	})
@@ -106,7 +106,7 @@ func (c *Controller) GetSuggestionFollowers(w http.ResponseWriter, r *http.Reque
 
 func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",
 		})
@@ -115,7 +115,7 @@ func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code:    http.StatusUnauthorized,
 			Message: "unauthorized",
 		})
@@ -129,7 +129,7 @@ func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code:    http.StatusBadRequest,
 			Message: "bad request",
 		})
@@ -138,11 +138,11 @@ func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
 
 	err = c.DB.ManageFollowDB(body.FollowerID, userID, body.Decision)
 	if err != nil {
-		pkg.RespondServerError(w)
+		help.RespondServerError(w)
 		return
 	}
 
-	pkg.Respond(w, &models.Response{
+	help.Respond(w, &models.Response{
 		Code:    http.StatusOK,
 		Message: "request successfully " + body.Decision,
 	})
@@ -151,7 +151,7 @@ func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) GetFollowRequests(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.Respond(w, &models.Response{
+		help.Respond(w, &models.Response{
 			Code:    http.StatusUnauthorized,
 			Message: "unauthorized",
 		})
@@ -160,11 +160,11 @@ func (c *Controller) GetFollowRequests(w http.ResponseWriter, r *http.Request) {
 
 	requests, err := c.DB.GetFollowRequestsDB(userID)
 	if err != nil {
-		pkg.RespondServerError(w)
+		help.RespondServerError(w)
 		return
 	}
 
-	pkg.Respond(w, &models.Response{
+	help.Respond(w, &models.Response{
 		Code: http.StatusOK,
 		Data: requests,
 	})

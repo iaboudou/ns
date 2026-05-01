@@ -3,13 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"rtf/pkg"
+	"rtf/help"
 )
 
 // this functionne to get all the comments
 func (c *Controller) GetComments(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
@@ -17,7 +17,7 @@ func (c *Controller) GetComments(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
@@ -30,14 +30,14 @@ func (c *Controller) GetComments(w http.ResponseWriter, r *http.Request) {
 
 	comments, er := c.DB.Get10PostComments(req.PostID, req.Offset)
 	if er != nil {
-		pkg.RespondNotOK(w, "server-error")
+		help.RespondNotOK(w, "server-error")
 		return
 	}
 
 	if len(comments) == 0 {
-		pkg.RespondOK(w, nil, "")
+		help.RespondOK(w, nil, "")
 		return
 	}
 
-	pkg.RespondOK(w, comments, "comments")
+	help.RespondOK(w, comments, "comments")
 }

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"rtf/controllers"
-	"rtf/db"
+	"rtf/pkg/db/sqlite"
 )
 
 type RateLimiter struct {
@@ -15,7 +15,7 @@ type RateLimiter struct {
 }
 
 type Handler struct {
-	Repo    *db.Repo
+	Repo    *sqlite.Repo
 	Cntrlrs *controllers.Controller
 	Mu      sync.RWMutex
 

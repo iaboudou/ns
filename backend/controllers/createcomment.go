@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"rtf/models"
-	"rtf/pkg"
+	"rtf/help"
 )
 
 // create comments handler
 func (c *Controller) CreateComment(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
@@ -18,12 +18,12 @@ func (c *Controller) CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
@@ -38,33 +38,33 @@ func (c *Controller) CreateComment(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		defer file.Close()
 
-		if !pkg.IsPictureFormatCorrect(file, handler) {
-			pkg.RespondNotOK(w, "badrequest")
+		if !help.IsPictureFormatCorrect(file, handler) {
+			help.RespondNotOK(w, "badrequest")
 			return
 		}
 
-		filename := pkg.SaveFile(file, handler.Filename)
+		filename := help.SaveFile(file, handler.Filename)
 		if filename != "" {
 			comment.ImageURL = "/pics/" + filename
 		}
 	}
 
-	if !pkg.IsvalidComment(comment) {
-		pkg.RespondNotOK(w, "badrequest")
+	if !help.IsvalidComment(comment) {
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	if err := c.DB.PostExists(comment.PostID); err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	comment, err = c.DB.InsertCommentDB(comment)
 	if err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
-	pkg.RespondOK(w, comment, "comment")
+	help.RespondOK(w, comment, "comment")
 
 }

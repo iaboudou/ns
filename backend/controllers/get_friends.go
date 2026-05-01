@@ -3,26 +3,26 @@ package controllers
 import (
 	"net/http"
 
-	"rtf/pkg"
+	"rtf/help"
 )
 
 func (c *Controller) GetFriends(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
 	users, er := c.DB.GetFollowersDB(userID)
 	if er != nil {
-		pkg.RespondNotOK(w, "server-error")
+		help.RespondNotOK(w, "server-error")
 		return
 	}
 
-	pkg.RespondOK(w, users, "users")
+	help.RespondOK(w, users, "users")
 }

@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"rtf/controllers"
-	"rtf/db"
+	"rtf/pkg/db/sqlite"
 	"rtf/routes"
 
 	"github.com/gorilla/websocket"
@@ -15,13 +15,13 @@ import (
 )
 
 func main() {
-	database, er := db.InitDB()
+	database, er := sqlite.InitDB()
 	if er != nil {
 		log.Fatal(er)
 	}
 
 	// initialize
-	r := &db.Repo{Db: database}
+	r := &sqlite.Repo{Db: database}
 
 	ws := &controllers.WS{
 		Upgrader: websocket.Upgrader{

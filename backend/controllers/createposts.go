@@ -5,13 +5,13 @@ import (
 	"strings"
 
 	"rtf/models"
-	"rtf/pkg"
+	"rtf/help"
 )
 
 // handle create post
 func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
@@ -20,12 +20,12 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
@@ -46,22 +46,22 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	if er == nil {
 		defer f.Close()
 
-		if !pkg.IsPictureFormatCorrect(f, h) {
-			pkg.RespondNotOK(w, "badrequest")
+		if !help.IsPictureFormatCorrect(f, h) {
+			help.RespondNotOK(w, "badrequest")
 			return
 		}
 
 		defer f.Close()
-		filename := pkg.SaveFile(f, h.Filename)
+		filename := help.SaveFile(f, h.Filename)
 		if filename != "" {
 			post.ImageURL = "/pics/" + filename
 		}
 	}
 
 	// check if the post content is correct
-	err := pkg.ArePostInfosCorrect(post)
+	err := help.ArePostInfosCorrect(post)
 	if err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 	// insert the post into the DB
@@ -72,5 +72,5 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 	post.NumberOfComments = 0
 
-	pkg.RespondOK(w, post, "post")
+	help.RespondOK(w, post, "post")
 }

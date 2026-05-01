@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"rtf/models"
-	"rtf/pkg"
+	"rtf/help"
 
 	"github.com/gorilla/websocket"
 )
@@ -68,7 +68,7 @@ func (ws *WS) Connection(conn *websocket.Conn, r *http.Request, c *Controller, U
 			}
 
 			_, ok = msgRaw["Content"].(string)
-			if !ok || !pkg.TheMessageFormatIsCorrect(msgRaw) {
+			if !ok || !help.TheMessageFormatIsCorrect(msgRaw) {
 				continue
 			}
 
@@ -153,7 +153,7 @@ func (ws *WS) Connection(conn *websocket.Conn, r *http.Request, c *Controller, U
 				if er != nil {
 					continue
 				}
-				usersinfo = pkg.SortUsers(usersinfo)
+				usersinfo = help.SortUsers(usersinfo)
 				ws.Mu.Lock()
 				for i, u := range usersinfo {
 					if _, ok := c.Ws.Clients[u.ID]; ok {

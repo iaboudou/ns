@@ -3,20 +3,20 @@ package controllers
 import (
 	"net/http"
 	"rtf/models"
-	"rtf/pkg"
+	"rtf/help"
 	"strconv"
 )
 
 // get a list of posts from the DB and render it to the front
 func (c *Controller) GetPosts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
 	viewerID, ok := r.Context().Value("userID").(string)
 	if !ok || viewerID == "" {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
@@ -34,15 +34,15 @@ func (c *Controller) GetPosts(w http.ResponseWriter, r *http.Request) {
 	if page == "profille-other-posts" || reqUserID != viewerID {
 		user := models.User{ID: reqUserID}
 		if err := c.DB.IstheUserFreind(&user, viewerID); err != nil {
-			pkg.RespondNotOK(w, "forbidden")
+			help.RespondNotOK(w, "forbidden")
 			return
 		}
 	}
 
 	posts, err := c.DB.Get10PostsfromDB(page, section, viewerID, reqUserID, groupID, offset)
 	if err != nil {
-		pkg.RespondNotOK(w, "server-error")
+		help.RespondNotOK(w, "server-error")
 		return
 	}
-	pkg.RespondOK(w, posts, "posts")
+	help.RespondOK(w, posts, "posts")
 }

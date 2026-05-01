@@ -6,15 +6,15 @@ import (
 	"time"
 
 	"rtf/config"
-	"rtf/db"
+	"rtf/pkg/db/sqlite"
 	"rtf/models"
-	"rtf/pkg"
+	"rtf/help"
 
 	"github.com/gorilla/websocket"
 )
 
 type Controller struct {
-	DB *db.Repo
+	DB *sqlite.Repo
 	Ws *WS
 }
 
@@ -43,7 +43,7 @@ func (rl *RateLimiter) Check() bool {
 		}
 	}
 
-	if pkg.MessageRLExceeded(rl.Count, rl.Last) {
+	if help.MessageRLExceeded(rl.Count, rl.Last) {
 		rl.Blocked = true
 		rl.Deleteblock = now.Add(10 * time.Second)
 		return false

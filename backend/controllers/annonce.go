@@ -1,6 +1,6 @@
 package controllers
 
-import "rtf/pkg"
+import "rtf/help"
 
 func (c *Controller) Anounce() {
 	c.Ws.Mu.Lock()
@@ -20,7 +20,7 @@ func (c *Controller) Anounce() {
 		if er != nil {
 			continue
 		}
-		usersinfo = pkg.SortUsers(usersinfo)
+		usersinfo = help.SortUsers(usersinfo)
 
 		c.Ws.Mu.Lock()
 		for i, u := range usersinfo {

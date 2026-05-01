@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	"rtf/models"
-	"rtf/pkg"
+	"rtf/help"
 )
 
 func (c *Controller) Getpersonalinfo(w http.ResponseWriter, r *http.Request) {
@@ -11,7 +11,7 @@ func (c *Controller) Getpersonalinfo(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok || userID == "" {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
@@ -22,22 +22,22 @@ func (c *Controller) Getpersonalinfo(w http.ResponseWriter, r *http.Request) {
 	if id == userID {
 		user, er = c.DB.GetPeronalInfoFromDB(userID)
 		if er != nil {
-			pkg.RespondNotOK(w, "server-error")
+			help.RespondNotOK(w, "server-error")
 			return
 		}
 	} else {
 		user, er = c.DB.GetPeronalInfoFromDB(id)
 		if er != nil {
-			pkg.RespondNotOK(w, "server-error")
+			help.RespondNotOK(w, "server-error")
 			return
 		}
 
 		er = c.DB.IstheUserFreind(&user, userID)
 		if er != nil {
-			pkg.RespondNotOK(w, "badrequest")
+			help.RespondNotOK(w, "badrequest")
 			return
 		}
 	}
 
-	pkg.RespondOK(w, user, "user")
+	help.RespondOK(w, user, "user")
 }

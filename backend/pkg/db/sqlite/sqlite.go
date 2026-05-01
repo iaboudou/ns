@@ -1,4 +1,4 @@
-package db
+package sqlite
 
 import (
 	"database/sql"
@@ -9,20 +9,54 @@ import (
 	"strings"
 	"time"
 
+	"rtf/help"
 	"rtf/models"
-	"rtf/pkg"
 
 	"github.com/gofrs/uuid/v5"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
+
+
+func InitDB() (*sql.DB, error) {
+	m, err := migrate.New("file://pkg/db/migrations/sqlite", "sqlite3://db/db.db")
+	if err != nil {
+		return nil, err
+	}
+
+	// Run migrations
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		return nil, err
+	}
+
+	db, err := sql.Open("sqlite3", "./db/db.db")
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec("PRAGMA foreign_keys = ON;")
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec("PRAGMA journal_mode = WAL;")
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
 
 type Repo struct {
 	Db *sql.DB
 }
 
 // try to insert the user into the data base, any invalid input will return an error with a specific message
-func (r *Repo) InsertUserDB(user pkg.U) error {
-	hashed, err := pkg.HashPassword(user.Password)
+func (r *Repo) InsertUserDB(user help.U) error {
+	hashed, err := help.HashPassword(user.Password)
 	if err != nil {
 		return errors.New("SERVER ERROR")
 	}
@@ -55,7 +89,7 @@ func (r *Repo) InsertUserDB(user pkg.U) error {
 	return nil
 }
 
-func (r *Repo) IsUserAlreadyExist(user *pkg.U) error {
+func (r *Repo) IsUserAlreadyExist(user *help.U) error {
 	var exist int
 	err := r.Db.QueryRow("SELECT 1 FROM users WHERE firstname=? OR lastname=? OR email=?", user.Firstname, user.Lastname, user.Email).Scan(&exist)
 	if err != nil && err != sql.ErrNoRows {
@@ -399,7 +433,7 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 			return nil, errors.New("SERVER ERROR")
 		}
 
-		p.AllowedUsers = pkg.ParseAllowedUsers(allowedUsersStr)
+		p.AllowedUsers = help.ParseAllowedUsers(allowedUsersStr)
 
 		if err := r.Db.QueryRow(
 			`SELECT nickname, firstname, lastname, profile_image FROM users WHERE id = ?`,
@@ -685,8 +719,8 @@ func (r *Repo) SetMessageRead(senderID, receiverID string) error {
 }
 
 // get user infos from DB
-func (r *Repo) GetUserInfos(userID string) (pkg.U, error) {
-	user := pkg.U{}
+func (r *Repo) GetUserInfos(userID string) (help.U, error) {
+	user := help.U{}
 	er := r.Db.QueryRow(`
 	SELECT 
 		nickname, 
@@ -701,7 +735,7 @@ func (r *Repo) GetUserInfos(userID string) (pkg.U, error) {
 	FROM users WHERE id = ?
 	`, userID).Scan(&user.Nickname, &user.Firstname, &user.Lastname, &user.Email, &user.Birthday, &user.Gender, &user.Avatar, &user.About, &user.AccountPrivacy)
 	if er != nil {
-		return pkg.U{}, er
+		return help.U{}, er
 	}
 	fmt.Println(user.Avatar)
 	user.ID = userID

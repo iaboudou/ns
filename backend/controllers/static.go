@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"rtf/pkg"
+	"rtf/help"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func (hand *Controller) ServePictures(w http.ResponseWriter, r *http.Request) {
 	path := filepath.Join("./db/pics", f)
 	info, err := os.Stat(path)
 	if err != nil || info.IsDir() {
-		pkg.RespondNotOK(w, "notfound")
+		help.RespondNotOK(w, "notfound")
 		return
 	}
 

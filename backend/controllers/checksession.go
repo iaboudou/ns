@@ -2,22 +2,22 @@ package controllers
 
 import (
 	"net/http"
-	"rtf/pkg"
+	"rtf/help"
 )
 
 // this functione to check if the user has session
 func (c *Controller) HasSession(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
 	_, er := c.DB.CheckSessionExistance(r)
 	if er != nil {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
-	pkg.RespondOK(w, nil, "")
+	help.RespondOK(w, nil, "")
 }

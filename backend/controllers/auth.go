@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"rtf/pkg"
+	"rtf/help"
 )
 
 // this handler handles the  user registration. it expects a POST request, and it returns a JSON response with (error or success)
@@ -13,49 +13,49 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if r.Method != http.MethodPost {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
-	user := pkg.USERDATA(r)
+	user := help.USERDATA(r)
 
 	file, header, err := r.FormFile("avatar")
 	if err == nil && header.Size != 0 {
 		defer file.Close()
-		if !pkg.IsPictureFormatCorrect(file, header) {
-			pkg.RespondNotOK(w, "badrequest")
+		if !help.IsPictureFormatCorrect(file, header) {
+			help.RespondNotOK(w, "badrequest")
 			return
 		}
-		filename := pkg.SaveFile(file, header.Filename)
+		filename := help.SaveFile(file, header.Filename)
 		if filename == "" {
-			pkg.RespondNotOK(w, "badrequest")
+			help.RespondNotOK(w, "badrequest")
 			return
 		}
 		user.Avatar = filename
 	}
 
-	if err := pkg.CanInsertUser(&user); err != nil {
-		pkg.RespondNotOK(w, err.Error())
+	if err := help.CanInsertUser(&user); err != nil {
+		help.RespondNotOK(w, err.Error())
 		return
 	}
 
 	if err := c.DB.IsUserAlreadyExist(&user); err != nil {
-		pkg.RespondNotOK(w, err.Error())
+		help.RespondNotOK(w, err.Error())
 		return
 	}
 
 	if err := c.DB.InsertUserDB(user); err != nil {
-		pkg.RespondNotOK(w, "server-error")
+		help.RespondNotOK(w, "server-error")
 		return
 	}
 
-	pkg.RespondOK(w, nil, "")
+	help.RespondOK(w, nil, "")
 	c.Anounce()
 }
 
@@ -64,7 +64,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if r.Method != http.MethodPost {
-		pkg.RespondNotOK(w, "notallowed")
+		help.RespondNotOK(w, "notallowed")
 		return
 	}
 
@@ -75,25 +75,25 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	userID, er := c.DB.IsUserExist(req.Email, req.Password)
 	if er != nil {
-		pkg.RespondNotOK(w, "badrequest")
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 
 	user, er := c.DB.GetUserInfos(userID)
 	if er != nil {
-		pkg.RespondNotOK(w, "server-error")
+		help.RespondNotOK(w, "server-error")
 		return
 	}
 
 	sessionID, expiresAt, er := c.DB.SetUserSession(w, userID)
 	if er != nil {
-		pkg.RespondNotOK(w, "server-error")
+		help.RespondNotOK(w, "server-error")
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
@@ -104,7 +104,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 		Expires:  expiresAt,
 	})
-	pkg.RespondOK(w, user, "user")
+	help.RespondOK(w, user, "user")
 }
 
 func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
@@ -112,7 +112,7 @@ func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {
-		pkg.RespondNotOK(w, "unauthorized")
+		help.RespondNotOK(w, "unauthorized")
 		return
 	}
 
@@ -130,5 +130,5 @@ func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
 		MaxAge:  -1,
 	})
 
-	pkg.RespondOK(w, nil, "")
+	help.RespondOK(w, nil, "")
 }
