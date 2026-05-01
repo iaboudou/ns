@@ -8,7 +8,7 @@ import (
 
 // this functionne to get all the comments
 func (c *Controller) GetComments(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		help.RespondNotOK(w, "notallowed")
 		return
 	}
