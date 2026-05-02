@@ -8,7 +8,6 @@ import { usePathname } from 'next/navigation';
 import { MessageCircle, Users } from 'lucide-react';
 
 export default function Post({ POST }) {
-  // if (!POST.post.offset ) POST.post.offset = 0
   //post image
   const imageURL = POST.post.image_url;
   const fullImageURL = imageURL ? `http://localhost:4001/${imageURL}` : null;

@@ -29,8 +29,9 @@ func (c *Controller) GetOtherUsers(w http.ResponseWriter, r *http.Request) {
 	)
 
 	pattern := "%" + search + "%"
-
+	// "last" emty mean get the users in the first time else do the pagination
 	if last == "" {
+		// if search is emty do normal pagination else do the pagination with search
 		if search != "" {
 			rows, err = db.Query(`
 				SELECT id, nickname, firstname, lastname, profile_image, created_at
@@ -52,7 +53,6 @@ func (c *Controller) GetOtherUsers(w http.ResponseWriter, r *http.Request) {
 	} else {
 		normalized := strings.Replace(last, "T", " ", 1)
 		normalized = strings.TrimSuffix(normalized, "Z")
-
 		if search != "" {
 			rows, err = db.Query(`
             SELECT id, nickname, firstname, lastname, profile_image, created_at

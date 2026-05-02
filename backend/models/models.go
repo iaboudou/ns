@@ -74,14 +74,6 @@ type Message struct {
 	ReceiverNickname string
 }
 
-// include (psot or comment ID), (PostOrComment: "POST" or "COMMENT"), (type : 0 -> 6) ...etc
-type Reaction struct {
-	PostorcommentID string
-	PostOrComment   string
-	Type            int
-	UserID          int
-	CreatedAt       string
-}
 
 // this is for the ws
 type UserInfo struct {

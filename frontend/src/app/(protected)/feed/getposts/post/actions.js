@@ -1,19 +1,6 @@
 import { handleUnauthorized } from "@/_lib/redirect";
 let BASE = "http://localhost:4001";
 
-export async function createLikeServer(post_id) {
-
-    let res = await fetch(`${BASE}/api/createreaction`, {
-        credentials: "include",
-        method: "POST",
-        body: JSON.stringify({ post_id: post_id })
-    })
-
-    if (handleUnauthorized(res)) return;
-
-    let data = await res.json()
-}
-
 export async function createcomment(state, post_id) {
 
     let formdata = new FormData()

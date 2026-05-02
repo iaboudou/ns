@@ -27,10 +27,12 @@ func (c *Controller) GetPosts(w http.ResponseWriter, r *http.Request) {
 	reqUserID := q.Get("user_id")
 	groupID := q.Get("group_id")
 
-	if page == "profile-me-posts" || page == "profile-me-activity" {
+	if (page == "profile-me-posts" || page == "profile-me-activity") {
 		reqUserID = viewerID
 	}
 
+	// viewer is the user want to see the posts
+	// reqUserID is the user who owned the posts
 	if page == "profille-other-posts" || reqUserID != viewerID {
 		user := models.User{ID: reqUserID}
 		if err := c.DB.IstheUserFreind(&user, viewerID); err != nil {

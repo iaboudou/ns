@@ -373,7 +373,7 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 		rows, err = r.Db.Query(`
 			SELECT id, user_id, content, image_url, created_at, privacy, allowed_users, group_id
 			FROM posts
-			WHERE user_id = ?
+			WHERE user_id = ? AND (group_id = "" OR group_id IS NULL)
 			ORDER BY created_at DESC
 			LIMIT 10 OFFSET ?`, ReqUserID, Offset)
 
@@ -381,20 +381,13 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 		rows, err = r.Db.Query(`
 			SELECT p.id, p.user_id, p.content, p.image_url, p.created_at, p.privacy, p.allowed_users, p.group_id
 			FROM posts p
-			WHERE p.id IN (
-				SELECT post_or_comm_id
-				FROM reactions
-				WHERE user_id = ?
-				AND post_or_comm = 'POST'
-
-				UNION
-
+			WHERE (p.group_id = "" OR p.group_id IS NULL) AND p.id IN (
 				SELECT post_id
 				FROM comments
 				WHERE user_id = ?
 			)
 			ORDER BY p.created_at DESC
-			LIMIT 10 OFFSET ?`, ReqUserID, ReqUserID, Offset)
+			LIMIT 10 OFFSET ?`, ReqUserID, Offset)
 
 	case "goups", "groups":
 		rows, err = r.Db.Query(`
@@ -408,7 +401,7 @@ func (r *Repo) Get10PostsfromDB(Page, Section, ViewerID, ReqUserID, GroupID stri
 		rows, err = r.Db.Query(`
 			SELECT id, user_id, content, image_url, created_at, privacy, allowed_users, group_id
 			FROM posts
-			WHERE group_id = ""
+			WHERE group_id = "" OR group_id IS NULL
 			ORDER BY created_at DESC
 			LIMIT 10 OFFSET ?`, Offset)
 	}
@@ -541,7 +534,7 @@ func (r *Repo) Get10PostComments(postID string, offset int) ([]models.Comment, e
 
 	for rows.Next() {
 		var c models.Comment
-		er := rows.Scan(&c.ID, &c.Content, &c.UserID, &c.PostID, &c.ImageURL, &c.CreatedAt)
+		er := rows.Scan(&c.ID, &c.PostID, &c.UserID, &c.Content, &c.ImageURL, &c.CreatedAt)
 		if er != nil {
 			return nil, nil
 		}
