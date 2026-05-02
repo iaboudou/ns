@@ -1,3 +1,4 @@
+PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS events (
     id TEXT PRIMARY KEY,

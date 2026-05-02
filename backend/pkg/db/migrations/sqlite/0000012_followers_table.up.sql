@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS followers (
     id TEXT PRIMARY KEY,
     follower_id TEXT NOT NULL,

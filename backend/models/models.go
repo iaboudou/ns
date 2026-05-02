@@ -109,3 +109,31 @@ type FollowSuggestion struct {
 	Lastname       string `json:"lastname"`
 	AccountPrivacy bool   `json:"account_privacy"`
 }
+
+type GroupeInfo struct {
+	Title              string `json:"title"`
+	Description        string `json:"description"`
+	IsCreator          bool   `json:"isCreator"`
+	MemberAmount       int    `json:"members"`
+	Posts              []Post `json:"posts"`
+	UnreadMessageCount int    `json:"unreadMsg"`
+}
+
+
+type Group struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+type Event struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Date        string `json:"date"`
+}
+
+type EventResponse struct {
+	ID      string
+	EventID string
+	UserID  string
+	Status  string
+}

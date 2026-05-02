@@ -22,6 +22,7 @@ export default async function ProtectedLayout({ children }) {
     redirect("/login");
   }
 
+
   return (<div className={styles?.wrapper}>
     <nav className={styles.leftbar}>
       <Leftbar />

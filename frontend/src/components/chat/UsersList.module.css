@@ -1,8 +1,27 @@
+.userContainer {
+    overflow-y: auto;
+
+    scrollbar-width: none;
+
+    -ms-overflow-style: none;
+}
+
+.userContainer::-webkit-scrollbar {
+    display: none;
+}
+
 .usersList {
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .userItem {
     padding: 10px;
     cursor: pointer;
+}
+
+.input {
+    width: 100%;
 }

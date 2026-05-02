@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS groups (
     id TEXT PRIMARY KEY,
     title TEXT UNIQUE NOT NULL,

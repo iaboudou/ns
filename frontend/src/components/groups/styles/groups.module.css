@@ -1,0 +1,267 @@
+/* ── Dark/gold palette ──────────────────────────────────────
+   bg-deep:   #0f0e0c
+   bg-card:   #1a1814
+   bg-raised: #221f19
+   gold:      #c9a84c
+   gold-lt:   #e8c87a
+   text:      #f0e6cc
+   muted:     #9a8e76
+   dim:       #5a5244
+   ─────────────────────────────────────────────────────────── */
+
+.groupsWrapper {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: #f0e6cc;
+  box-sizing: border-box;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+/*
+  Key fixes:
+  - width: 100% + box-sizing: border-box → fills wrapper, never grows beyond it
+  - table-layout trick replaced by explicit flex: 1 1 0 + min-width: 0
+  - overflow: hidden + text-overflow: ellipsis on each tab → long labels truncate
+*/
+.tabs {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #1a1814;
+  border: 0.5px solid rgba(201, 168, 76, 0.25);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 1.75rem;
+}
+
+.tabButton {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  padding: 9px 8px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #9a8e76;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  display: block;
+}
+
+.tabButton:hover {
+  background: #221f19;
+  color: #e8c87a;
+}
+
+.tabButton[aria-current="page"],
+.tabButtonActive {
+  background: #2b2619;
+  color: #e8c87a;
+  font-weight: 500;
+  box-shadow: 0 0 0 0.5px rgba(201, 168, 76, 0.45);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.content>button,
+button.createButton {
+  align-self: center;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 0.5px solid rgba(201, 168, 76, 0.35);
+  background: transparent;
+  color: #c9a84c;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.content>button:hover,
+button.createButton:hover {
+  background: rgba(201, 168, 76, 0.08);
+  color: #e8c87a;
+}
+
+.content>button:active,
+button.createButton:active {
+  transform: scale(0.98);
+}
+
+.form {
+  background: #1a1814;
+  border: 0.5px solid rgba(201, 168, 76, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 0.5px solid rgba(201, 168, 76, 0.2);
+  background: #0f0e0c;
+  color: #f0e6cc;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input::placeholder {
+  color: #f0e6cc;
+}
+
+.input:focus {
+  border-color: rgba(201, 168, 76, 0.55);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+}
+
+.groupError {
+  font-size: 13px;
+  color: #e07070;
+  margin: 0 0 4px;
+}
+
+.primaryButton {
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  background: #c9a84c;
+  color: #0f0e0c;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  align-self: flex-start;
+}
+
+.primaryButton:hover {
+  background: #e8c87a;
+}
+
+.primaryButton:active {
+  transform: scale(0.98);
+}
+
+.groupsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.groupCard {
+  display: block;
+  background: #1a1814;
+  border: 0.5px solid rgba(201, 168, 76, 0.18);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, background 0.15s;
+  /* contain overflow from long words */
+  min-width: 0;
+  overflow: hidden;
+}
+
+.groupCard:hover {
+  background: #221f19;
+  border-color: rgba(201, 168, 76, 0.38);
+}
+
+.groupCard h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 6px;
+  color: #e8c87a;
+  /* truncate long titles */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.groupCard p {
+  font-size: 13px;
+  color: #9a8e76;
+  margin: 0 0 12px;
+  line-height: 1.5;
+  /* clamp description to 3 lines */
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* break very long words / no-space strings */
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.groupCard .primaryButton {
+  margin-top: 4px;
+}
+
+/* ── Invite actions (inside groupCard, tab=invites) ─────────
+   À ajouter dans groups.module.css
+   Les styles acceptBtn / rejectBtn sont déjà définis dans
+   group.module.css — on réutilise juste le wrapper ici.
+   ─────────────────────────────────────────────────────────── */
+
+.inviteActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.inviteActions .acceptBtn,
+.inviteActions .rejectBtn {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+/* accept */
+.inviteActions .acceptBtn {
+  border: 0.5px solid rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.08);
+  color: #86efac;
+}
+
+.inviteActions .acceptBtn:hover {
+  background: rgba(74, 222, 128, 0.18);
+  color: #bbf7d0;
+}
+
+/* decline */
+.inviteActions .rejectBtn {
+  border: 0.5px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  color: #fca5a5;
+}
+
+.inviteActions .rejectBtn:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecaca;
+}

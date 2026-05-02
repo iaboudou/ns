@@ -56,7 +56,7 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	help.RespondOK(w, nil, "")
-	c.Anounce()
+	// c.Anounce()
 }
 
 // this handler is for login. it expects a POST request, and it returns a JSON response with (error or success)
