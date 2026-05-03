@@ -6,16 +6,16 @@ import (
 	"time"
 
 	"rtf/config"
-	"rtf/pkg/db/sqlite"
-	"rtf/models"
 	"rtf/help"
+	"rtf/models"
+	"rtf/pkg/db/sqlite"
 
 	"github.com/gorilla/websocket"
 )
 
 type Controller struct {
-	DB *sqlite.Repo
-	Ws *WS
+	DB  *sqlite.Repo
+	Hub *models.Hub
 }
 
 type WS struct {

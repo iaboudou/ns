@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
 
 	"rtf/controllers"
+	"rtf/models"
 	"rtf/pkg/db/sqlite"
 	"rtf/routes"
 
-	"github.com/gorilla/websocket"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -23,20 +22,28 @@ func main() {
 	// initialize
 	r := &sqlite.Repo{Db: database}
 
-	ws := &controllers.WS{
-		Upgrader: websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-			CheckOrigin:     func(r *http.Request) bool { return true },
-		},
-		Clients: make(map[string]*controllers.UserWS),
-		Mu:      sync.RWMutex{},
+	// ws := &controllers.WS{
+	// 	Upgrader: websocket.Upgrader{
+	// 		ReadBufferSize:  1024,
+	// 		WriteBufferSize: 1024,
+	// 		CheckOrigin:     func(r *http.Request) bool { return true },
+	// 	},
+	// 	Clients: make(map[string]*controllers.UserWS),
+	// 	Mu:      sync.RWMutex{},
+	// }
+
+	hub := &models.Hub{
+		Connect:    make(chan *models.Client),
+		Disconnect: make(chan *models.Client),
+		Broadcast:  make(chan models.Message),
 	}
 
 	controller := &controllers.Controller{
-		DB: r,
-		Ws: ws,
+		DB:  r,
+		Hub: hub,
 	}
+
+	go controller.RunBroker()
 
 	handler := &routes.Handler{
 		Repo:    r,
@@ -51,7 +58,7 @@ func main() {
 		Addr:    "0.0.0.0:4001",
 		Handler: mux,
 	}
-	fmt.Print("http://localhost:4001")
+	fmt.Println("http://localhost:4001")
 
 	log.Fatal(server.ListenAndServe())
 }

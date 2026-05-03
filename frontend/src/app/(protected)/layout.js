@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Leftbar from "@/components/leftbar/leftbar";
 import styles from "./page.module.css";
-
+import { WebSocketProvider } from "@/lib/UseWebsocket";
 
 export default async function ProtectedLayout({ children }) {
   const cookieStore = await cookies();
@@ -22,14 +22,17 @@ export default async function ProtectedLayout({ children }) {
     redirect("/login");
   }
 
+  return (
+    <WebSocketProvider>
+      <div className={styles?.wrapper}>
+        <nav className={styles.leftbar}>
+          <Leftbar />
+        </nav>
 
-  return (<div className={styles?.wrapper}>
-    <nav className={styles.leftbar}>
-      <Leftbar />
-    </nav>
-
-    <main id="mainpage" className={styles.main}>
-      <div className={styles.posts}>{children}</div>
-    </main>
-  </div>)
+        <main id="mainpage" className={styles.main}>
+          <div className={styles.posts}>{children}</div>
+        </main>
+      </div>
+    </WebSocketProvider>
+  );
 }

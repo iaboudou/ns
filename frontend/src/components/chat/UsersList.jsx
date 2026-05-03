@@ -3,12 +3,14 @@
 import Link from "next/link";
 import styles from "./UsersList.module.css";
 import { useEffect, useState } from "react";
+import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function UsersList() {
   const [users, setUsers] = useState([]);
   const [hasMore, setHasmore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const { onlineUsers, port, messages } = useWebSocket();
 
   const handleFetchUsers = async (currentSearch, isReset = false) => {
     if (!hasMore && !isReset) return;
@@ -76,9 +78,25 @@ export default function UsersList() {
           onChange={(e) => setSearch(e.target.value)}
         />
         {users.map((u) => (
-          <Link key={u.id} className={styles.userItem} href={`/chat/${u.id}`}>
+          <Link
+            key={u.id}
+            className={styles.userItem}
+            href={`/chat/${u.id}`}
+            onClick={() =>
+              port.postMessage({
+                type: "send",
+                payload: {
+                  type: "load_history",
+                  receiver_Id: u.id,
+                  last_read_time:
+                    messages.length === 0 ? 0 : messages.at(-1).created_at,
+                },
+              })
+            }
+          >
             <div key={u.id}>
               {u.nickname ? u.nickname : u.fisrtname + " " + u.lastname}
+              {onlineUsers.includes(u.id) && " (online)"}
             </div>
           </Link>
         ))}

@@ -20,7 +20,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-
 func InitDB() (*sql.DB, error) {
 	m, err := migrate.New("file://pkg/db/migrations/sqlite", "sqlite3://db/db.db")
 	if err != nil {
@@ -605,59 +604,59 @@ func (r *Repo) Get100UsersFor(userID string, startID int) ([]models.User, error)
 	return users, nil
 }
 
-// get the users info with the last message for the message list
-func (r *Repo) GetUsersInfoFor(userID string, forAll bool) ([]models.UserInfo, error) {
-	usersInfo := []models.UserInfo{}
+// // get the users info with the last message for the message list
+// func (r *Repo) GetUsersInfoFor(userID string, forAll bool) ([]models.UserInfo, error) {
+// 	usersInfo := []models.UserInfo{}
 
-	rows, err := r.Db.Query(`SELECT id, nickname, firstname, lastname FROM users`)
-	if err != nil {
-		return nil, errors.New("SERVER ERROR")
-	}
-	defer rows.Close()
+// 	rows, err := r.Db.Query(`SELECT id, nickname, firstname, lastname FROM users`)
+// 	if err != nil {
+// 		return nil, errors.New("SERVER ERROR")
+// 	}
+// 	defer rows.Close()
 
-	for rows.Next() {
-		var u models.UserInfo
-		err := rows.Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname)
-		if err != nil {
-			return nil, errors.New("SERVER ERROR")
-		}
+// 	for rows.Next() {
+// 		var u models.UserInfo
+// 		err := rows.Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname)
+// 		if err != nil {
+// 			return nil, errors.New("SERVER ERROR")
+// 		}
 
-		if u.ID == userID && !forAll {
-			continue
-		}
-		// get the last message between them
-		var msg models.Message
-		err = r.Db.QueryRow(`
-            SELECT id, sender_id, receiver_id, content, is_NOT_read, created_at 
-            FROM messages 
-            WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
-            ORDER BY created_at DESC 
-            LIMIT 1
-        `, userID, u.ID, u.ID, userID).Scan(&msg.ID, &msg.SenderID, &msg.ReceiverID, &msg.Content, &msg.IsNotRead, &msg.CreatedAt)
+// 		if u.ID == userID && !forAll {
+// 			continue
+// 		}
+// 		// get the last message between them
+// 		var msg models.Message
+// 		err = r.Db.QueryRow(`
+//             SELECT id, sender_id, receiver_id, content, is_NOT_read, created_at
+//             FROM messages
+//             WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
+//             ORDER BY created_at DESC
+//             LIMIT 1
+//         `, userID, u.ID, u.ID, userID).Scan(&msg.ID, &msg.SenderID, &msg.ReceiverID, &msg.Content, &msg.IsNotRead, &msg.CreatedAt)
 
-		if err != nil && err != sql.ErrNoRows {
-			return nil, errors.New("SERVER ERROR")
-		}
-		u.LastMessage = msg
+// 		if err != nil && err != sql.ErrNoRows {
+// 			return nil, errors.New("SERVER ERROR")
+// 		}
+// 		u.LastMessage = msg
 
-		// calcul the number of messages not read from the other user
-		var count int
-		err = r.Db.QueryRow(` SELECT COUNT(*) FROM messages WHERE sender_id = ? AND receiver_id = ? AND is_NOT_read = 1`, u.ID, userID).Scan(&count)
-		if err != nil {
-			return nil, errors.New("SERVER ERROR")
-		}
-		u.NumberOfUnreadMessages = count
+// 		// calcul the number of messages not read from the other user
+// 		var count int
+// 		err = r.Db.QueryRow(` SELECT COUNT(*) FROM messages WHERE sender_id = ? AND receiver_id = ? AND is_NOT_read = 1`, u.ID, userID).Scan(&count)
+// 		if err != nil {
+// 			return nil, errors.New("SERVER ERROR")
+// 		}
+// 		u.NumberOfUnreadMessages = count
 
-		usersInfo = append(usersInfo, u)
+// 		usersInfo = append(usersInfo, u)
 
-	}
+// 	}
 
-	if len(usersInfo) == 0 {
-		return nil, errors.New("no user exists")
-	}
+// 	if len(usersInfo) == 0 {
+// 		return nil, errors.New("no user exists")
+// 	}
 
-	return usersInfo, nil
-}
+// 	return usersInfo, nil
+// }
 
 // get the user id based on the front id from DB
 func (r *Repo) GetUserByFrontID(frontID string) (string, error) {
@@ -666,42 +665,42 @@ func (r *Repo) GetUserByFrontID(frontID string) (string, error) {
 	return id, er
 }
 
-// insert new message to the DB
-func (r *Repo) InsertMessage(msg map[string]interface{}) (models.Message, error) {
-	content, ok1 := msg["Content"].(string)
-	senderID, ok2 := msg["SenderID"].(string)
-	receiverID, ok3 := msg["ReceiverID"].(string)
-	if !ok1 || !ok2 || !ok3 {
-		return models.Message{}, errors.New("invalid message format")
-	}
+// // insert new message to the DB
+// func (r *Repo) InsertMessage(msg map[string]interface{}) (models.Message, error) {
+// 	content, ok1 := msg["Content"].(string)
+// 	senderID, ok2 := msg["SenderID"].(string)
+// 	receiverID, ok3 := msg["ReceiverID"].(string)
+// 	if !ok1 || !ok2 || !ok3 {
+// 		return models.Message{}, errors.New("invalid message format")
+// 	}
 
-	m := models.Message{
-		SenderID:   senderID,
-		ReceiverID: receiverID,
-		Content:    content,
-		CreatedAt:  time.Now().Format("2006-01-02 15:04:05.000000"),
-	}
+// 	m := models.Message{
+// 		SenderID:   senderID,
+// 		ReceiverID: receiverID,
+// 		Content:    content,
+// 		CreatedAt:  time.Now().Format("2006-01-02 15:04:05.000000"),
+// 	}
 
-	res, er := r.Db.Exec("INSERT INTO messages(sender_id, receiver_id, content, is_NOT_read, created_at) VALUES (?, ?, ?, ?, ?)", m.SenderID, m.ReceiverID, m.Content, 1, m.CreatedAt)
-	if er != nil {
-		return models.Message{}, er
-	}
+// 	res, er := r.Db.Exec("INSERT INTO messages(sender_id, receiver_id, content, is_NOT_read, created_at) VALUES (?, ?, ?, ?, ?)", m.SenderID, m.ReceiverID, m.Content, 1, m.CreatedAt)
+// 	if er != nil {
+// 		return models.Message{}, er
+// 	}
 
-	id, _ := res.LastInsertId()
-	m.ID = int(id)
-	m.IsNotRead = 1
+// 	id, _ := res.LastInsertId()
+// 	m.ID = int(id)
+// 	m.IsNotRead = 1
 
-	m.SenderName, er = r.GetUserAuthernameByID(senderID)
-	if er != nil {
-		return models.Message{}, er
-	}
-	m.ReceiverName, er = r.GetUserAuthernameByID(receiverID)
-	if er != nil {
-		return models.Message{}, er
-	}
+// 	m.SenderName, er = r.GetUserAuthernameByID(senderID)
+// 	if er != nil {
+// 		return models.Message{}, er
+// 	}
+// 	m.ReceiverName, er = r.GetUserAuthernameByID(receiverID)
+// 	if er != nil {
+// 		return models.Message{}, er
+// 	}
 
-	return m, nil
-}
+// 	return m, nil
+// }
 
 func (r *Repo) SetMessageRead(senderID, receiverID string) error {
 	_, er := r.Db.Exec(` UPDATE messages SET is_NOT_read = 0 WHERE sender_id = ? AND receiver_id = ? AND is_NOT_read = 1`, senderID, receiverID)
@@ -736,68 +735,68 @@ func (r *Repo) GetUserInfos(userID string) (help.U, error) {
 	return user, nil
 }
 
-// this method get the users with its last message in order from DB for chat
-func (r *Repo) GetUsersForChatInOrder(userID string, offset int) ([]models.Message, error) {
-	rows, er := r.Db.Query(`
-		SELECT sender_id, receiver_id, content, is_NOT_read, created_at FROM messages
-		WHERE sender_id = ? OR receiver_id = ?
-		ORDER BY created_at DESC`, userID, userID)
-	if er != nil {
-		return nil, er
-	}
-	defer rows.Close()
+// // this method get the users with its last message in order from DB for chat
+// func (r *Repo) GetUsersForChatInOrder(userID string, offset int) ([]models.Message, error) {
+// 	rows, er := r.Db.Query(`
+// 		SELECT sender_id, receiver_id, content, is_NOT_read, created_at FROM messages
+// 		WHERE sender_id = ? OR receiver_id = ?
+// 		ORDER BY created_at DESC`, userID, userID)
+// 	if er != nil {
+// 		return nil, er
+// 	}
+// 	defer rows.Close()
 
-	msgs := []models.Message{}
-	seen := make(map[string]bool)
-	i := 0
+// 	msgs := []models.Message{}
+// 	seen := make(map[string]bool)
+// 	i := 0
 
-	for rows.Next() {
-		m := models.Message{}
-		if er := rows.Scan(&m.SenderID, &m.ReceiverID, &m.Content, &m.IsNotRead, &m.CreatedAt); er != nil {
-			continue
-		}
+// 	for rows.Next() {
+// 		m := models.Message{}
+// 		if er := rows.Scan(&m.SenderID, &m.ReceiverID, &m.Content, &m.IsNotRead, &m.CreatedAt); er != nil {
+// 			continue
+// 		}
 
-		if m.SenderID != userID {
-			// in case the user is the receiver
-			if seen[m.SenderID] {
-				continue
-			}
-			seen[m.SenderID] = true
+// 		if m.SenderID != userID {
+// 			// in case the user is the receiver
+// 			if seen[m.SenderID] {
+// 				continue
+// 			}
+// 			seen[m.SenderID] = true
 
-			if i < offset {
-				i++
-				continue
-			}
+// 			if i < offset {
+// 				i++
+// 				continue
+// 			}
 
-			if er := r.GetUserNickNameByID(&m.SenderNickname, m.SenderID); er != nil {
-				return nil, errors.New("SERVER ERROR")
-			}
+// 			if er := r.GetUserNickNameByID(&m.SenderNickname, m.SenderID); er != nil {
+// 				return nil, errors.New("SERVER ERROR")
+// 			}
 
-		} else {
-			// in case the user is the sender
-			if seen[m.ReceiverID] {
-				continue
-			}
-			seen[m.ReceiverID] = true
+// 		} else {
+// 			// in case the user is the sender
+// 			if seen[m.ReceiverID] {
+// 				continue
+// 			}
+// 			seen[m.ReceiverID] = true
 
-			if i < offset {
-				i++
-				continue
-			}
+// 			if i < offset {
+// 				i++
+// 				continue
+// 			}
 
-			if er := r.GetUserNickNameByID(&m.ReceiverNickname, m.ReceiverID); er != nil {
-				return nil, errors.New("SERVER ERROR")
-			}
-		}
+// 			if er := r.GetUserNickNameByID(&m.ReceiverNickname, m.ReceiverID); er != nil {
+// 				return nil, errors.New("SERVER ERROR")
+// 			}
+// 		}
 
-		msgs = append(msgs, m)
-		if len(msgs) >= 100 {
-			break
-		}
-	}
+// 		msgs = append(msgs, m)
+// 		if len(msgs) >= 100 {
+// 			break
+// 		}
+// 	}
 
-	return msgs, nil
-}
+// 	return msgs, nil
+// }
 
 // get the user nickname by its ID from DB
 func (r *Repo) GetUserNickNameByID(nickname *string, userID string) error {

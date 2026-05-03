@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"sync"
+	"time"
+
+	"github.com/gorilla/websocket"
+)
 
 // user
 type User struct {
@@ -61,19 +66,20 @@ type Comment struct {
 
 // messages
 type Message struct {
-	ID           int
+	ID           string
+	Type         string `json:"type"`
 	SenderID     string
 	SenderName   string
 	ReceiverName string
-	ReceiverID   string
-	Content      string
-	IsNotRead    int
-	CreatedAt    string
+	ReceiverID   string `json:"receiver_Id"`
+	Content      string `json:"content"`
+	CreatedAt    int64
 
-	SenderNickname   string
-	ReceiverNickname string
+	PortKey          string `json:"portKey"`
+	LastReadID       string `json:"last_read_Id"`
+	LastReadTime     int64  `json:"last_read_time"`
+
 }
-
 
 // this is for the ws
 type UserInfo struct {
@@ -111,7 +117,6 @@ type GroupeInfo struct {
 	UnreadMessageCount int    `json:"unreadMsg"`
 }
 
-
 type Group struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -128,4 +133,19 @@ type EventResponse struct {
 	EventID string
 	UserID  string
 	Status  string
+}
+
+// represent user in ws connection
+type Client struct {
+	ID          string
+	Ws          *websocket.Conn
+	Mu          *sync.Mutex
+	Description *User
+}
+
+// represent the websocket hub
+type Hub struct {
+	Connect    chan *Client
+	Disconnect chan *Client
+	Broadcast  chan Message
 }

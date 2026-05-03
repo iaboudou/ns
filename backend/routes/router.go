@@ -39,7 +39,7 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 
 	//
 	ws := map[string]http.HandlerFunc{
-		"/ws":         handler.Cntrlrs.WebSocket,
+		"/ws":         handler.Cntrlrs.WebsocketHandler,
 		"/hassession": handler.Cntrlrs.HasSession,
 		"/pics/":      handler.Cntrlrs.ServePictures,
 	}

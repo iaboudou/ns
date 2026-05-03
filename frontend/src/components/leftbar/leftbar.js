@@ -1,13 +1,24 @@
 "use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import styles from './leftbar.module.css';
-import { Handshake, Users, MessageSquare, Bell, CircleUser, Home, LogOut } from 'lucide-react';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import styles from "./leftbar.module.css";
+import {
+  Handshake,
+  Users,
+  MessageSquare,
+  Bell,
+  CircleUser,
+  Home,
+  LogOut,
+} from "lucide-react";
+
+import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function Leftbar() {
   const router = useRouter();
+  const { port } = useWebSocket();
 
   const [loading, setLoading] = useState(false);
 
@@ -15,17 +26,18 @@ export default function Leftbar() {
     if (loading) return;
     setLoading(true);
     try {
-      await fetch('http://localhost:4001/api/logout', {
-        method: 'POST',
-        credentials: 'include',
+      await fetch("http://localhost:4001/api/logout", {
+        method: "POST",
+        credentials: "include",
       });
-      localStorage.removeItem('user');
-      router.push('/login');
+      localStorage.removeItem("user");
+      router.push("/login");
     } catch (error) {
-      localStorage.removeItem('user');
-      router.push('/login');
+      localStorage.removeItem("user");
+      router.push("/login");
     } finally {
       setLoading(false);
+      port.postMessage({ type: "logout" });
     }
   };
 
@@ -35,15 +47,30 @@ export default function Leftbar() {
         <Link
           href="/"
           className={styles.buttonLink}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          title="Home">
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          title="Home"
+        >
           <Home />
         </Link>
-        <Link href="/friends" className={styles.buttonLink} title="Friends"><Handshake /></Link>
-        <Link href="/groups/joins" className={styles.buttonLink} title="Groups"><Users /></Link>
-        <Link href="/chat" className={styles.buttonLink} title="Chat"><MessageSquare /></Link>
-        <Link href="/notifications" className={styles.buttonLink} title="Notifications"><Bell /></Link>
-        <Link href="/profile/me" className={styles.buttonLink} title="Profile"><CircleUser /></Link>
+        <Link href="/friends" className={styles.buttonLink} title="Friends">
+          <Handshake />
+        </Link>
+        <Link href="/groups/joins" className={styles.buttonLink} title="Groups">
+          <Users />
+        </Link>
+        <Link href="/chat" className={styles.buttonLink} title="Chat">
+          <MessageSquare />
+        </Link>
+        <Link
+          href="/notifications"
+          className={styles.buttonLink}
+          title="Notifications"
+        >
+          <Bell />
+        </Link>
+        <Link href="/profile/me" className={styles.buttonLink} title="Profile">
+          <CircleUser />
+        </Link>
         <button
           type="button"
           onClick={handleLogout}

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function middleware(request) {
   // // get the session from the cookies
   const session = request.cookies.get("session_id")?.value;
-  
+
   // get if the user is in auth page or no based on the path name
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname === "/login" || pathname === "/register";
@@ -30,7 +30,9 @@ export async function middleware(request) {
       // session not valid
       if (!res.ok) {
         if (!isAuthPage) {
-          const response = NextResponse.redirect(new URL("/login", request.url));
+          const response = NextResponse.redirect(
+            new URL("/login", request.url),
+          );
           response.cookies.delete("session_id");
           return response;
         } else {
@@ -48,7 +50,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next|favicon.ico|.*\\..*).*)",
-  ],
+  matcher: ["/((?!_next|favicon.ico|.*\\..*).*)"],
 };

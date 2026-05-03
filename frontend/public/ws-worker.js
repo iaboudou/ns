@@ -1,38 +1,71 @@
-// init the websocket inside the shared worker
 let socket = null;
-let ports = [];
+const ports = new Map(); // (key : port (or if you want tab) )
 
-// this function to broadcast to all the tabs 
-function broadcast(msg) {
-    ports.forEach((tab) => tab.postMessage(msg));
+//send specific data to all the tabs
+function broadcast(data) {
+  ports.forEach((port) => port.postMessage(data));
 }
 
-// this function the default for the sharedworker to work
+//init the logic of the worker
 onconnect = function (e) {
-    // push the new tab
-    const port = e.ports[0];
-    ports.push(port);
-    port.start();
+  const port = e.ports[0];
+  const key = crypto.randomUUID(); // random key for the tab in the ports map
 
-    port.onmessage = (e) => {
-        switch (e.data.type) {
-            case "init":
-                if (!socket) {
-                    socket = new WebSocket("ws://localhost:4001/ws");
+  ports.set(key, port);
 
-                    socket.onopen = () =>
-                        broadcast({ type: "status", data: "connected" });
+  // send the the specified tab his key for future data exchange that require
+  port.postMessage({
+    event: "connected",
+    portKey: key,
+  });
 
-                    socket.onmessage = (msg) =>
-                        broadcast({ type: "message", data: msg.data });
+  //depending on the "event type" do some logics
+  port.onmessage = function (event) {
+    const msg = event.data;
 
-                    socket.onclose = () => (socket = null);
-                }
-                break;
+    switch (msg.type) {
+      case "connect": {
+        // first time we open the tab, check if there is no ws
+        if (!socket) {
+          socket = new WebSocket("ws://localhost:4001/ws");
 
-            case "send":
-                socket?.send(e.data.payload);
-                break;
+          socket.onmessage = (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              console.log(data);
+              broadcast(data);
+            } catch (err) {
+              console.error("WS parse error", err);
+            }
+          };
+
+          socket.onclose = () => {
+            socket = null;
+            broadcast({ event: "ws-close" }); // send to all the tabs that the ws is closed
+          };
+
+          socket.onerror = (err) => {
+            console.error("WS error", err);
+          };
         }
+        break;
+      }
+
+      case "send": {
+        socket.send(JSON.stringify(msg.payload)); // send the data to the backend
+        break;
+      }
+
+      case "disconnect-tab": {
+        ports.delete(msg.portKey); // remove one tab
+        break;
+      }
+
+      case "logout": {
+        socket.close();
+      }
     }
-}
+  };
+
+  port.start();
+};
