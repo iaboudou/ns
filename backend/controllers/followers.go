@@ -80,7 +80,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 	if message == "follow have been successfully" || message == "request have been sent" {
 		senderUser, err := c.DB.GetUserByIDDB(userID)
 		if err == nil {
-			notifType := "follow_accepted"
+			notifType := "follow"
 			if message == "request have been sent" {
 				notifType = "follow_request"
 			}

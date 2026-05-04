@@ -7,10 +7,11 @@ import styles from "./notifications.module.css";
 import { timeAgo } from "@/_lib/timeago";
 
 const notifLabel = (n) => {
+  console.log(n)///////////////
   switch (n.type) {
     case "follow_request":
       return "sent you a follow request";
-    case "follow_accept":
+    case "follow_accepted":
       return "accepted your request";
     case "follow":
       return "started following you";
@@ -31,7 +32,7 @@ const notifLink = (n) => {
       return `/profile/${n.ref_id}`;
     case "follow_request":
       return `/profile/${n.ref_id}`;
-    case "follow_accept":
+    case "follow_accepted":
       return `/profile/${n.ref_id}`;
 
     case "like":

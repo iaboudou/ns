@@ -1,15 +1,29 @@
-/* ── Main wrapper ─────────────────────────────────────────── */
+/* ── Main wrapper */
 .mainWrapper {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  min-height: 100vh;
+  padding: 0;
+  height: calc(100vh - 200px);
+  overflow: hidden;
 
   background: #0f0e0c;
   color: #f0e6cc;
 }
 
-/* ── Top section ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .mainWrapper {
+    height: calc(100vh - 180px);
+  }
+}
+
+@media (max-width: 640px) {
+  .mainWrapper {
+    height: calc(100vh - 230px);
+  }
+}
+
+
+/* ── Top section */
 .up {
   display: flex;
   flex-direction: column;
@@ -17,7 +31,7 @@
   margin-bottom: 12px;
 }
 
-/* ── Group info card ─────────────────────────────────────── */
+/* ── Group info card */
 .groupInfo {
   display: flex;
   flex-direction: column;
@@ -61,7 +75,7 @@
   overflow: hidden;
 }
 
-/* ── Feed buttons ────────────────────────────────────────── */
+/* ── Feed buttons */
 .groupFeedBtn {
   display: flex;
   gap: 8px;
@@ -101,12 +115,12 @@
   box-shadow: 0 0 0 0.5px rgba(201, 168, 76, 0.4);
 }
 
-/* ── Bottom layout ───────────────────────────────────────── */
+/* ── Bottom layout */
 .down {
   display: flex;
   gap: 12px;
   flex: 1;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .groupFeedLink {
@@ -145,7 +159,7 @@
   color: #e8c87a;
 }
 
-/* ── Content panel ───────────────────────────────────────── */
+/* ── Content panel */
 .content {
   flex: 7;
   display: flex;
@@ -157,8 +171,8 @@
   border: 0.5px solid rgba(201, 168, 76, 0.2);
   border-radius: 12px;
 
-  overflow-y: scroll;
-  max-height: 100%;
+  overflow-y: auto;
+  height: 100%;
 }
 
 .popup {
@@ -320,7 +334,7 @@
 
 
 
-/* ── Users list (invite / popup) ─────────────────────────── */
+/* ── Users list (invite / popup) */
 
 .userList {
   display: flex;
@@ -331,7 +345,7 @@
   overflow-y: auto;
 }
 
-/* ── Load more button (users list) ───────────────────────── */
+/* ── Load more button (users list) */
 
 .loadMoreWrapper {
   display: flex;
@@ -449,7 +463,7 @@
   color: #e8c87a;
 }
 
-/* ── Options (dropdown / floating) ───────────────────────── */
+/* ── Options (dropdown / floating) */
 .options {
   position: relative;
 }
