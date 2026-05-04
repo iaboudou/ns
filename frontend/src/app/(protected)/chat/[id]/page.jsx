@@ -128,7 +128,7 @@ export default function Page() {
             className={styles.emojiToggle}
             onClick={() => setShowEmojis(!showEmojis)}
           >
-            😀
+            👍
           </button>
           {showEmojis && (
             <div className={styles.emojiPicker}>

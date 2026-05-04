@@ -104,12 +104,12 @@ export default function NotificationsPage() {
                   src={
                     n.from_image
                       ? `http://localhost:4001/pics/${n.from_image}`
-                      : "/default-avatar.png"
+                      : "/default.jpg"
                   }
                   alt={n.from_name}
                   className={styles.avatar}
                   onError={(e) => {
-                    e.target.src = "/default-avatar.png";
+                    e.target.src = "/default.jpg";
                   }}
                 />
               </div>
