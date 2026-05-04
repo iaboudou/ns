@@ -1,13 +1,17 @@
 let socket = null;
 const ports = new Map(); // (key : port (or if you want tab) )
+let latestOnlineUsers = [];
+let hasOnlineUsersSnapshot = false;
 
 //send specific data to all the tabs
 function broadcast(data) {
-  ports.forEach((port) => port.postMessage(data));
+  ports.forEach((port) => {
+    port.postMessage(data);
+  });
 }
 
 //init the logic of the worker
-onconnect = function (e) {
+self.addEventListener("connect", (e) => {
   const port = e.ports[0];
   const key = crypto.randomUUID(); // random key for the tab in the ports map
 
@@ -19,8 +23,15 @@ onconnect = function (e) {
     portKey: key,
   });
 
+  if (hasOnlineUsersSnapshot) {
+    port.postMessage({
+      event: "online_users",
+      users: latestOnlineUsers,
+    });
+  }
+
   //depending on the "event type" do some logics
-  port.onmessage = function (event) {
+  port.onmessage = (event) => {
     const msg = event.data;
 
     switch (msg.type) {
@@ -32,6 +43,24 @@ onconnect = function (e) {
           socket.onmessage = (e) => {
             try {
               const data = JSON.parse(e.data);
+              switch (data.event) {
+                case "online_users":
+                  latestOnlineUsers = data.users || [];
+                  hasOnlineUsersSnapshot = true;
+                  break;
+                case "join":
+                  hasOnlineUsersSnapshot = true;
+                  if (!latestOnlineUsers.includes(data.newcomer)) {
+                    latestOnlineUsers = [...latestOnlineUsers, data.newcomer];
+                  }
+                  break;
+                case "leave":
+                  hasOnlineUsersSnapshot = true;
+                  latestOnlineUsers = latestOnlineUsers.filter(
+                    (id) => id !== data.left,
+                  );
+                  break;
+              }
               console.log(data);
               broadcast(data);
             } catch (err) {
@@ -41,6 +70,8 @@ onconnect = function (e) {
 
           socket.onclose = () => {
             socket = null;
+            latestOnlineUsers = [];
+            hasOnlineUsersSnapshot = false;
             broadcast({ event: "ws-close" }); // send to all the tabs that the ws is closed
           };
 
@@ -68,4 +99,4 @@ onconnect = function (e) {
   };
 
   port.start();
-};
+});
