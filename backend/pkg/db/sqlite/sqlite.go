@@ -46,6 +46,7 @@ func InitDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return db, nil
 }
 
@@ -515,11 +516,6 @@ func (r *Repo) IsFollower(userID, otherID string) (bool, error) {
 	return status == "accepted", nil
 }
 
-func (r *Repo) GetUserAuthernameByID(userID string) (string, error) {
-	var nickname string
-	er := r.Db.QueryRow("SELECT nickname FROM users WHERE id=?", userID).Scan(&nickname)
-	return nickname, er
-}
 
 // this function get the comments post from DB based on an postID
 func (r *Repo) Get10PostComments(postID string, offset int) ([]models.Comment, error) {
@@ -702,13 +698,6 @@ func (r *Repo) GetUserByFrontID(frontID string) (string, error) {
 // 	return m, nil
 // }
 
-func (r *Repo) SetMessageRead(senderID, receiverID string) error {
-	_, er := r.Db.Exec(` UPDATE messages SET is_NOT_read = 0 WHERE sender_id = ? AND receiver_id = ? AND is_NOT_read = 1`, senderID, receiverID)
-	if er != nil {
-		return er
-	}
-	return nil
-}
 
 // get user infos from DB
 func (r *Repo) GetUserInfos(userID string) (help.U, error) {
@@ -798,48 +787,8 @@ func (r *Repo) GetUserInfos(userID string) (help.U, error) {
 // 	return msgs, nil
 // }
 
-// get the user nickname by its ID from DB
-func (r *Repo) GetUserNickNameByID(nickname *string, userID string) error {
-	return r.Db.QueryRow("SELECT nickname FROM users WHERE id=?", userID).Scan(nickname)
-}
 
-// this method get the messages history between two users from DB in order from the offset provided at ascending order
-func (r *Repo) GetMessagesHistoryBetweenTwoUsers(senderID, receiverID string, offset int) ([]models.Message, error) {
-	rows, er := r.Db.Query(`
-        SELECT sender_id, receiver_id, content, created_at 
-        FROM messages
-        WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
-        ORDER BY created_at DESC
-        LIMIT 10 OFFSET ?`,
-		senderID, receiverID, receiverID, senderID, offset)
-	if er != nil {
-		return nil, er
-	}
-	defer rows.Close()
 
-	msgs := []models.Message{}
-	for rows.Next() {
-		m := models.Message{}
-		er := rows.Scan(&m.SenderID, &m.ReceiverID, &m.Content, &m.CreatedAt)
-		if er != nil {
-			continue
-		}
-		m.ReceiverName, er = r.GetUserAuthernameByID(m.ReceiverID)
-		if er != nil {
-			continue
-		}
-		m.SenderName, er = r.GetUserAuthernameByID(m.SenderID)
-		if er != nil {
-			continue
-		}
-		msgs = append(msgs, m)
-	}
-	return msgs, nil
-}
-
-// =====================
-// followers
-// =====================
 
 // get users that the (userID) does not follow them yet from db
 func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, error) {
@@ -913,6 +862,10 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 	`, id.String(), userID, followedID, finalStatus)
 	if err != nil {
 		return "", err
+	}
+
+	if finalStatus == "pending" {
+		// 
 	}
 
 	return message, nil
@@ -1076,3 +1029,12 @@ func (r *Repo) GetFriendsDB(userID string, query string) ([]models.FollowSuggest
 // =====================
 // End followers
 // =====================
+
+func (r *Repo) GetUserByIDDB(userID string) (models.User, error) {
+	var u models.User
+	err := r.Db.QueryRow(`
+		SELECT id, nickname, firstname, lastname, email, profile_image
+		FROM users WHERE id = ?
+	`, userID).Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname, &u.Email, &u.ProfileImage)
+	return u, err
+}

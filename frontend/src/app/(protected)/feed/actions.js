@@ -95,7 +95,7 @@ export function setOpenComment(setState, postId) {
 
 //
 export async function fetchNewPostsWhileScrooling(setState, state, loadPosts, path, section, profileId) {
-  // Ajouter un délai de 500ms pour éviter le rate limiting
+  //
   await new Promise(resolve => setTimeout(resolve, 500));
 
   let newState = { ...state, nbrofPosts: state.nbrofPosts + 10 };

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import styles from "./UsersList.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function UsersList() {
@@ -66,6 +67,39 @@ export default function UsersList() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const params = useParams();
+  const lastProcessedMsgId = useRef(null);
+
+  // Reorder users when a new message arrives
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const lastMsg = messages[messages.length - 1];
+    
+    // only move to top if it's a new live message, not history loading
+    if (!lastMsg.isNew || lastMsg.id === lastProcessedMsgId.current) return;
+    lastProcessedMsgId.current = lastMsg.id;
+
+    setUsers((prev) => {
+      const userIndex = prev.findIndex((u) => u.id === lastMsg.sender_id || u.id === lastMsg.receiver_id);
+      if (userIndex === -1) {
+         handleFetchUsers(search, true);
+         return prev;
+      }
+
+      const newUsers = [...prev];
+      const [oldUser] = newUsers.splice(userIndex, 1);
+      
+      const user = { ...oldUser };
+      
+      if (lastMsg.sender_id === user.id && params.id !== user.id) {
+        user.unread_count = (user.unread_count || 0) + 1;
+      }
+
+      newUsers.unshift(user);
+      return newUsers;
+    });
+  }, [messages, params.id]);
+
   return (
     <div className={styles.userContainer}>
       <h3>Users</h3>
@@ -82,21 +116,30 @@ export default function UsersList() {
             key={u.id}
             className={styles.userItem}
             href={`/chat/${u.id}`}
-            onClick={() =>
+            onClick={() => {
+              // Reset unread count when clicking
+              setUsers(prev => prev.map(usr => usr.id === u.id ? { ...usr, unread_count: 0 } : usr));
               port.postMessage({
                 type: "send",
                 payload: {
                   type: "load_history",
                   receiver_Id: u.id,
-                  last_read_time:
-                    messages.length === 0 ? 0 : messages.at(-1).created_at,
+                  last_read_time: 0,
                 },
-              })
-            }
+              });
+            }}
           >
-            <div key={u.id}>
-              {u.nickname ? u.nickname : u.fisrtname + " " + u.lastname}
-              {onlineUsers.includes(u.id) && " (online)"}
+            <div className={styles.userInfo}>
+              <span className={styles.fullname}>{u.firstname} {u.lastname}</span>
+              {u.nickname && <span className={styles.nickname}>@{u.nickname}</span>}
+            </div>
+            <div className={styles.userStatus}>
+              {u.unread_count > 0 && (
+                <span className={styles.unreadBadge}>{u.unread_count}</span>
+              )}
+              {onlineUsers.includes(u.id) && (
+                <span className={styles.onlineBtn} />
+              )}
             </div>
           </Link>
         ))}

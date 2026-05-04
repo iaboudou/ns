@@ -22,20 +22,11 @@ func main() {
 	// initialize
 	r := &sqlite.Repo{Db: database}
 
-	// ws := &controllers.WS{
-	// 	Upgrader: websocket.Upgrader{
-	// 		ReadBufferSize:  1024,
-	// 		WriteBufferSize: 1024,
-	// 		CheckOrigin:     func(r *http.Request) bool { return true },
-	// 	},
-	// 	Clients: make(map[string]*controllers.UserWS),
-	// 	Mu:      sync.RWMutex{},
-	// }
-
 	hub := &models.Hub{
 		Connect:    make(chan *models.Client),
 		Disconnect: make(chan *models.Client),
 		Broadcast:  make(chan models.Message),
+		Notify:     make(chan models.FollowNotif),
 	}
 
 	controller := &controllers.Controller{

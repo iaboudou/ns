@@ -5,6 +5,7 @@ import (
 
 	handlers "rtf/controllers/handlers/chat"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 )
 
 func (c *Controller) RunBroker() {
@@ -32,11 +33,8 @@ func (c *Controller) RunBroker() {
 			// 			fmt.Printf("broker: failed to reconnect user: %v because of: %v\n", msg.Sender, err)
 			// 		}
 
-			// 	case "mark_read":
-			// 		err := sqlite.MarkRead(db, msg.Sender, msg.Receiver)
-			// 		if err != nil {
-			// 			fmt.Println("broker: failed to mark read:", err)
-			// 		}
+			case "mark_read":
+				sqlite.MarkRead(db, msg.SenderID, msg.ReceiverID)
 
 			// 	case "get_unread":
 			// 		err := GetUnread(clients, db, msg)
@@ -50,21 +48,48 @@ func (c *Controller) RunBroker() {
 					fmt.Println("broker: failed to load history:", err)
 				}
 
+			case "load_group_history":
+				GetOldGroupMessages(clients, db, msg)
+
 			case "chat":
-				err := Chat(clients, db, msg)
-				if err != nil {
-					fmt.Println("broker: failed to send message :", err)
+				Chat(clients, db, msg)
+
+			case "group_chat":
+				GroupChat(clients, db, msg)
+				
+
+			case "get_chat_users":
+				users, _ := sqlite.GetChatUsers(db, msg.SenderID)
+
+				cs, ok := clients[msg.SenderID]
+				if !ok {
+					continue
+				}
+				for _, conn := range cs {
+					conn.Mu.Lock()
+					conn.Ws.WriteJSON(map[string]any{
+						"event": "chat_users",
+						"users": users,
+					})
+					conn.Mu.Unlock()
 				}
 
-				// 	case "typing":
-				// 		Type(clients, msg.Receiver, msg.Sender)
+			case "get_notifications":
+				GetNotificationsWS(clients, db, msg)
 
+			case "get_unread_notifications_count":
+				GetUnreadNotificationCountWS(clients, db, msg)
+
+			case "typing":
 				// 	case "stop-typing":
 				// 		StopType(clients, msg.Receiver, msg.Sender)
 			}
 
 		case client := <-hub.Disconnect:
 			handlers.Disconnect(clients, client)
+
+		case notif := <-hub.Notify:
+			SendFollowNotification(clients, db, notif.FromUser, notif.ToUserID, notif.NotifType)
 		}
 	}
 }

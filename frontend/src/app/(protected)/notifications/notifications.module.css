@@ -1,0 +1,168 @@
+.page {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.count {
+  background: #6366f1;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* ── List ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  cursor: default;
+  transition: background 0.15s;
+  position: relative;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.unread {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.unread:hover {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+/* ── Avatar ── */
+.avatarWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  display: block;
+}
+
+.notifIcon {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-size: 14px;
+  background: #1e1e2e;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ── Content ── */
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.text {
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.name {
+  color: #f1f5f9;
+  font-weight: 700;
+}
+
+.time {
+  font-size: 0.78rem;
+  color: #6366f1;
+  font-weight: 500;
+}
+
+/* ── Unread dot ── */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6366f1;
+  flex-shrink: 0;
+}
+
+/*  */
+.empty {
+  text-align: center;
+  padding: 4rem 0;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emptyIcon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+.empty p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.empty span {
+  font-size: 0.85rem;
+}
+
+/* ── Skeleton ── */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonItem {
+  height: 72px;
+  border-radius: 12px;
+  background: gray;
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

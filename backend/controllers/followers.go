@@ -76,6 +76,24 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Send notification if this was a new follow
+	if message == "follow have been successfully" || message == "request have been sent" {
+		senderUser, err := c.DB.GetUserByIDDB(userID)
+		if err == nil {
+			notifType := "follow_accepted"
+			if message == "request have been sent" {
+				notifType = "follow_request"
+			}
+			go func() {
+				c.Hub.Notify <- models.FollowNotif{
+					FromUser:  senderUser,
+					ToUserID:  body["followed_id"].(string),
+					NotifType: notifType,
+				}
+			}()
+		}
+	}
+
 	help.Respond(w, &models.Response{
 		Code:    http.StatusOK,
 		Message: message,

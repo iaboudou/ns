@@ -31,12 +31,12 @@ export default function GetPosts({ GETPOSTS }) {
           setOpenComments: () => GETPOSTS.setOpenComments(post.id),
           onCommentCreated: GETPOSTS.onCommentCreated,
           setState: GETPOSTS.setState,
-          state : GETPOSTS.state,
+          state: GETPOSTS.state,
         };
 
         return <Post key={post.id} POST={POST} />;
       })}
-      <span ref={ref} className={styles.leading}/>
+      <span ref={ref} className={styles.leading} />
     </div>
   );
 }

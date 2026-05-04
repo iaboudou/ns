@@ -8,19 +8,28 @@ import {
   Handshake,
   Users,
   MessageSquare,
-  Bell,
   CircleUser,
   Home,
   LogOut,
+  Bell,
 } from "lucide-react";
 
 import { useWebSocket } from "@/lib/UseWebsocket";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Leftbar() {
   const router = useRouter();
-  const { port } = useWebSocket();
-
+  const { port, unreadNotifCount, setUnreadNotifCount } = useWebSocket();
   const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
+
+  // reset badge when user visits the notifications page
+  useEffect(() => {
+    if (pathname === "/notifications") {
+      setUnreadNotifCount(0);
+    }
+  }, [pathname]);
 
   const handleLogout = async () => {
     if (loading) return;
@@ -37,7 +46,7 @@ export default function Leftbar() {
       router.push("/login");
     } finally {
       setLoading(false);
-      port.postMessage({ type: "logout" });
+      if (port) port.postMessage({ type: "logout" });
     }
   };
 
@@ -61,13 +70,29 @@ export default function Leftbar() {
         <Link href="/chat" className={styles.buttonLink} title="Chat">
           <MessageSquare />
         </Link>
-        <Link
-          href="/notifications"
-          className={styles.buttonLink}
-          title="Notifications"
-        >
+        
+        <Link href="/notifications" className={styles.buttonLink} style={{ position: "relative" }} title="Notifications">
           <Bell />
+          {unreadNotifCount > 0 && (
+            <span style={{
+              position: "absolute",
+              top: "-6px",
+              right: "-6px",
+              background: "#ef4444",
+              color: "white",
+              fontSize: "10px",
+              fontWeight: "bold",
+              borderRadius: "999px",
+              padding: "1px 5px",
+              lineHeight: "1.4",
+              minWidth: "16px",
+              textAlign: "center",
+            }}>
+              {unreadNotifCount}
+            </span>
+          )}
         </Link>
+
         <Link href="/profile/me" className={styles.buttonLink} title="Profile">
           <CircleUser />
         </Link>

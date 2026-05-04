@@ -66,19 +66,18 @@ type Comment struct {
 
 // messages
 type Message struct {
-	ID           string
+	ID           string `json:"id"`
 	Type         string `json:"type"`
-	SenderID     string
-	SenderName   string
-	ReceiverName string
-	ReceiverID   string `json:"receiver_Id"`
+	SenderID     string `json:"sender_id"`
+	SenderName   string `json:"sender_name"`
+	ReceiverName string `json:"receiver_name"`
+	ReceiverID   string `json:"receiver_id"`
 	Content      string `json:"content"`
-	CreatedAt    int64
+	CreatedAt    int64  `json:"created_at"`
 
 	PortKey          string `json:"portKey"`
 	LastReadID       string `json:"last_read_Id"`
 	LastReadTime     int64  `json:"last_read_time"`
-
 }
 
 // this is for the ws
@@ -128,13 +127,6 @@ type Event struct {
 	Date        string `json:"date"`
 }
 
-type EventResponse struct {
-	ID      string
-	EventID string
-	UserID  string
-	Status  string
-}
-
 // represent user in ws connection
 type Client struct {
 	ID          string
@@ -148,4 +140,12 @@ type Hub struct {
 	Connect    chan *Client
 	Disconnect chan *Client
 	Broadcast  chan Message
+	Notify     chan FollowNotif
+}
+
+// FollowNotif is sent through Hub.Notify when a follow event occurs
+type FollowNotif struct {
+	FromUser    User
+	ToUserID    string
+	NotifType   string // "follow_request" or "follow_accepted"
 }

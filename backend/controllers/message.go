@@ -69,9 +69,11 @@ func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.
 	for _, client := range cs {
 		client.Mu.Lock()
 		client.Ws.WriteJSON(map[string]any{
-			"event":    "history",
-			"messages": messages,
-			"portKey":  msg.PortKey,
+			"event":       "history",
+			"messages":    messages,
+			"hasMore":     len(messages) == 10,
+			"receiver_id": msg.ReceiverID, 
+			"portKey":     msg.PortKey,
 		})
 
 		client.Mu.Unlock()
@@ -191,3 +193,84 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 // 		client.Mu.Unlock()
 // 	}
 // }
+
+func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
+	cs, ok := clients[msg.SenderID]
+	if !ok {
+		return nil
+	}
+
+	messages, err := sqlite.SelectOldGroupMessages(db, msg.ReceiverID, msg.LastReadTime)
+	if err != nil {
+		return err
+	}
+
+	for _, client := range cs {
+		client.Mu.Lock()
+		client.Ws.WriteJSON(map[string]any{
+			"event":       "history",
+			"messages":    messages,
+			"hasMore":     len(messages) == 10,
+			"receiver_Id": msg.ReceiverID,
+			"isGroup":     true,
+			"portKey":     msg.PortKey,
+		})
+		client.Mu.Unlock()
+	}
+
+	return nil
+}
+
+func GroupChat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
+	if len(strings.TrimSpace(msg.Content)) == 0 {
+		return errors.New("message is empty")
+	}
+
+	msg.CreatedAt = time.Now().UnixMilli()
+
+	// insert message
+	msgID, err := sqlite.InsertGroupMessage(db, msg.ReceiverID, msg.SenderID, msg.Content, msg.CreatedAt)
+	if err != nil {
+		return err
+	}
+
+	// get sender info
+	senderUser, err := sqlite.GetUserByID(db, msg.SenderID)
+	if err != nil {
+		return err
+	}
+
+	// get group members
+	members, err := sqlite.GetGroupMembers(db, msg.ReceiverID)
+	if err != nil {
+		return err
+	}
+
+	payload := map[string]any{
+		"event": "new_group_message",
+		"message": map[string]any{
+			"id":              msgID,
+			"group_id":        msg.ReceiverID,
+			"content":         msg.Content,
+			"created_at":      msg.CreatedAt,
+			"sender_id":       msg.SenderID,
+			"sender_nickname": senderUser.Nickname,
+			"sender_fullname": senderUser.Firstname + " " + senderUser.Lastname,
+			"sender_profile":  senderUser.ProfileImage,
+			"is_group":        true,
+		},
+	}
+
+	// broadcast to all online members
+	for _, memberID := range members {
+		if memberConns, online := clients[memberID]; online {
+			for _, conn := range memberConns {
+				conn.Mu.Lock()
+				conn.Ws.WriteJSON(payload)
+				conn.Mu.Unlock()
+			}
+		}
+	}
+
+	return nil
+}
