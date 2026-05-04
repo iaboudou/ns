@@ -29,7 +29,6 @@ export default function Page() {
           if (user) setChatUser(user);
         }
       } catch (err) {
-        console.error("Failed to fetch chat user", err);
       }
     };
     if (params.id) fetchUser();

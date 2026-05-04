@@ -16,6 +16,9 @@ func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fro
 		return
 	}
 
+	// if it already exist remove it to rewrite it
+	db.Exec(`DELETE FROM notifications WHERE user_id = ? AND type = ? AND ref_id = ?`, toUserID, notifType, fromUser.ID)
+
 	_, err = db.Exec(`
 		INSERT INTO notifications (id, user_id, type, ref_id, is_read, created_at)
 		VALUES (?, ?, ?, ?, 0, ?)
@@ -77,19 +80,19 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 	notifs := []NotifRow{}
 	for rows.Next() {
 		var n NotifRow
-		var isReadInt int
+		var isReadBool bool
 		var refID, firstname, lastname, profileImage sql.NullString
 		var createdAtRaw interface{}
 
-		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadInt, &createdAtRaw, &firstname, &lastname, &profileImage)
+		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadBool, &createdAtRaw, &firstname, &lastname, &profileImage)
 		if err != nil {
 			fmt.Println("Scan error:", err)
 			continue
 		}
-		
+
 		n.RefID = refID.String
 
-		n.IsRead = isReadInt == 1
+		n.IsRead = isReadBool
 		n.FromName = firstname.String + " " + lastname.String
 		n.FromImage = profileImage.String
 

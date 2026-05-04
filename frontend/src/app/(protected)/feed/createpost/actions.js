@@ -49,7 +49,6 @@ export const createpost = async (state) => {
 
         return data.post || null;
     } catch (err) {
-        console.error(err);
         return null;
     }
 };

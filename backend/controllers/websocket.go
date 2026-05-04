@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -44,6 +45,7 @@ func (c *Controller) WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	hub.Connect <- client
 	for {
 		_, payload, err := ws.ReadMessage()
+		fmt.Println("here: ", string(payload))
 		if err != nil {
 			client.Ws.Close()
 			hub.Disconnect <- client

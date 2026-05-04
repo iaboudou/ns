@@ -20,7 +20,6 @@ export const WebSocketProvider = ({ children }) => {
 
     worker.port.onmessage = (msg) => {
       const event = msg.data.event;
-      console.log(event);
 
       switch (event) {
         case "connected": {
@@ -86,7 +85,12 @@ export const WebSocketProvider = ({ children }) => {
 
         case "notification": {
           setUnreadNotifCount((prev) => prev + 1);
-          setNotifications((prev) => [msg.data, ...prev]);
+          setNotifications((prev) => {
+            const filtered = prev.filter(
+              (n) => !(n.type === msg.data.type && n.ref_id === msg.data.ref_id)
+            );
+            return [msg.data, ...filtered];
+          });
           break;
         }
 

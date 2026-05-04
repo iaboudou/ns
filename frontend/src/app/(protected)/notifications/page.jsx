@@ -1,21 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "@/lib/UseWebsocket";
 import Link from "next/link";
 import styles from "./notifications.module.css";
 import { timeAgo } from "@/_lib/timeago";
 
 const notifLabel = (n) => {
-  if (n.type === "follow_request") {
-    return `send you a follow request`;
+  switch (n.type) {
+    case "follow_request":
+      return "sent you a follow request";
+    case "follow_accept":
+      return "accepted your request";
+    case "follow":
+      return "started following you";
+    case "like":
+      return "liked your post";
+    case "comment":
+      return "commented on your post";
+    case "message":
+      return "sent you a message";
+    default:
+      return "sent you a notification";
   }
-  return `follow you`;
+};
+
+const notifLink = (n) => {
+  switch (n.type) {
+    case "follow":
+      return `/profile/${n.ref_id}`;
+    case "follow_request":
+      return `/profile/${n.ref_id}`;
+    case "follow_accept":
+      return `/profile/${n.ref_id}`;
+
+    case "like":
+    case "comment":
+      return `/post/${n.ref_id}`;
+
+    case "message":
+      return `/chat/${n.ref_id}`;
+
+    default:
+      return "/";
+  }
 };
 
 export default function NotificationsPage() {
   const { setUnreadNotifCount, port, notifications } = useWebSocket();
   const [loading, setLoading] = useState(true);
+  const prevCount = useRef(notifications.length);
 
   useEffect(() => {
     if (port) {
@@ -25,31 +59,36 @@ export default function NotificationsPage() {
     setUnreadNotifCount(0);
   }, [port]);
 
+  // scroll to top when a new notification arrives
+  useEffect(() => {
+    if (notifications.length > prevCount.current) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    prevCount.current = notifications.length;
+  }, [notifications.length]);
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
         <h1 className={styles.title}>Notifications</h1>
-        {notifications.length > 0 && (
-          <span className={styles.count}>{notifications.length}</span>
-        )}
       </div>
 
       <div className={styles.list}>
         {loading ? (
-          <div className={styles.skeleton}>
-            {[1, 2, 3].map((i) => (
-              <div key={i} className={styles.skeletonItem} />
-            ))}
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <p>Loading notifications...</p>
           </div>
         ) : notifications.length === 0 ? (
           <div className={styles.empty}>
-            <span className={styles.emptyIcon}>🔔</span>
+            <div className={styles.emptyIcon}></div>
             <p>No notifications yet</p>
+            <span>We'll let you know when something happens!</span>
           </div>
         ) : (
           notifications.map((n) => (
             <Link
-              href={`/profile/${n.ref_id}`}
+              href={notifLink(n)}
               key={n.id}
               className={`${styles.item} ${!n.is_read ? styles.unread : ""}`}
             >
@@ -58,28 +97,27 @@ export default function NotificationsPage() {
                   src={
                     n.from_image
                       ? `http://localhost:4001/pics/${n.from_image}`
-                      : ""
+                      : "/default-avatar.png"
                   }
                   alt={n.from_name}
                   className={styles.avatar}
                   onError={(e) => {
-                    e.target.src = "";
+                    e.target.src = "/default-avatar.png";
                   }}
                 />
-                <span className={styles.notifIcon}>
-                  { }
-                </span>
               </div>
 
               <div className={styles.content}>
                 <p className={styles.text}>
-                  <strong className={styles.name}>{n.from_name}</strong>{" "}
+                  <span className={styles.name}>{n.from_name}</span>{" "}
                   {notifLabel(n)}
                 </p>
-                <span className={styles.time}>{timeAgo(n.created_at)}</span>
+                <span className={styles.time}>
+                  {timeAgo(n.created_at)}
+                </span>
               </div>
 
-              {!n.is_read && <span className={styles.dot} />}
+              {!n.is_read && <div className={styles.unreadDot} />}
             </Link>
           ))
         )}

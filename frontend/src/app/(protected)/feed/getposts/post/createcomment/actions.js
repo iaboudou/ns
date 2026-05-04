@@ -14,7 +14,6 @@ export async function createcomment(state, post_id) {
             body: formdata
         })
         if (!res.ok) {
-            console.error("error creating comment");
             return null
         }
 
@@ -23,7 +22,6 @@ export async function createcomment(state, post_id) {
         return json.comment || null
 
     } catch {
-        console.error("error creating comment");
         return null
     }
 

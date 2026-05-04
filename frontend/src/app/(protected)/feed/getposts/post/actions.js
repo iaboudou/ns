@@ -18,10 +18,8 @@ export async function createcomment(state, post_id) {
         if (handleUnauthorized(res)) return null;
 
         if (!res.ok) {
-            console.error("error creating comment");
         }
     } catch (e) {
-        console.error(e)
     }
 }
 

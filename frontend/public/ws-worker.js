@@ -61,10 +61,8 @@ self.addEventListener("connect", (e) => {
                   );
                   break;
               }
-              console.log(data);
               broadcast(data);
             } catch (err) {
-              console.error("WS parse error", err);
             }
           };
 
@@ -76,7 +74,6 @@ self.addEventListener("connect", (e) => {
           };
 
           socket.onerror = (err) => {
-            console.error("WS error", err);
           };
         }
         break;
