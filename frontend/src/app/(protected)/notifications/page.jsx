@@ -7,7 +7,9 @@ import styles from "./notifications.module.css";
 import { timeAgo } from "@/_lib/timeago";
 
 const notifLabel = (n) => {
-  console.log(n)///////////////
+  if (n.type.startsWith("create_event:")) {
+    return "created a new event in the group";
+  }
   switch (n.type) {
     case "follow_request":
       return "sent you a follow request";
@@ -27,6 +29,10 @@ const notifLabel = (n) => {
 };
 
 const notifLink = (n) => {
+  if (n.type.startsWith("create_event:")) {
+    const groupId = n.type.split(":")[1];
+    return `/groups/${groupId}/events`;
+  }
   switch (n.type) {
     case "follow":
       return `/profile/${n.ref_id}`;

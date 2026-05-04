@@ -80,7 +80,7 @@ func (c *Controller) handlePostGroups(w http.ResponseWriter, r *http.Request, s 
 
 	// POST /api/groups/:groupID/events
 	case len(s) == 2 && s[1] == "events":
-		handlers.CreateEvent(w, r, c.DB.Db, s[0], userID)
+		handlers.CreateEvent(w, r, c.DB, c.Hub, s[0], userID)
 
 	// POST /api/groups/:groupID/invites
 	case len(s) == 2 && s[1] == "invites":

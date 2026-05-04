@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -11,10 +10,11 @@ import (
 	"rtf/help"
 	"rtf/models"
 
+	"rtf/pkg/db/sqlite"
 	"github.com/gofrs/uuid/v5"
 )
 
-func CreateEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userID string) {
+func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *models.Hub, groupID, userID string) {
 	var event models.Event
 
 	err := json.NewDecoder(r.Body).Decode(&event)
@@ -42,7 +42,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, us
 		return
 	}
 
-	_, err = db.Exec(`INSERT INTO events (id, group_id,creator_id, title, description, event_date)
+	_, err = db.Db.Exec(`INSERT INTO events (id, group_id,creator_id, title, description, event_date)
 	VALUES (?, ?, ?, ?, ?, ?)`, eventId.String(), groupID, userID, event.Title, event.Description, event.Date)
 	if err != nil {
 		fmt.Println("error inserting event in db :", err)
@@ -50,8 +50,29 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, us
 		return
 	}
 
+	// Send notification if this was a new createevent
+	senderUser, errUser := db.GetUserByIDDB(userID)
+	if errUser == nil {
+		rows, errMembers := db.Db.Query(`SELECT user_id FROM group_members WHERE group_id = ? AND status = 'accepted'`, groupID)
+		if errMembers == nil {
+			defer rows.Close()
+			for rows.Next() {
+				var memberID string
+				if err := rows.Scan(&memberID); err == nil && memberID != userID {
+					go func(toID string) {
+						hub.Notify <- models.FollowNotif{
+							FromUser:  senderUser,
+							ToUserID:  toID,
+							NotifType: "create_event:" + groupID + ":" + eventId.String(),
+						}
+					}(memberID)
+				}
+			}
+		}
+	}
+
 	var author_nickname, author_firstname, author_lastname string
-	err = db.QueryRow(`SELECT nickname, firstname, lastname FROM users WHERE
+	err = db.Db.QueryRow(`SELECT nickname, firstname, lastname FROM users WHERE
 	id = ?`, userID).Scan(&author_nickname, &author_firstname, &author_lastname)
 	if err != nil {
 		fmt.Println("error getting user name creating event: ", err)
