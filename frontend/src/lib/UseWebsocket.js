@@ -28,7 +28,7 @@ export const WebSocketProvider = ({ children }) => {
           portKeyRef.current = msg.data.portKey;
           setPort(worker.port);
           worker.port.postMessage({ type: "connect" });
-          worker.port.postMessage({ type: "get_unread_notifications_count" });
+          worker.port.postMessage({ type: "send", payload: { type: "get_unread_notifications_count" } });
           break;
         }
 
@@ -86,6 +86,7 @@ export const WebSocketProvider = ({ children }) => {
 
         case "notification": {
           setUnreadNotifCount((prev) => prev + 1);
+          setNotifications((prev) => [msg.data, ...prev]);
           break;
         }
 

@@ -3,10 +3,8 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"slices"
-	"strings"
 	"time"
 
 	"rtf/help"
@@ -259,42 +257,6 @@ func (r *Repo) InsertPostDB(userID string, post models.Post) (models.Post, error
 	return post, nil
 }
 
-// this check if the categories exists in DB,  it return the categories id & bool, bool type is false in case of an element not exist, true otherwise
-func (r *Repo) IsCategoryCorrect(category string) ([]int, error) {
-	if len(category) == 0 {
-		return nil, errors.New("post category is required")
-	}
-
-	categories := strings.Split(category, ",")
-	seen := make(map[string]bool)
-	var ids []int
-
-	for _, c := range categories {
-		c = strings.TrimSpace(c)
-
-		if seen[c] {
-			return nil, errors.New("duplicate category")
-		}
-		seen[c] = true
-
-		var id int
-		err := r.Db.QueryRow(
-			"SELECT id FROM categories WHERE category_name = ?",
-			c,
-		).Scan(&id)
-		if err != nil {
-			return nil, errors.New("invalid category")
-		}
-
-		ids = append(ids, id)
-	}
-	if len(ids) == 0 {
-		return nil, errors.New("invalid category")
-	}
-
-	return ids, nil
-}
-
 // insert comment into the DB
 func (r *Repo) InsertCommentDB(comment models.Comment) (models.Comment, error) {
 	commentUUID, err := uuid.NewV4()
@@ -516,7 +478,6 @@ func (r *Repo) IsFollower(userID, otherID string) (bool, error) {
 	return status == "accepted", nil
 }
 
-
 // this function get the comments post from DB based on an postID
 func (r *Repo) Get10PostComments(postID string, offset int) ([]models.Comment, error) {
 	comments := []models.Comment{}
@@ -542,163 +503,6 @@ func (r *Repo) Get10PostComments(postID string, offset int) ([]models.Comment, e
 	return comments, nil
 }
 
-// this func get the categories related to the post from DB
-func (r *Repo) GetPostCategory(postID string) (string, error) {
-	var categoryIDs string
-
-	// get "1,2,3"
-	err := r.Db.QueryRow(`SELECT category_ids FROM posts WHERE id = ?`, postID).Scan(&categoryIDs)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return "", errors.New("post not exists")
-		}
-		return "", errors.New("SERVER ERROR")
-	}
-
-	ids := strings.Split(categoryIDs, ",")
-	categories := []string{}
-
-	// get categories name
-	for _, id := range ids {
-		id = strings.TrimSpace(id)
-		var name string
-		err := r.Db.QueryRow(`SELECT category_name FROM categories WHERE id = ?`, id).Scan(&name)
-		if err != nil {
-			return "", errors.New("invalid category")
-		}
-		categories = append(categories, name)
-	}
-
-	res := strings.Join(categories, ",")
-
-	return res, nil
-}
-
-// get all users exists in the DB
-func (r *Repo) Get100UsersFor(userID string, startID int) ([]models.User, error) {
-	var users []models.User
-
-	rows, err := r.Db.Query(`SELECT id, nickname, birthday, gender, firstname, lastname, email FROM users LIMIT 100 OFFSET ?`, startID)
-	if err != nil {
-		return nil, errors.New("SERVER ERROR")
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var u models.User
-		err := rows.Scan(&u.ID, &u.Nickname, &u.Birthday, &u.Gender, &u.Firstname, &u.Lastname, &u.Email)
-		if err != nil {
-			return nil, errors.New("SERVER ERROR")
-		}
-		if u.ID != userID {
-			users = append(users, u)
-		}
-	}
-	if len(users) == 0 {
-		return nil, errors.New("startID reached the max")
-	}
-	return users, nil
-}
-
-// // get the users info with the last message for the message list
-// func (r *Repo) GetUsersInfoFor(userID string, forAll bool) ([]models.UserInfo, error) {
-// 	usersInfo := []models.UserInfo{}
-
-// 	rows, err := r.Db.Query(`SELECT id, nickname, firstname, lastname FROM users`)
-// 	if err != nil {
-// 		return nil, errors.New("SERVER ERROR")
-// 	}
-// 	defer rows.Close()
-
-// 	for rows.Next() {
-// 		var u models.UserInfo
-// 		err := rows.Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname)
-// 		if err != nil {
-// 			return nil, errors.New("SERVER ERROR")
-// 		}
-
-// 		if u.ID == userID && !forAll {
-// 			continue
-// 		}
-// 		// get the last message between them
-// 		var msg models.Message
-// 		err = r.Db.QueryRow(`
-//             SELECT id, sender_id, receiver_id, content, is_NOT_read, created_at
-//             FROM messages
-//             WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
-//             ORDER BY created_at DESC
-//             LIMIT 1
-//         `, userID, u.ID, u.ID, userID).Scan(&msg.ID, &msg.SenderID, &msg.ReceiverID, &msg.Content, &msg.IsNotRead, &msg.CreatedAt)
-
-// 		if err != nil && err != sql.ErrNoRows {
-// 			return nil, errors.New("SERVER ERROR")
-// 		}
-// 		u.LastMessage = msg
-
-// 		// calcul the number of messages not read from the other user
-// 		var count int
-// 		err = r.Db.QueryRow(` SELECT COUNT(*) FROM messages WHERE sender_id = ? AND receiver_id = ? AND is_NOT_read = 1`, u.ID, userID).Scan(&count)
-// 		if err != nil {
-// 			return nil, errors.New("SERVER ERROR")
-// 		}
-// 		u.NumberOfUnreadMessages = count
-
-// 		usersInfo = append(usersInfo, u)
-
-// 	}
-
-// 	if len(usersInfo) == 0 {
-// 		return nil, errors.New("no user exists")
-// 	}
-
-// 	return usersInfo, nil
-// }
-
-// get the user id based on the front id from DB
-func (r *Repo) GetUserByFrontID(frontID string) (string, error) {
-	var id string
-	er := r.Db.QueryRow("SELECT id FROM users WHERE front_id=?", frontID).Scan(&id)
-	return id, er
-}
-
-// // insert new message to the DB
-// func (r *Repo) InsertMessage(msg map[string]interface{}) (models.Message, error) {
-// 	content, ok1 := msg["Content"].(string)
-// 	senderID, ok2 := msg["SenderID"].(string)
-// 	receiverID, ok3 := msg["ReceiverID"].(string)
-// 	if !ok1 || !ok2 || !ok3 {
-// 		return models.Message{}, errors.New("invalid message format")
-// 	}
-
-// 	m := models.Message{
-// 		SenderID:   senderID,
-// 		ReceiverID: receiverID,
-// 		Content:    content,
-// 		CreatedAt:  time.Now().Format("2006-01-02 15:04:05.000000"),
-// 	}
-
-// 	res, er := r.Db.Exec("INSERT INTO messages(sender_id, receiver_id, content, is_NOT_read, created_at) VALUES (?, ?, ?, ?, ?)", m.SenderID, m.ReceiverID, m.Content, 1, m.CreatedAt)
-// 	if er != nil {
-// 		return models.Message{}, er
-// 	}
-
-// 	id, _ := res.LastInsertId()
-// 	m.ID = int(id)
-// 	m.IsNotRead = 1
-
-// 	m.SenderName, er = r.GetUserAuthernameByID(senderID)
-// 	if er != nil {
-// 		return models.Message{}, er
-// 	}
-// 	m.ReceiverName, er = r.GetUserAuthernameByID(receiverID)
-// 	if er != nil {
-// 		return models.Message{}, er
-// 	}
-
-// 	return m, nil
-// }
-
-
 // get user infos from DB
 func (r *Repo) GetUserInfos(userID string) (help.U, error) {
 	user := help.U{}
@@ -718,77 +522,10 @@ func (r *Repo) GetUserInfos(userID string) (help.U, error) {
 	if er != nil {
 		return help.U{}, er
 	}
-	fmt.Println(user.Avatar)
 	user.ID = userID
 
 	return user, nil
 }
-
-// // this method get the users with its last message in order from DB for chat
-// func (r *Repo) GetUsersForChatInOrder(userID string, offset int) ([]models.Message, error) {
-// 	rows, er := r.Db.Query(`
-// 		SELECT sender_id, receiver_id, content, is_NOT_read, created_at FROM messages
-// 		WHERE sender_id = ? OR receiver_id = ?
-// 		ORDER BY created_at DESC`, userID, userID)
-// 	if er != nil {
-// 		return nil, er
-// 	}
-// 	defer rows.Close()
-
-// 	msgs := []models.Message{}
-// 	seen := make(map[string]bool)
-// 	i := 0
-
-// 	for rows.Next() {
-// 		m := models.Message{}
-// 		if er := rows.Scan(&m.SenderID, &m.ReceiverID, &m.Content, &m.IsNotRead, &m.CreatedAt); er != nil {
-// 			continue
-// 		}
-
-// 		if m.SenderID != userID {
-// 			// in case the user is the receiver
-// 			if seen[m.SenderID] {
-// 				continue
-// 			}
-// 			seen[m.SenderID] = true
-
-// 			if i < offset {
-// 				i++
-// 				continue
-// 			}
-
-// 			if er := r.GetUserNickNameByID(&m.SenderNickname, m.SenderID); er != nil {
-// 				return nil, errors.New("SERVER ERROR")
-// 			}
-
-// 		} else {
-// 			// in case the user is the sender
-// 			if seen[m.ReceiverID] {
-// 				continue
-// 			}
-// 			seen[m.ReceiverID] = true
-
-// 			if i < offset {
-// 				i++
-// 				continue
-// 			}
-
-// 			if er := r.GetUserNickNameByID(&m.ReceiverNickname, m.ReceiverID); er != nil {
-// 				return nil, errors.New("SERVER ERROR")
-// 			}
-// 		}
-
-// 		msgs = append(msgs, m)
-// 		if len(msgs) >= 100 {
-// 			break
-// 		}
-// 	}
-
-// 	return msgs, nil
-// }
-
-
-
 
 // get users that the (userID) does not follow them yet from db
 func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, error) {
@@ -865,7 +602,7 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 	}
 
 	if finalStatus == "pending" {
-		// 
+		//
 	}
 
 	return message, nil

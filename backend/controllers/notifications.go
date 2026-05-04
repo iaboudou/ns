@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gofrs/uuid/v5"
 	"rtf/models"
+
+	"github.com/gofrs/uuid/v5"
 )
 
-//
 func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fromUser models.User, toUserID, notifType string) {
 	id, err := uuid.NewV4()
 	if err != nil {
@@ -33,10 +33,12 @@ func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fro
 	payload := map[string]any{
 		"event":      "notification",
 		"id":         id.String(),
-		"notif_type": notifType,
-		"from_id":    fromUser.ID,
+		"type":       notifType,
+		"ref_id":     fromUser.ID,
 		"from_name":  fromUser.Firstname + " " + fromUser.Lastname,
+		"from_image": fromUser.ProfileImage,
 		"created_at": time.Now().Unix(),
+		"is_read":    false,
 	}
 	for _, c := range cs {
 		c.Mu.Lock()
@@ -45,7 +47,6 @@ func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fro
 	}
 }
 
-// 
 func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	userID := msg.SenderID
 
@@ -77,14 +78,16 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 	for rows.Next() {
 		var n NotifRow
 		var isReadInt int
-		var firstname, lastname sql.NullString
-		var profileImage sql.NullString
+		var refID, firstname, lastname, profileImage sql.NullString
 		var createdAtRaw interface{}
 
-		err := rows.Scan(&n.ID, &n.Type, &n.RefID, &isReadInt, &createdAtRaw, &firstname, &lastname, &profileImage)
+		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadInt, &createdAtRaw, &firstname, &lastname, &profileImage)
 		if err != nil {
+			fmt.Println("Scan error:", err)
 			continue
 		}
+		
+		n.RefID = refID.String
 
 		n.IsRead = isReadInt == 1
 		n.FromName = firstname.String + " " + lastname.String
@@ -97,6 +100,8 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 			n.CreatedAt = v.Unix()
 		case string:
 			fmt.Sscanf(v, "%d", &n.CreatedAt)
+		case []byte:
+			fmt.Sscanf(string(v), "%d", &n.CreatedAt)
 		}
 
 		notifs = append(notifs, n)
@@ -117,7 +122,6 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 	return nil
 }
 
-//
 func GetUnreadNotificationCountWS(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	userID := msg.SenderID
 

@@ -52,7 +52,7 @@ export default function Post({ POST }) {
         <div className={styles.meta}>
           <div className={styles.nameRow}>
             <span className={styles.name}>
-              <Link className={styles.linkprofilename} href={`/profile/${POST.post.user_id}`}>
+              <Link className={styles.linkprofilename} href={id != POST.post.user_id ? `/profile/${POST.post.user_id}` : `/profile/me`}>
                 {POST.post.firstname} {POST.post.lastname}
               </Link>
             </span>

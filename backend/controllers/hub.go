@@ -56,7 +56,6 @@ func (c *Controller) RunBroker() {
 
 			case "group_chat":
 				GroupChat(clients, db, msg)
-				
 
 			case "get_chat_users":
 				users, _ := sqlite.GetChatUsers(db, msg.SenderID)
@@ -79,10 +78,6 @@ func (c *Controller) RunBroker() {
 
 			case "get_unread_notifications_count":
 				GetUnreadNotificationCountWS(clients, db, msg)
-
-			case "typing":
-				// 	case "stop-typing":
-				// 		StopType(clients, msg.Receiver, msg.Sender)
 			}
 
 		case client := <-hub.Disconnect:

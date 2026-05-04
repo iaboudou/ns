@@ -7,7 +7,10 @@ import styles from "./notifications.module.css";
 import { timeAgo } from "@/_lib/timeago";
 
 const notifLabel = (n) => {
-  return `sent you a notification`;
+  if (n.type === "follow_request") {
+    return `send you a follow request`;
+  }
+  return `follow you`;
 };
 
 export default function NotificationsPage() {
@@ -16,7 +19,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     if (port) {
-      port.postMessage({ type: "get_notifications" });
+      port.postMessage({ type: "send", payload: { type: "get_notifications" } });
       setLoading(false);
     }
     setUnreadNotifCount(0);
@@ -64,7 +67,7 @@ export default function NotificationsPage() {
                   }}
                 />
                 <span className={styles.notifIcon}>
-                  {}
+                  { }
                 </span>
               </div>
 

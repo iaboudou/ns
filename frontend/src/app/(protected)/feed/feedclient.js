@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import CreatePost from '@/app/(protected)/feed/createpost/createpost';
 import GetPosts from '@/app/(protected)/feed/getposts/getposts';
-import { onPostCreated, onCommentCreated, onLikeCreated, loadPosts, setOpenComment, fetchNewPostsWhileScrooling } from './actions';
+import { onPostCreated, onCommentCreated, loadPosts, setOpenComment, fetchNewPostsWhileScrooling } from './actions';
 import { usePathname } from 'next/navigation';
 
 // home page

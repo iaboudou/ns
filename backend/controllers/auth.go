@@ -56,7 +56,6 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	help.RespondOK(w, nil, "")
-	// c.Anounce()
 }
 
 // this handler is for login. it expects a POST request, and it returns a JSON response with (error or success)
@@ -117,10 +116,6 @@ func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c.DB.DisconnectUser(userID)
-
-	// if ws, ok := c.Ws.Clients[userID]; ok && ws != nil {
-	// 	ws.RemoveUserWS(c.Ws, userID)
-	// }
 
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_id",

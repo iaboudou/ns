@@ -3,40 +3,12 @@ package controllers
 import (
 	"database/sql"
 	"errors"
-	"fmt"
-	"reflect"
 	"strings"
 	"time"
 
 	"rtf/models"
 	"rtf/pkg/db/sqlite"
 )
-
-// func GetUnread(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
-// 	cs, ok := clients[msg.Sender]
-// 	if !ok {
-// 		return nil
-// 	}
-
-// 	var amount int
-// 	amount, err := sqlite.SelectUnreadCount(db, &msg)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	for _, client := range cs {
-// 		client.Mu.Lock()
-// 		err = client.Ws.WriteJSON(map[string]any{
-// 			"event":    "unread",
-// 			"receiver": msg.Receiver,
-// 			"amount":   amount,
-// 			"portKey":  msg.PortKey,
-// 		})
-// 		client.Mu.Unlock()
-// 	}
-
-// 	return err
-// }
 
 func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	cs, ok := clients[msg.SenderID]
@@ -50,17 +22,6 @@ func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.
 		return err
 	}
 
-	// for _, client := range cs {
-	// 	client.Mu.Lock()
-	// 	client.Ws.WriteJSON(map[string]any{
-	// 		"event":  "read",
-	// 		"target": msg.ReceiverID,
-	// 	})
-
-	// 	client.Mu.Unlock()
-	// }
-
-	// fetch a page of messages older than the provided timestamp (cursor)
 	messages, err := sqlite.SelectOldMessages(db, &msg)
 	if err != nil {
 		return err
@@ -72,7 +33,7 @@ func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.
 			"event":       "history",
 			"messages":    messages,
 			"hasMore":     len(messages) == 10,
-			"receiver_id": msg.ReceiverID, 
+			"receiver_id": msg.ReceiverID,
 			"portKey":     msg.PortKey,
 		})
 
@@ -82,17 +43,6 @@ func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.
 	return nil
 }
 
-func PrintStruct(s interface{}) {
-	v := reflect.ValueOf(s)
-	t := reflect.TypeOf(s)
-
-	for i := 0; i < v.NumField(); i++ {
-		fieldName := t.Field(i).Name
-		fieldValue := v.Field(i).Interface()
-
-		fmt.Println(fieldName, fieldValue)
-	}
-}
 
 func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	if len(strings.TrimSpace(msg.Content)) == 0 {
@@ -164,35 +114,6 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 	return nil
 }
 
-// func Type(clients map[string][]*models.Client, receiver, sender string) {
-// 	cs, ok := clients[receiver]
-// 	if !ok {
-// 		return
-// 	}
-// 	for _, client := range cs {
-// 		client.Mu.Lock()
-// 		client.Ws.WriteJSON(map[string]any{
-// 			"event": "typing",
-// 			"typer": sender,
-// 		})
-// 		client.Mu.Unlock()
-// 	}
-// }
-
-// func StopType(clients map[string][]*models.Client, receiver, sender string) {
-// 	cs, ok := clients[receiver]
-// 	if !ok {
-// 		return
-// 	}
-// 	for _, client := range cs {
-// 		client.Mu.Lock()
-// 		client.Ws.WriteJSON(map[string]any{
-// 			"event": "stop-typing",
-// 			"typer": sender,
-// 		})
-// 		client.Mu.Unlock()
-// 	}
-// }
 
 func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	cs, ok := clients[msg.SenderID]

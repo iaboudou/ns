@@ -71,25 +71,12 @@ export default function Leftbar() {
           <MessageSquare />
         </Link>
         
-        <Link href="/notifications" className={styles.buttonLink} style={{ position: "relative" }} title="Notifications">
+        <Link href="/notifications" className={styles.buttonLink} title="Notifications">
           <Bell />
           {unreadNotifCount > 0 && (
-            <span style={{
-              position: "absolute",
-              top: "-6px",
-              right: "-6px",
-              background: "#ef4444",
-              color: "white",
-              fontSize: "10px",
-              fontWeight: "bold",
-              borderRadius: "999px",
-              padding: "1px 5px",
-              lineHeight: "1.4",
-              minWidth: "16px",
-              textAlign: "center",
-            }}>
+            <div className={styles.NOTIF}>
               {unreadNotifCount}
-            </span>
+            </div>
           )}
         </Link>
 

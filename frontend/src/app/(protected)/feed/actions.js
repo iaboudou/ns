@@ -23,22 +23,6 @@ export function onCommentCreated(setState, post_id, comment) {
   }));
 }
 
-// insert like to the state
-export function onLikeCreated(setState, post_id) {
-  setState((prev) => ({
-    ...prev,
-    posts: prev.posts.map((p) =>
-      p.id === post_id
-        ? {
-          ...p,
-          is_liked: !p.is_liked,
-          number_of_likes: (p.number_of_likes || 0) + (p.is_liked ? -1 : 1),
-        }
-        : p,
-    ),
-  }));
-}
-
 //
 export async function loadPosts(state, pathname, section, profileId) {
 
