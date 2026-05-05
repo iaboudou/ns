@@ -5,7 +5,7 @@ export default function DisplayUser({ u, groupId, setUsers }) {
   return (
     <div className={styles.userItem}>
       <div className={styles.userLeft}>
-        <img src={u.profile_image ? `http://localhost:4001/pics/${u.profile_image}` : '/avatar.jpg'} className={styles.userAvatar} alt="" />
+        <img src={u.profile_image ? `http://localhost:4001/pics/${u.profile_image}` : '/default.jpg'} className={styles.userAvatar} alt="" />
 
         <div className={styles.userText}>
           <div className={styles.userNickname}>{u.nickname}</div>

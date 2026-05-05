@@ -1,107 +1,357 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --bg-base:        #0b0b16;
+  --bg-card:        #111122;
+  --bg-surface:     #161628;
+  --bg-input:       #1a1a2e;
+  --bg-input-focus: #1e1e38;
+  --accent:         #7c5cfc;
+  --accent-light:   #9b80ff;
+  --accent-glow:    rgba(124, 92, 252, 0.25);
+  --accent-dim:     rgba(124, 92, 252, 0.10);
+  --text-primary:   #f0ecff;
+  --text-secondary: #8b87a8;
+  --text-muted:     #4e4a65;
+  --border:         rgba(255, 255, 255, 0.07);
+  --border-focus:   rgba(124, 92, 252, 0.5);
+  --error:          #ff5c6b;
+  --error-bg:       rgba(255, 80, 100, 0.08);
+  --error-border:   rgba(255, 80, 100, 0.5);
+  --ease:           cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ── Page ── */
 .page {
   min-height: 100vh;
+  background: var(--bg-base);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #141414;
-  overflow: auto;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow: hidden;
 }
 
+/* ── Background orbs ── */
+.bgOrb1,
+.bgOrb2 {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatOrb 12s ease-in-out infinite;
+}
+
+.bgOrb1 {
+  width: 450px;
+  height: 450px;
+  background: var(--accent);
+  filter: blur(90px);
+  opacity: 0.13;
+  top: -140px;
+  left: -120px;
+  animation-delay: 0s;
+}
+
+.bgOrb2 {
+  width: 340px;
+  height: 340px;
+  background: #3ecf8e;
+  filter: blur(100px);
+  opacity: 0.08;
+  bottom: -100px;
+  right: -80px;
+  animation-delay: -5s;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0); }
+  40%       { transform: translate(16px, -20px); }
+  70%       { transform: translate(-10px, 14px); }
+}
+
+/* ── Card ── */
 .formLogin {
-  background: #1c1c1c;
-  padding: 2rem;
-  padding-bottom: 4rem;
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 400px;
+  margin: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 36px 32px 32px;
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  position: relative;
+  gap: 12px;
+  animation: fadeUp 0.45s var(--ease) both;
 }
 
-.formLogin h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 900;
-  border-bottom: 1px solid #333;
-  padding-bottom: 8px;
-  color: #e8e8e8;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.formLogin label {
-  font-size: 11px;
+/* ── Logo block ── */
+.logoBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.logoMark {
+  width: 52px;
+  height: 52px;
+  background: var(--accent);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 8px 32px var(--accent-glow);
+}
+
+.heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #c4c4c4;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  margin: 0;
+  text-align: center;
 }
 
-.formLogin input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #333;
+.subheading {
   font-size: 13px;
-  background: #111;
-  color: #e8e8e8;
+  color: var(--text-secondary);
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Field group ── */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldGroup label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.fieldGroup input,
+.fieldWrap input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
   outline: none;
+  transition:
+    border-color 0.18s var(--ease),
+    background   0.18s var(--ease),
+    box-shadow   0.18s var(--ease);
 }
 
-.formLogin input:focus {
-  border-color: #555;
+.fieldWrap input {
+  padding-right: 40px;
 }
 
-.formLogin input:disabled {
+.fieldGroup input::placeholder,
+.fieldWrap input::placeholder {
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.fieldGroup input:focus,
+.fieldWrap input:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-input-focus);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.fieldGroup input:disabled,
+.fieldWrap input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.formLogin button {
-  padding: 14px;
-  background: transparent;
-  color: #888;
-  border: 1px solid #333;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+/* ── Password wrap ── */
+.fieldWrap {
+  position: relative;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-muted);
   cursor: pointer;
-  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
 }
 
-.formLogin button:hover:not(:disabled) {
-  color: #e0e0e0;
-  border-color: #666;
-  background: #1f1f1f;
+.eyeBtn:hover { color: var(--text-secondary); }
+
+/* ── Forgot row ── */
+.forgotRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -4px;
 }
 
-.formLogin button:disabled {
+/* ── Submit button ── */
+.formLogin button[type='submit'] {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 24px var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.18s var(--ease),
+    transform  0.12s var(--ease),
+    box-shadow 0.18s var(--ease);
+  margin-top: 2px;
+}
+
+.formLogin button[type='submit']:hover:not(:disabled) {
+  background: var(--accent-light);
+  box-shadow: 0 6px 32px rgba(124, 92, 252, 0.4);
+  transform: translateY(-1px);
+}
+
+.formLogin button[type='submit']:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.formLogin button[type='submit']:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
+/* ── Spinner ── */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Social buttons ── */
+.socialRow {
+  display: flex;
+  gap: 10px;
+}
+
+.btnSocial {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background    0.15s var(--ease),
+    border-color  0.15s var(--ease),
+    color         0.15s var(--ease);
+}
+
+.btnSocial:hover {
+  background: var(--bg-input);
+  border-color: var(--border-focus);
+  color: var(--text-primary);
+}
+
+/* ── Footer ── */
 .footer {
-  font-size: 11px;
-  font-weight: 700;
   text-align: center;
-  margin-top: 16px;
-  color: #555;
-}
-
-.footer a {
-  color: #c4c4c4;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
-
-.error {
-  position: absolute;
-  bottom: 1.2rem;
-  left: 0;
-  right: 0;
-  text-align: center;
-  color: #ff0202;
   font-size: 13px;
-  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.footer a,
+.link {
+  color: var(--accent-light);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.footer a:hover,
+.link:hover {
+  opacity: 0.75;
+}
+
+/* ── Error ── */
+.error {
+  font-size: 12.5px;
+  color: var(--error);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 0;
+  text-align: center;
+  animation: shake 0.28s var(--ease);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-4px); }
+  75%       { transform: translateX(4px); }
 }

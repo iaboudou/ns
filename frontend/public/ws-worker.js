@@ -1,5 +1,6 @@
 let socket = null;
 const ports = new Map(); // (key : port (or if you want tab) )
+const currenTab = new Map();
 let latestOnlineUsers = [];
 let hasOnlineUsersSnapshot = false;
 
@@ -60,10 +61,14 @@ self.addEventListener("connect", (e) => {
                     (id) => id !== data.left,
                   );
                   break;
+
+                case "notification": {
+                  data.showNotif = false;
+                  break;
+                }
               }
               broadcast(data);
-            } catch (err) {
-            }
+            } catch (err) {}
           };
 
           socket.onclose = () => {
@@ -73,8 +78,7 @@ self.addEventListener("connect", (e) => {
             broadcast({ event: "ws-close" }); // send to all the tabs that the ws is closed
           };
 
-          socket.onerror = (err) => {
-          };
+          socket.onerror = (err) => {};
         }
         break;
       }
@@ -91,6 +95,12 @@ self.addEventListener("connect", (e) => {
 
       case "logout": {
         socket.close();
+        break;
+      }
+
+      case "focus": {
+        currenTab.set(msg.payload.portKey, msg.payload.tab);
+        break;
       }
     }
   };

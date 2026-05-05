@@ -9,7 +9,7 @@ import (
 	"rtf/models"
 )
 
-func InviteUser(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID string) {
+func InviteUser(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.DB, groupID string) {
 	body := map[string]string{}
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
@@ -34,5 +34,5 @@ func InviteUser(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID stri
 		return
 	}
 
-	JoinGroup(w, db, groupID, invitedUserID, "invite")
+	JoinGroup(w, r, hub, db, groupID, invitedUserID, "invite")
 }

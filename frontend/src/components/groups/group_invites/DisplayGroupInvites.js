@@ -1,7 +1,7 @@
 import { SendDecision } from '@/_lib/group';
 import styles from '@/components/groups/styles/groups.module.css';
 
-export default function DisplayGroupInvites({ group, setGroups }) {
+export default function DisplayGroupInvite({ group, setGroups }) {
   const handleDecision = async (decision) => {
     SendDecision(group.id, decision)
       .then(() => {

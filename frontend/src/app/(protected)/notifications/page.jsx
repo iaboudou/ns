@@ -10,6 +10,7 @@ const notifLabel = (n) => {
   if (n.type.startsWith("create_event:")) {
     return "created a new event in the group";
   }
+
   switch (n.type) {
     case "follow_request":
       return "sent you a follow request";
@@ -23,6 +24,10 @@ const notifLabel = (n) => {
       return "commented on your post";
     case "message":
       return "sent you a message";
+    case "group_request":
+      return "sent you a group request";
+    case "group_invite":
+      return "sent you a group invite";
     default:
       return "sent you a notification";
   }
@@ -33,6 +38,7 @@ const notifLink = (n) => {
     const groupId = n.type.split(":")[1];
     return `/groups/${groupId}/events`;
   }
+
   switch (n.type) {
     case "follow":
       return `/profile/${n.ref_id}`;
@@ -47,20 +53,33 @@ const notifLink = (n) => {
 
     case "message":
       return `/chat/${n.ref_id}`;
-
+    case "group_request":
+      return `/groups/${n.group_id}/requests`;
+    case "group_invite":
+      return "/groups/invites";
     default:
       return "/";
   }
 };
 
 export default function NotificationsPage() {
-  const { setUnreadNotifCount, port, notifications } = useWebSocket();
+  const { setUnreadNotifCount, port, notifications, portKey } = useWebSocket();
   const [loading, setLoading] = useState(true);
   const prevCount = useRef(notifications.length);
+  port.postMessage({
+    type: "focus",
+    payload: {
+      tab: "notification",
+      portKey: portKey,
+    },
+  });
 
   useEffect(() => {
     if (port) {
-      port.postMessage({ type: "send", payload: { type: "get_notifications" } });
+      port.postMessage({
+        type: "send",
+        payload: { type: "get_notifications" },
+      });
       setLoading(false);
     }
     setUnreadNotifCount(0);
@@ -93,40 +112,40 @@ export default function NotificationsPage() {
             <span>We'll let you know when something happens!</span>
           </div>
         ) : (
-          notifications.map((n) => (
-            <Link
-              href={notifLink(n)}
-              key={n.id}
-              className={`${styles.item} ${!n.is_read ? styles.unread : ""}`}
-            >
-              <div className={styles.avatarWrapper}>
-                <img
-                  src={
-                    n.from_image
-                      ? `http://localhost:4001/pics/${n.from_image}`
-                      : "/default.jpg"
-                  }
-                  alt={n.from_name}
-                  className={styles.avatar}
-                  onError={(e) => {
-                    e.target.src = "/default.jpg";
-                  }}
-                />
-              </div>
+          notifications.map((n) => {
+            return (
+              <Link
+                href={notifLink(n)}
+                key={n.id}
+                className={`${styles.item} ${!n.is_read ? styles.unread : ""}`}
+              >
+                <div className={styles.avatarWrapper}>
+                  <img
+                    src={
+                      n.from_image
+                        ? `http://localhost:4001/pics/${n.from_image}`
+                        : "/default.jpg"
+                    }
+                    alt={n.from_name}
+                    className={styles.avatar}
+                    onError={(e) => {
+                      e.target.src = "/default.jpg";
+                    }}
+                  />
+                </div>
 
-              <div className={styles.content}>
-                <p className={styles.text}>
-                  <span className={styles.name}>{n.from_name}</span>{" "}
-                  {notifLabel(n)}
-                </p>
-                <span className={styles.time}>
-                  {timeAgo(n.created_at)}
-                </span>
-              </div>
+                <div className={styles.content}>
+                  <p className={styles.text}>
+                    <span className={styles.name}>{n.from_name}</span>{" "}
+                    {notifLabel(n)}
+                  </p>
+                  <span className={styles.time}>{timeAgo(n.created_at)}</span>
+                </div>
 
-              {!n.is_read && <div className={styles.unreadDot} />}
-            </Link>
-          ))
+                {!n.is_read && <div className={styles.unreadDot} />}
+              </Link>
+            );
+          })
         )}
       </div>
     </div>

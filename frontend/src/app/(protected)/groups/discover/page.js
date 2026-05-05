@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import styles from '@/components/groups/styles/groups.module.css';
 import handleFetchGroups from '@/components/groups/utils/fetchGroups';
-import DisplayNewGroups from '@/components/groups/discover/DisplayNewGroups';
+import DisplayNewGroup from '@/components/groups/discover/DisplayNewGroups';
 
 export default function DiscoverGroups() {
   const [groups, setGroups] = useState([]);
@@ -29,7 +29,7 @@ export default function DiscoverGroups() {
       ) : (
         <div className={styles.groupsList}>
           {groups.map((g) => (
-            <DisplayNewGroups key={g.id} group={g} setGroups={setGroups} />
+            <DisplayNewGroup key={g.id} group={g} setGroups={setGroups} />
           ))}
         </div>
       )}

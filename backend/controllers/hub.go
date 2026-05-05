@@ -27,20 +27,8 @@ func (c *Controller) RunBroker() {
 
 		case msg := <-hub.Broadcast:
 			switch msg.Type {
-			// 	case "reconnect":
-			// 		err := Reconnect(clients, db, msg.Sender)
-			// 		if err != nil {
-			// 			fmt.Printf("broker: failed to reconnect user: %v because of: %v\n", msg.Sender, err)
-			// 		}
-
 			case "mark_read":
 				sqlite.MarkRead(db, msg.SenderID, msg.ReceiverID)
-
-			// 	case "get_unread":
-			// 		err := GetUnread(clients, db, msg)
-			// 		if err != nil {
-			// 			fmt.Println("broker: failed to get unread messages:", err)
-			// 		}
 
 			case "load_history":
 				err := GetOldMessages(clients, db, msg)
@@ -80,11 +68,12 @@ func (c *Controller) RunBroker() {
 				GetUnreadNotificationCountWS(clients, db, msg)
 			}
 
+		case notif := <-hub.Notify:
+			SendFollowNotification(clients, db, notif.FromUser, notif.ToUserID, notif.NotifType, notif.GroupID)
+
 		case client := <-hub.Disconnect:
 			handlers.Disconnect(clients, client)
 
-		case notif := <-hub.Notify:
-			SendFollowNotification(clients, db, notif.FromUser, notif.ToUserID, notif.NotifType)
 		}
 	}
 }

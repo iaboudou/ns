@@ -76,7 +76,7 @@ func (c *Controller) handlePostGroups(w http.ResponseWriter, r *http.Request, s 
 
 	// POST /api/groups/:groupID/requests
 	case len(s) == 2 && s[1] == "requests":
-		handlers.JoinGroup(w, c.DB.Db, s[0], userID, "request")
+		handlers.JoinGroup(w, r, c.Hub, c.DB.Db, s[0], userID, "request")
 
 	// POST /api/groups/:groupID/events
 	case len(s) == 2 && s[1] == "events":
@@ -84,7 +84,7 @@ func (c *Controller) handlePostGroups(w http.ResponseWriter, r *http.Request, s 
 
 	// POST /api/groups/:groupID/invites
 	case len(s) == 2 && s[1] == "invites":
-		handlers.InviteUser(w, r, c.DB.Db, s[0])
+		handlers.InviteUser(w, r, c.Hub, c.DB.Db, s[0])
 
 	default:
 		help.RespondNotFound(w, "This ressource doesn't exist")

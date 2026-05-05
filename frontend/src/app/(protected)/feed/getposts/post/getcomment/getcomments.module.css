@@ -6,8 +6,9 @@
 
 .postcard {
   margin-top: 10px;
-  background: #1f1f1f;
-  border: 1px solid #1e1e1e;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -24,7 +25,8 @@
 .avatar {
   width: 30px;
   height: 30px;
-  border: 1px solid #2a2a2a;
+  border: 1px solid #1e293b;
+  border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
   filter: grayscale(100%);
@@ -59,7 +61,8 @@
 
 .commentimg {
   margin-left: 40px;
-  border: 1px solid #222;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
   max-height: 200px;
   width: calc(100% - 40px);
   object-fit: cover;
@@ -73,9 +76,10 @@
 
 .leadmore {
   align-self: center;
-  background: transparent;
-  border: 1px solid #2a2a2a;
-  color: #555;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 999px;
+  color: #64748b;
   font-size: 9px;
   font-weight: 900;
   text-transform: uppercase;

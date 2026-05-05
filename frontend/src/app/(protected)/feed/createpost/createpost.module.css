@@ -1,13 +1,13 @@
 .createpost {
-  background: #1c1c1c;
-  border: 1px solid #333;
-  border-left: 3px solid #444;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
   padding: 20px;
   margin-bottom: 14px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  color: #e8e8e8;
+  color: #e2e8f0;
   position: relative;
 }
 
@@ -15,14 +15,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #1e293b;
   padding-bottom: 14px;
 }
 
 .IMAGEICON{
   width: 40px;
   height: 40px;
-  color: gray;
+  color: #64748b;
 }
 
 .userInfo {
@@ -35,7 +35,8 @@
   width: 40px;
   height: 40px;
   object-fit: cover;
-  border: 1px solid #333;
+  border: 1px solid #1e293b;
+  border-radius: 50%;
   filter: grayscale(100%);
   display: block;
 }
@@ -45,7 +46,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #e0e0e0;
+  color: #f1f5f9;
   max-width: 200px;
   overflow: hidden;
   white-space: nowrap;
@@ -54,9 +55,10 @@
 }
 
 .postBtn {
-  background: transparent;
-  color: #888;
-  border: 1px solid #333;
+  background: #1e293b;
+  color: #cbd5f5;
+  border: 1px solid #334155;
+  border-radius: 999px;
   padding: 8px 18px;
   font-size: 10px;
   font-weight: 800;
@@ -69,13 +71,14 @@
   width: 100%;
   min-height: 100px;
   padding: 14px;
-  border: 1px solid #333;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
   font-size: 13px;
   line-height: 1.7;
   resize: none;
   outline: none;
-  background: #111;
-  color: #c4c4c4;
+  background: #020617;
+  color: #e2e8f0;
   scrollbar-width: none;
 }
 
@@ -84,11 +87,11 @@
 }
 
 .textarea::placeholder {
-  color: #3a3a3a;
+  color: #475569;
 }
 
 .textarea:focus {
-  border-color: #555;
+  border-color: #3b82f6;
 }
 
 .bottomRow {
@@ -108,17 +111,19 @@
 }
 
 .fileLabel {
-  border: 1px solid #2a2a2a;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
   padding: 6px;
   cursor: pointer;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #555;
+  color: #64748b;
   max-width: 250px;
   display: flex;
   align-items: center;
   gap: 6px;
+  background: #020617;
 }
 
 .filename {
@@ -127,23 +132,23 @@
   text-overflow: ellipsis;
 }
 
-
 .privacySelect {
   padding: 6px 10px;
-  border: 1px solid #2a2a2a;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
   font-weight: 700;
   text-transform: uppercase;
   font-size: 10px;
   letter-spacing: 0.08em;
   outline: none;
   cursor: pointer;
-  background: #111;
-  color: #666;
+  background: #020617;
+  color: #94a3b8;
 }
 
 .privacySelect:focus {
-  border-color: #555;
-  color: #bbb;
+  border-color: #3b82f6;
+  color: #e2e8f0;
 }
 
 .selectFriendInput {
@@ -152,9 +157,10 @@
   right: 0;
   width: 100%;
   max-width: 300px;
-  background: #1c1c1c;
-  border: 1px solid #333;
-  border-left: 3px solid #444;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-left: 3px solid #3b82f6;
+  border-radius: 12px;
   padding: 14px;
   z-index: 50;
   display: flex;
@@ -165,20 +171,21 @@
 .searchInput {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #333;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
   font-size: 11px;
   text-transform: uppercase;
   outline: none;
-  background: #111;
-  color: #c4c4c4;
+  background: #020617;
+  color: #e2e8f0;
 }
 
 .searchInput::placeholder {
-  color: #333;
+  color: #475569;
 }
 
 .searchInput:focus {
-  border-color: #555;
+  border-color: #3b82f6;
 }
 
 .selectedusers {
@@ -192,14 +199,15 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #333;
+  color: #475569;
 }
 
 .selecteduserscontainer {
-  border: 1px solid #2a2a2a;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
   padding: 3px;
   display: flex;
-  background: #111;
+  background: #020617;
 }
 
 .selecteduseravatar,
@@ -207,7 +215,8 @@
   width: 30px;
   height: 30px;
   object-fit: cover;
-  border: 1px solid #2a2a2a;
+  border: 1px solid #1e293b;
+  border-radius: 50%;
   filter: grayscale(100%);
 }
 
@@ -226,15 +235,16 @@
   gap: 10px;
   padding: 7px 10px;
   border: 1px solid transparent;
+  border-radius: 8px;
   cursor: pointer;
-  color: #888;
+  color: #94a3b8;
   font-size: 11px;
 }
 
 .activeUser {
-  color: #d0d0d0;
-  border-color: #555;
-  background: #1f1f1f;
+  color: #f1f5f9;
+  border-color: #3b82f6;
+  background: #1e293b;
 }
 
 @media (max-width: 640px) {

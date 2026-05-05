@@ -148,4 +148,5 @@ type FollowNotif struct {
 	FromUser    User
 	ToUserID    string
 	NotifType   string // "follow_request" or "follow_accepted"
+	GroupID string // for groups notif
 }

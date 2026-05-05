@@ -1,6 +1,15 @@
-import { GetGroups } from '@/_lib/group';
+import { GetGroups } from "@/_lib/group";
 
-export default async function handleFetchGroups({ groups, setGroups, setLoading, setHasMore, tab, hasMore = true, search, isReset = false }) {
+export default async function handleFetchGroups({
+  groups,
+  setGroups,
+  setLoading,
+  setHasMore,
+  tab,
+  hasMore = true,
+  search,
+  isReset = false,
+}) {
   if (!hasMore && !isReset) return;
 
   const lastGroup = isReset ? undefined : groups?.at(-1);

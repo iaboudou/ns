@@ -53,12 +53,12 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 	// Send notification if this was a new createevent
 	senderUser, errUser := db.GetUserByIDDB(userID)
 	if errUser == nil {
-		rows, errMembers := db.Db.Query(`SELECT user_id FROM group_members WHERE group_id = ? AND status = 'accepted'`, groupID)
+		rows, errMembers := db.Db.Query(`SELECT user_id FROM group_members WHERE group_id = ? AND status = 'accepted' AND user_id != ?`, groupID, userID)
 		if errMembers == nil {
 			defer rows.Close()
 			for rows.Next() {
 				var memberID string
-				if err := rows.Scan(&memberID); err == nil && memberID != userID {
+				if err := rows.Scan(&memberID); err == nil {
 					go func(toID string) {
 						hub.Notify <- models.FollowNotif{
 							FromUser:  senderUser,

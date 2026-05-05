@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { usePathname } from "next/navigation";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 
 const WebSocketContext = createContext(null);
 
@@ -13,8 +21,11 @@ export const WebSocketProvider = ({ children }) => {
   const [hasMoreMap, setHasMoreMap] = useState({});
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const pn = usePathname();
 
   useEffect(() => {
+    if (port) return;
+
     const worker = new SharedWorker("/ws-worker.js");
     worker.port.start();
 
@@ -27,7 +38,10 @@ export const WebSocketProvider = ({ children }) => {
           portKeyRef.current = msg.data.portKey;
           setPort(worker.port);
           worker.port.postMessage({ type: "connect" });
-          worker.port.postMessage({ type: "send", payload: { type: "get_unread_notifications_count" } });
+          worker.port.postMessage({
+            type: "send",
+            payload: { type: "get_unread_notifications_count" },
+          });
           break;
         }
 
@@ -47,11 +61,11 @@ export const WebSocketProvider = ({ children }) => {
         }
 
         case "leave": {
-          setOnlineUsers((prev) => prev.filter(id => id !== msg.data.left));
+          setOnlineUsers((prev) => prev.filter((id) => id !== msg.data.left));
           break;
         }
 
-        case "own_message": {
+        case "private_message": {
           setMessages((oldMsg) => {
             const map = new Map(oldMsg.map((m) => [m.id, m]));
             map.set(msg.data.message.id, { ...msg.data.message, isNew: true });
@@ -60,7 +74,6 @@ export const WebSocketProvider = ({ children }) => {
           break;
         }
 
-        case "other_message":
         case "new_group_message": {
           setMessages((oldMsg) => {
             const map = new Map(oldMsg.map((m) => [m.id, m]));
@@ -84,12 +97,12 @@ export const WebSocketProvider = ({ children }) => {
         }
 
         case "notification": {
-          setUnreadNotifCount((prev) => prev + 1);
+          if (msg.data.showNotif) {
+            setUnreadNotifCount((prev) => prev + 1);
+          }
+          
           setNotifications((prev) => {
-            const filtered = prev.filter(
-              (n) => !(n.type === msg.data.type && n.ref_id === msg.data.ref_id)
-            );
-            return [msg.data, ...filtered];
+            return [msg.data, ...prev];
           });
           break;
         }
@@ -108,7 +121,10 @@ export const WebSocketProvider = ({ children }) => {
 
     const handleBeforeUnload = () => {
       if (portKeyRef.current) {
-        worker.port.postMessage({ type: "disconnect-tab", portKey: portKeyRef.current });
+        worker.port.postMessage({
+          type: "disconnect-tab",
+          portKey: portKeyRef.current,
+        });
       }
     };
 
@@ -116,7 +132,7 @@ export const WebSocketProvider = ({ children }) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [pn]);
 
   const sendMessage = useCallback(
     (message) => {
@@ -124,7 +140,7 @@ export const WebSocketProvider = ({ children }) => {
         port.postMessage(message);
       }
     },
-    [port]
+    [port],
   );
 
   return (

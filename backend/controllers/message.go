@@ -43,7 +43,6 @@ func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.
 	return nil
 }
 
-
 func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	if len(strings.TrimSpace(msg.Content)) == 0 {
 		return errors.New("message is empty")
@@ -80,7 +79,7 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 	}
 
 	payload := map[string]any{
-		"event": "own_message",
+		"event": "private_message",
 		"message": map[string]any{
 			"id":                msg.ID,
 			"content":           msg.Content,
@@ -103,7 +102,6 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 	}
 
 	if receiverOnline {
-		payload["event"] = "other_message"
 		for _, conn := range receiverConns {
 			conn.Mu.Lock()
 			conn.Ws.WriteJSON(payload)
@@ -113,7 +111,6 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 
 	return nil
 }
-
 
 func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	cs, ok := clients[msg.SenderID]

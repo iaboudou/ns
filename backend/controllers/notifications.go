@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"rtf/models"
@@ -10,19 +11,21 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fromUser models.User, toUserID, notifType string) {
+func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fromUser models.User, toUserID, notifType, groupID string) {
 	id, err := uuid.NewV4()
 	if err != nil {
 		return
 	}
 
-	// if it already exist remove it to rewrite it
-	db.Exec(`DELETE FROM notifications WHERE user_id = ? AND type = ? AND ref_id = ?`, toUserID, notifType, fromUser.ID)
+	if strings.Contains(notifType, "follow") {
+		// if it already exist remove it to rewrite it
+		db.Exec(`DELETE FROM notifications WHERE user_id = ? AND type = ? AND ref_id = ?`, toUserID, notifType, fromUser.ID)
+	}
 
 	_, err = db.Exec(`
-		INSERT INTO notifications (id, user_id, type, ref_id, is_read, created_at)
-		VALUES (?, ?, ?, ?, 0, ?)
-	`, id.String(), toUserID, notifType, fromUser.ID, time.Now().Unix())
+		INSERT INTO notifications (id, user_id, type, ref_id, is_read, created_at, group_id)
+		VALUES (?, ?, ?, ?, 0, ?, ?)
+	`, id.String(), toUserID, notifType, fromUser.ID, time.Now().Unix(), groupID)
 	if err != nil {
 		return
 	}
@@ -42,7 +45,9 @@ func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fro
 		"from_image": fromUser.ProfileImage,
 		"created_at": time.Now().Unix(),
 		"is_read":    false,
+		"group_id":   groupID,
 	}
+
 	for _, c := range cs {
 		c.Mu.Lock()
 		c.Ws.WriteJSON(payload)
@@ -51,10 +56,11 @@ func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fro
 }
 
 func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
+
 	userID := msg.SenderID
 
 	rows, err := db.Query(`
-		SELECT n.id, n.type, n.ref_id, n.is_read, n.created_at,
+		SELECT n.id, n.type, n.ref_id, n.is_read, n.created_at, n.group_id,
 		       u.firstname, u.lastname, u.profile_image
 		FROM notifications n
 		LEFT JOIN users u ON u.id = n.ref_id
@@ -75,6 +81,7 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 		CreatedAt int64  `json:"created_at"`
 		FromName  string `json:"from_name"`
 		FromImage string `json:"from_image"`
+		GroupId   string `json:"group_id"`
 	}
 
 	notifs := []NotifRow{}
@@ -82,9 +89,10 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 		var n NotifRow
 		var isReadBool bool
 		var refID, firstname, lastname, profileImage sql.NullString
+		var groupID string
 		var createdAtRaw interface{}
 
-		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadBool, &createdAtRaw, &firstname, &lastname, &profileImage)
+		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadBool, &createdAtRaw, &firstname, &lastname, &profileImage, &groupID)
 		if err != nil {
 			fmt.Println("Scan error:", err)
 			continue
@@ -111,7 +119,6 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 	}
 
 	db.Exec(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, userID)
-
 	if cs, ok := clients[userID]; ok {
 		for _, c := range cs {
 			c.Mu.Lock()

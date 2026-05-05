@@ -3,7 +3,7 @@
   min-height: 100vh;
   max-width: 1400px;
   margin: 0 auto;
-  background: #141414;
+  background: #020617;
 }
 
 .leftbar {
@@ -46,9 +46,9 @@
 .MIDDLE {
   flex-grow: 1;
   min-width: 0;
-  border-right: 1px solid #333333;
+  border-right: 1px solid #1e293b;
   padding: 28px;
-  background: #141414;
+  background: #020617;
 }
 
 .RIGHT {
@@ -62,8 +62,8 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
-  background: #1c1c1c;
-  border-left: 1px solid #333333;
+  background: #0f172a;
+  border-left: 1px solid #1e293b;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

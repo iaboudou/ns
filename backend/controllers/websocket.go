@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sync"
 
@@ -14,7 +13,6 @@ import (
 
 func (c *Controller) WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	user, er := c.DB.CheckSessionExistance(r)
-
 	userID := user.ID
 
 	if er != nil {
@@ -45,7 +43,6 @@ func (c *Controller) WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	hub.Connect <- client
 	for {
 		_, payload, err := ws.ReadMessage()
-		fmt.Println("here: ", string(payload))
 		if err != nil {
 			client.Ws.Close()
 			hub.Disconnect <- client
