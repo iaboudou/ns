@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -22,71 +21,44 @@ func (c *Controller) GetOtherUsers(w http.ResponseWriter, r *http.Request) {
 	db := c.DB.Db
 	userID := r.Context().Value("userID").(string)
 
-	// 1. get ids of people i have an accepted relationship with
-	rows, err := db.Query(`
-		SELECT following_id FROM followers WHERE follower_id = ? AND status = 'accepted'
-		UNION
-		SELECT follower_id FROM followers WHERE following_id = ? AND status = 'accepted'
-	`, userID, userID)
+	query := `
+		SELECT 
+			u.id, u.nickname, u.firstname, u.lastname, u.profile_image, u.created_at,
+			(SELECT COUNT(*) FROM messages 
+			 WHERE sender_id = u.id AND receiver_id = ? AND is_not_read = 1) as unread_count
+		FROM users u
+		WHERE u.id IN (
+			SELECT following_id FROM followers WHERE follower_id = ? AND status = 'accepted'
+			UNION
+			SELECT follower_id FROM followers WHERE following_id = ? AND status = 'accepted'
+		)`
+
+	args := []any{userID, userID, userID}
+
+	if search != "" {
+		pattern := "%" + search + "%"
+		query += " AND (u.nickname LIKE ? OR u.firstname LIKE ? OR u.lastname LIKE ? OR (u.firstname || ' ' || u.lastname) LIKE ? OR u.id = ?)"
+		args = append(args, pattern, pattern, pattern, pattern, search)
+	}
+
+	if last != "" {
+		normalized := strings.Replace(last, "T", " ", 1)
+		normalized = strings.TrimSuffix(normalized, "Z")
+		query += " AND (u.created_at < ? OR (u.created_at = ? AND u.id < ?))"
+		args = append(args, normalized, normalized, lastID)
+	}
+
+	query += " ORDER BY u.created_at DESC, u.id DESC LIMIT 10"
+
+	rows, err := db.Query(query, args...)
 	if err != nil {
 		help.RespondServerError(w)
 		return
 	}
 	defer rows.Close()
 
-	var friendIDs []string
-	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err == nil {
-			friendIDs = append(friendIDs, id)
-		}
-	}
-
-	if len(friendIDs) == 0 {
-		help.Respond(w, &models.Response{Code: 200, Data: []any{}})
-		return
-	}
-
-	placeholders := make([]string, len(friendIDs))
-	args := make([]any, len(friendIDs))
-	for i, id := range friendIDs {
-		placeholders[i] = "?"
-		args[i] = id
-	}
-
-	query := fmt.Sprintf(`
-		SELECT id, nickname, firstname, lastname, profile_image, created_at
-		FROM users
-		WHERE id IN (%s)
-	`, strings.Join(placeholders, ","))
-
-	pattern := "%" + search + "%"
-	if search != "" {
-		query += " AND (nickname LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR id = ?)"
-		args = append(args, pattern, pattern, pattern, search)
-	}
-
-	if last != "" {
-		// 
-		normalized := strings.Replace(last, "T", " ", 1)
-		normalized = strings.TrimSuffix(normalized, "Z")
-		query += " AND (created_at < ? OR (created_at = ? AND id < ?))"
-		args = append(args, normalized, normalized, lastID)
-	}
-
-	query += " ORDER BY created_at DESC, id DESC LIMIT 10"
-
-	userRows, err := db.Query(query, args...)
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-	defer userRows.Close()
-
 	users := []map[string]any{}
-
-	// 
-	for userRows.Next() {
+	for rows.Next() {
 		var u struct {
 			ID           string
 			Nickname     string
@@ -94,26 +66,11 @@ func (c *Controller) GetOtherUsers(w http.ResponseWriter, r *http.Request) {
 			Lastname     string
 			ProfileImage string
 			CreatedAt    time.Time
+			UnreadCount  int
 		}
-		if err := userRows.Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname, &u.ProfileImage, &u.CreatedAt); err != nil {
+		if err := rows.Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname, &u.ProfileImage, &u.CreatedAt, &u.UnreadCount); err != nil {
 			continue
 		}
-		
-		var lastMsg int64
-		var unreadCount int
-
-		// Get last message timestamp
-		db.QueryRow(`
-			SELECT IFNULL(MAX(created_at), 0) FROM messages
-			WHERE (sender_id = ? AND receiver_id = ?)
-			   OR (sender_id = ? AND receiver_id = ?)
-		`, userID, u.ID, u.ID, userID).Scan(&lastMsg)
-
-		// Get unread count 
-		db.QueryRow(`
-			SELECT COUNT(*) FROM messages
-			WHERE sender_id = ? AND receiver_id = ? AND is_not_read = 1
-		`, u.ID, userID).Scan(&unreadCount)
 
 		users = append(users, map[string]any{
 			"id":            u.ID,
@@ -122,8 +79,7 @@ func (c *Controller) GetOtherUsers(w http.ResponseWriter, r *http.Request) {
 			"lastname":      u.Lastname,
 			"profile_image": u.ProfileImage,
 			"created_at":    u.CreatedAt,
-			"last_msg":      lastMsg,
-			"unread_count":  unreadCount,
+			"unread_count":  u.UnreadCount,
 		})
 	}
 
