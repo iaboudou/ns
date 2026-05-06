@@ -112,12 +112,12 @@ export default function ProfilePage() {
                         <div className={styles.nameandprivacybuttoncontainer}>
                             <div className={styles.flnname}>
                                 <h1 className={styles.profileName}>{user.firstname + " " + user.lastname}</h1>
-                                <h5 className={styles.profileNickname}>{user.nickname}</h5>
+                                {hasAccess && <h5 className={styles.profileNickname}>{user.nickname}</h5>}
                             </div>
                             <span className={styles.s}></span>
 
                         </div>
-                        <p className={styles.profileBio}>{user.aboutme}</p>
+                        {hasAccess && <p className={styles.profileBio}>{user.aboutme}</p>}
                     </div>
                 </header>
 

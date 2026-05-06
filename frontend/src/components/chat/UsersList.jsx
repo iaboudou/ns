@@ -46,10 +46,10 @@ export default function UsersList() {
         isReset
           ? newUsers
           : (prev) => {
-              const map = new Map(prev.map((u) => [u.id, u]));
-              newUsers.forEach((u) => map.set(u.id, u));
-              return Array.from(map.values());
-            },
+            const map = new Map(prev.map((u) => [u.id, u]));
+            newUsers.forEach((u) => map.set(u.id, u));
+            return Array.from(map.values());
+          },
       );
     } catch (err) {
       alert(err.message);
@@ -74,7 +74,7 @@ export default function UsersList() {
   useEffect(() => {
     if (messages.length === 0) return;
     const lastMsg = messages[messages.length - 1];
-    
+
     // only move to top if it's a new live message, not history loading
     if (!lastMsg.isNew || lastMsg.id === lastProcessedMsgId.current) return;
     lastProcessedMsgId.current = lastMsg.id;
@@ -82,15 +82,15 @@ export default function UsersList() {
     setUsers((prev) => {
       const userIndex = prev.findIndex((u) => u.id === lastMsg.sender_id || u.id === lastMsg.receiver_id);
       if (userIndex === -1) {
-         handleFetchUsers(search, true);
-         return prev;
+        handleFetchUsers(search, true);
+        return prev;
       }
 
       const newUsers = [...prev];
       const [oldUser] = newUsers.splice(userIndex, 1);
-      
+
       const user = { ...oldUser };
-      
+
       if (lastMsg.sender_id === user.id && params.id !== user.id) {
         user.unread_count = (user.unread_count || 0) + 1;
       }
@@ -114,9 +114,22 @@ export default function UsersList() {
         {users.map((u) => (
           <Link
             key={u.id}
+            href="#"
             className={styles.userItem}
-            href={`/chat/${u.id}`}
-            onClick={() => {
+            onClick={async (e) => {
+              e.preventDefault()
+              // check if the sender already follow receiver
+              let receiver = u.id
+              let f = await alreadyfollowhim(receiver)
+              if (f) {
+                console.log(f)
+                window.location.href = `/chat/${u.id}`
+              } else {
+                alert(`you can't send message to <${u.firstname + " " + u.lastname}>, he's not following you and he has private profile`)
+                window.location.href = `/chat`
+                return
+              }
+
               // Reset unread count when clicking
               setUsers(prev => prev.map(usr => usr.id === u.id ? { ...usr, unread_count: 0 } : usr));
               port.postMessage({
@@ -127,7 +140,9 @@ export default function UsersList() {
                   last_read_time: 0,
                 },
               });
-            }}
+            }
+
+            }
           >
             <div className={styles.userInfo}>
               <span className={styles.fullname}>{u.firstname} {u.lastname}</span>
@@ -152,4 +167,21 @@ export default function UsersList() {
       </div>
     </div>
   );
+}
+
+
+
+// it is very important to check if the receiver follow the sender or have public profile before open the conversation  
+async function alreadyfollowhim(receiver) {
+  const res = await fetch(`http://localhost:4001/api/isfollowexist?receiver=${receiver}`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  )
+  let data = await res?.json()
+  if (!res.ok) {
+    return null
+  }
+  return data.followcheck?.isfollow
 }

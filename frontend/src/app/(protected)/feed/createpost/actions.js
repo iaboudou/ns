@@ -5,7 +5,7 @@ let BASE = process.env.BACKEND_URL;
 export async function fetchFriendsUsers(search = "") {
     try {
         const word = encodeURIComponent(search || "");
-        const res = await fetch(`http://localhost:4001/api/getfriends?q=${word}`, {
+        const res = await fetch(`http://localhost:4001/api/getfriends?q=${word}&allusers=true`, {
             credentials: "include",
         });
 

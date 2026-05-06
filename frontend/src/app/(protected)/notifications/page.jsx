@@ -43,7 +43,7 @@ const notifLink = (n) => {
     case "follow":
       return `/profile/${n.ref_id}`;
     case "follow_request":
-      return `/profile/${n.ref_id}`;
+      return `/friends`;
     case "follow_accepted":
       return `/profile/${n.ref_id}`;
 
@@ -56,7 +56,6 @@ const notifLink = (n) => {
     case "group_request":
       return `/groups/${n.group_id}/requests`;
     case "group_invite":
-      console.log("from group_invite: ", n)
       return "/groups/invites";
     default:
       return "/";

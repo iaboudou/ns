@@ -6,8 +6,8 @@ export async function fetchRegister(formData) {
     body: formData,
   });
 
-  const er = await response.text();
-  if (!response.ok) return [false, er];
+  const er = await response.json();
+  if (!response.ok) return [false, er.message];
   return [true, null];
 }
 

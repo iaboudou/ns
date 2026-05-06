@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"rtf/help"
+	"rtf/models"
 )
 
 // this handler handles the  user registration. it expects a POST request, and it returns a JSON response with (error or success)
@@ -13,13 +14,19 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if r.Method != http.MethodPost {
-		help.RespondNotOK(w, "badrequest")
+		help.Respond(w, &models.Response{
+			Code:    http.StatusMethodNotAllowed,
+			Message: "not allowed",
+		})
 		return
 	}
 
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
-		help.RespondNotOK(w, "badrequest")
+		help.Respond(w, &models.Response{
+			Code:    http.StatusBadRequest,
+			Message: "invalid file image",
+		})
 		return
 	}
 
@@ -29,29 +36,44 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	if err == nil && header.Size != 0 {
 		defer file.Close()
 		if !help.IsPictureFormatCorrect(file, header) {
-			help.RespondNotOK(w, "badrequest")
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: "invalid image",
+			})
 			return
 		}
 		filename := help.SaveFile(file, header.Filename)
 		if filename == "" {
-			help.RespondNotOK(w, "badrequest")
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: "invalid credential",
+			})
 			return
 		}
 		user.Avatar = filename
 	}
 
 	if err := help.CanInsertUser(&user); err != nil {
-		help.RespondNotOK(w, err.Error())
+		help.Respond(w, &models.Response{
+			Code:    http.StatusBadRequest,
+			Message: "invalid credential",
+		})
 		return
 	}
 
 	if err := c.DB.IsUserAlreadyExist(&user); err != nil {
-		help.RespondNotOK(w, err.Error())
+		help.Respond(w, &models.Response{
+			Code:    http.StatusBadRequest,
+			Message: "credential already used",
+		})
 		return
 	}
 
 	if err := c.DB.InsertUserDB(user); err != nil {
-		help.RespondNotOK(w, "server-error")
+		help.Respond(w, &models.Response{
+			Code:    http.StatusInternalServerError,
+			Message: "server-error",
+		})
 		return
 	}
 
@@ -75,12 +97,24 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		help.RespondNotOK(w, "badrequest")
+
+		help.Respond(w, &models.Response{
+			Code: http.StatusBadRequest,
+
+			Message: "invalid credential",
+		})
 		return
 	}
 
 	userID, er := c.DB.IsUserExist(req.Email, req.Password)
 	if er != nil {
 		help.RespondNotOK(w, "badrequest")
+
+		help.Respond(w, &models.Response{
+			Code: http.StatusBadRequest,
+
+			Message: "invalid credential",
+		})
 		return
 	}
 

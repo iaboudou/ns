@@ -620,6 +620,27 @@ func (r *Repo) ManageFollowDB(followerID string, followingID string, decision st
 	return nil
 }
 
+func (r *Repo) GetUsers(userid string) ([]models.FollowSuggestion, error) {
+	users := []models.FollowSuggestion{}
+	rows, er := r.Db.Query(`
+		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
+		FROM users u`)
+
+	if er != nil {
+		return nil, er
+	}
+	for rows.Next() {
+		var f models.FollowSuggestion
+		er := rows.Scan(&f.Id, &f.Firstname, &f.Lastname, &f.ProfileImage, &f.AccountPrivacy)
+		if er != nil {
+			return nil, er
+		}
+		users = append(users, f)
+	}
+
+	return users, nil
+}
+
 // this function is to get the all the followers
 func (r *Repo) GetFollowersDB(targetID string, query string) ([]models.FollowSuggestion, error) {
 	followers := []models.FollowSuggestion{}
@@ -763,10 +784,6 @@ func (r *Repo) GetFriendsDB(userID string, query string) ([]models.FollowSuggest
 	return friends, nil
 }
 
-// =====================
-// End followers
-// =====================
-
 func (r *Repo) GetUserByIDDB(userID string) (models.User, error) {
 	var u models.User
 	err := r.Db.QueryRow(`
@@ -774,4 +791,19 @@ func (r *Repo) GetUserByIDDB(userID string) (models.User, error) {
 		FROM users WHERE id = ?
 	`, userID).Scan(&u.ID, &u.Nickname, &u.Firstname, &u.Lastname, &u.Email, &u.ProfileImage)
 	return u, err
+}
+
+func (r *Repo) IsFollowExist(sender, receiver string) bool {
+	var exists int
+	err := r.Db.QueryRow(`SELECT 1 FROM followers WHERE follower_id=? AND following_id=? LIMIT 1`, receiver, sender).
+		Scan(&exists)
+
+	if err == nil {
+		return true
+	}
+
+	var Allowed bool
+	err = r.Db.QueryRow("SELECT account_privacy from users WHERE id = ?", receiver).Scan(&Allowed)
+
+	return Allowed
 }

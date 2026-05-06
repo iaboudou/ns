@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"rtf/help"
+	"rtf/models"
 )
 
 func (c *Controller) GetFriends(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +20,16 @@ func (c *Controller) GetFriends(w http.ResponseWriter, r *http.Request) {
 	}
 
 	q := r.URL.Query().Get("q")
-	users, er := c.DB.GetFollowersDB(userID, q)
+	isallusers := r.URL.Query().Get("allusers")
+
+	var users []models.FollowSuggestion
+	var er error
+	if isallusers == "true" {
+		users, er = c.DB.GetUsers(userID)
+	}else {
+		users, er = c.DB.GetFollowersDB(userID, q)
+	}
+
 	if er != nil {
 		help.RespondNotOK(w, "server-error")
 		return
