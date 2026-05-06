@@ -56,6 +56,7 @@ const notifLink = (n) => {
     case "group_request":
       return `/groups/${n.group_id}/requests`;
     case "group_invite":
+      console.log("from group_invite: ", n)
       return "/groups/invites";
     default:
       return "/";
@@ -63,16 +64,17 @@ const notifLink = (n) => {
 };
 
 export default function NotificationsPage() {
-  const { setUnreadNotifCount, port, notifications, portKey } = useWebSocket();
+  const { setUnreadNotifCount, port, notifications, portKey, sendFocus } = useWebSocket();
   const [loading, setLoading] = useState(true);
   const prevCount = useRef(notifications.length);
-  port.postMessage({
-    type: "focus",
-    payload: {
-      tab: "notification",
-      portKey: portKey,
-    },
-  });
+  useEffect(() => {
+    sendFocus("notification");
+    return () => { // if leave the notification tab
+      if (port) {
+        sendFocus("none");
+      }
+    };
+  }, [port, portKey]);
 
   useEffect(() => {
     if (port) {
@@ -82,7 +84,7 @@ export default function NotificationsPage() {
       });
       setLoading(false);
     }
-    setUnreadNotifCount(0);
+    // setUnreadNotifCount(0);
   }, [port]);
 
   // scroll to top when a new notification arrives

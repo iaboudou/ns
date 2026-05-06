@@ -33,6 +33,7 @@ export const WebSocketProvider = ({ children }) => {
       const event = msg.data.event;
 
       switch (event) {
+
         case "connected": {
           setPortKey(msg.data.portKey);
           portKeyRef.current = msg.data.portKey;
@@ -100,7 +101,7 @@ export const WebSocketProvider = ({ children }) => {
           if (msg.data.showNotif) {
             setUnreadNotifCount((prev) => prev + 1);
           }
-          
+
           setNotifications((prev) => {
             return [msg.data, ...prev];
           });
@@ -132,7 +133,7 @@ export const WebSocketProvider = ({ children }) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [pn]);
+  }, []);
 
   const sendMessage = useCallback(
     (message) => {
@@ -142,6 +143,17 @@ export const WebSocketProvider = ({ children }) => {
     },
     [port],
   );
+
+
+  // will be used to postMessage in case of focus
+  const sendFocus = useCallback((tabName) => {
+  if (port && portKey) {
+    port.postMessage({
+      type: "focus",
+      payload: { tab: tabName, portKey: portKey },
+    });
+  }
+}, [port, portKey]);
 
   return (
     <WebSocketContext.Provider
@@ -157,6 +169,7 @@ export const WebSocketProvider = ({ children }) => {
         setUnreadNotifCount,
         notifications,
         setNotifications,
+        sendFocus,
       }}
     >
       {children}

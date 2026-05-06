@@ -31,6 +31,7 @@ export default function Leftbar() {
     }
   }, [pathname]);
 
+
   const handleLogout = async () => {
     if (loading) return;
     setLoading(true);

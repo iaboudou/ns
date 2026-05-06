@@ -4,6 +4,7 @@ const currenTab = new Map();
 let latestOnlineUsers = [];
 let hasOnlineUsersSnapshot = false;
 
+console.log("whe are in worker ....")
 //send specific data to all the tabs
 function broadcast(data) {
   ports.forEach((port) => {
@@ -63,12 +64,18 @@ self.addEventListener("connect", (e) => {
                   break;
 
                 case "notification": {
-                  data.showNotif = false;
+                  // if the user already open notification will not update the notif counter 
+                  data.showNotif = true;
+                  for (let tabType of currenTab.values()) {
+                    if (tabType === "notification") {
+                      data.showNotif = false;
+                    }
+                  }
                   break;
                 }
               }
               broadcast(data);
-            } catch (err) {}
+            } catch (err) { }
           };
 
           socket.onclose = () => {
@@ -78,18 +85,25 @@ self.addEventListener("connect", (e) => {
             broadcast({ event: "ws-close" }); // send to all the tabs that the ws is closed
           };
 
-          socket.onerror = (err) => {};
+          socket.onerror = (err) => { };
         }
         break;
       }
 
       case "send": {
-        socket.send(JSON.stringify(msg.payload)); // send the data to the backend
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(msg.payload));
+        }
         break;
       }
 
       case "disconnect-tab": {
         ports.delete(msg.portKey); // remove one tab
+        currenTab.delete(msg.portKey);
+        if (ports.size === 0 && socket) {
+          socket.close();
+          socket = null;
+        }
         break;
       }
 
@@ -100,7 +114,15 @@ self.addEventListener("connect", (e) => {
 
       case "focus": {
         currenTab.set(msg.payload.portKey, msg.payload.tab);
-        break;
+        //
+        switch (msg.payload.tab) {
+          case "notification":
+            broadcast({
+              event: "unread_notifications_count",
+              count: 0
+            });
+            break;
+        }
       }
     }
   };
