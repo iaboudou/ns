@@ -10,8 +10,8 @@ import (
 	"rtf/help"
 	"rtf/models"
 
-	"rtf/pkg/db/sqlite"
 	"github.com/gofrs/uuid/v5"
+	"rtf/pkg/db/sqlite"
 )
 
 func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *models.Hub, groupID, userID string) {
@@ -42,15 +42,46 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 		return
 	}
 
-	_, err = db.Db.Exec(`INSERT INTO events (id, group_id,creator_id, title, description, event_date)
-	VALUES (?, ?, ?, ?, ?, ?)`, eventId.String(), groupID, userID, event.Title, event.Description, event.Date)
+	tx, err := db.Db.Begin()
 	if err != nil {
-		fmt.Println("error inserting event in db :", err)
+		fmt.Println("error starting transaction:", err)
 		help.RespondServerError(w)
 		return
 	}
 
-	// Send notification if this was a new createevent
+	defer tx.Rollback()
+
+	_, err = tx.Exec(`
+	INSERT INTO events (id, group_id, creator_id, title, description, event_date)
+	VALUES (?, ?, ?, ?, ?, ?)
+	`, eventId.String(), groupID, userID, event.Title, event.Description, event.Date)
+	if err != nil {
+		tx.Rollback()
+		fmt.Println("error inserting event in db:", err)
+		help.RespondServerError(w)
+		return
+	}
+
+	_, err = tx.Exec(`
+	INSERT INTO event_responses (event_id, user_id, status)
+	VALUES (?, ?, ?)
+	ON CONFLICT(event_id, user_id)
+	DO UPDATE SET status = excluded.status;
+	`, eventId.String(), userID, event.Vote)
+	if err != nil {
+		tx.Rollback()
+		fmt.Println("error inserting or updating vote:", err)
+		help.RespondServerError(w)
+		return
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		fmt.Println("error committing transaction:", err)
+		help.RespondServerError(w)
+		return
+	}
+
 	senderUser, errUser := db.GetUserByIDDB(userID)
 	if errUser == nil {
 		rows, errMembers := db.Db.Query(`SELECT user_id FROM group_members WHERE group_id = ? AND status = 'accepted' AND user_id != ?`, groupID, userID)
@@ -79,6 +110,12 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 		help.RespondServerError(w)
 		return
 	}
+	var goingCount, notGoingCount int
+	if event.Vote == "going" {
+		goingCount++
+	} else {
+		notGoingCount++
+	}
 
 	help.Respond(w, &models.Response{
 		Code: http.StatusCreated,
@@ -87,9 +124,9 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 			"title":          event.Title,
 			"description":    event.Description,
 			"date":           event.Date,
-			"goingCount":     0,
-			"notGoingCount":  0,
-			"voted":          "",
+			"goingCount":     goingCount,
+			"notGoingCount":  notGoingCount,
+			"voted":          event.Vote,
 			"authorNickname": author_nickname,
 			"authorName":     author_firstname + " " + author_lastname,
 		},
@@ -99,6 +136,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 func ValidateEvent(e *models.Event) string {
 	e.Title = strings.TrimSpace(e.Title)
 	e.Description = strings.TrimSpace(e.Description)
+	e.Vote = strings.ToLower(strings.TrimSpace(e.Vote))
 
 	if e.Title == "" || e.Description == "" {
 		return "Please fill all the fields"
@@ -118,6 +156,10 @@ func ValidateEvent(e *models.Event) string {
 
 	if len(e.Description) > 500 {
 		return "description is too long"
+	}
+
+	if e.Vote != "going" && e.Vote != "notgoing" {
+		return "you can only chose to go or not to go"
 	}
 
 	date, err := time.Parse(time.RFC3339, e.Date)

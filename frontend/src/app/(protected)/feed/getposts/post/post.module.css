@@ -1,172 +1,192 @@
-.postcard {
-  position: relative;
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-top: 1px solid #3b82f6;
-  border-radius: 16px;
-  padding: 20px 20px 16px;
-  margin-bottom: 14px;
+/* ── post.module.css — Quest Board Theme ── */
+
+@keyframes pinDrop {
+  from { transform: translateY(-6px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
+/* ── Post card = parchemin épinglé ── */
+.postcard {
+  position: relative;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    linear-gradient(160deg, #ede0b8 0%, #d9c688 45%, #c9b06a 100%);
+  border-radius: 2px 2px 4px 4px;
+  padding: 40px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  clip-path: polygon(
+    0% 1%, 2% 0%, 4% 1.5%, 6% 0.5%, 8% 1.8%,
+    10% 0.2%, 13% 1.2%, 16% 0%, 20% 1%, 25% 0.3%,
+    30% 1.5%, 35% 0%, 40% 1%, 45% 0.2%, 50% 1.5%,
+    55% 0%, 60% 1.2%, 65% 0.5%, 70% 1.8%, 75% 0%,
+    80% 1%, 85% 0.3%, 90% 1.5%, 95% 0.2%, 100% 1%,
+    100% 99%, 98% 100%, 95% 98.5%, 92% 100%, 88% 99%,
+    84% 100%, 80% 98.5%, 75% 100%, 70% 99%, 65% 100%,
+    60% 98.8%, 55% 100%, 50% 99%, 45% 100%, 40% 98.5%,
+    35% 100%, 30% 99.2%, 25% 100%, 20% 98.8%, 15% 100%,
+    10% 99%, 5% 100%, 2% 99%, 0% 100%
+  );
+  box-shadow:
+    2px 4px 16px rgba(0,0,0,0.55),
+    inset 0 0 40px rgba(139,90,30,0.12);
+  animation: pinDrop 0.3s ease both;
+}
+
+/* Pin métallique */
+.postcard::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c0c0c0, #4a4a4a 60%, #1a1a1a);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.2);
+  z-index: 2;
+}
+
+/* Divider décoratif */
+.postcard::after {
+  content: '⸻ ✦ ⸻';
+  position: absolute;
+  top: 20px;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 9px;
+  color: rgba(100,70,20,0.35);
+  letter-spacing: 0.2em;
+  pointer-events: none;
+}
+
+/* ── Header ── */
 .header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 10px;
 }
 
 .profileImg {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #1e293b;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid rgba(100,70,20,0.35);
   flex-shrink: 0;
-  background: #020617;
-  filter: grayscale(100%) contrast(1.1);
-  display: block;
+  filter: sepia(20%);
 }
 
-.profileImg:hover {
-  filter: grayscale(0%) contrast(1);
+.placeholderIcon {
+  width: 38px;
+  height: 38px;
+  color: rgba(100,70,20,0.45);
+  flex-shrink: 0;
 }
 
 .meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .nameRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .name {
+  font-family: "Cinzel", serif;
   font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #e8e8e8;
+  font-weight: 700;
+  color: #3d2008;
+  letter-spacing: 0.06em;
 }
 
+.linkprofilename {
+  color: #3d2008;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.linkprofilename:hover { color: #8B1A1A; }
+
 .handle {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #64748b;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  padding: 1px 6px;
-  background: #020617;
+  font-family: "Crimson Text", serif;
+  font-size: 10px;
+  color: rgba(100,70,20,0.6);
+  font-style: italic;
+  background: rgba(100,70,20,0.1);
+  padding: 1px 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(100,70,20,0.2);
 }
 
 .date {
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  color: #475569;
+  font-family: "Crimson Text", serif;
+  font-size: 10px;
+  color: rgba(80,50,10,0.5);
+  font-style: italic;
 }
 
+/* ── Content ── */
 .content {
-  font-size: 13px;
+  font-family: "Crimson Text", serif;
+  font-size: 15px;
+  color: #2e1a05;
   line-height: 1.75;
-  color: #c4c4c4;
-  margin: 0 0 14px;
-  padding-left: 2px;
+  letter-spacing: 0.02em;
+  margin: 0;
 }
 
 .postImage {
   width: 100%;
-  max-height: 480px;
+  border-radius: 2px;
   object-fit: cover;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  display: block;
-  margin-bottom: 14px;
-  filter: grayscale(100%) contrast(1.05);
-  transition: filter 0.3s ease;
+  max-height: 340px;
+  border: 1px solid rgba(100,70,20,0.3);
+  filter: sepia(10%);
 }
 
-
+/* ── Actions ── */
 .postActions {
   display: flex;
-  gap: 4px;
-  padding-top: 12px;
-  border-top: 1px solid #1e293b;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(100,70,20,0.3);
 }
 
 .actionBtn {
-  background: transparent;
-  color: #64748b;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  padding: 5px 10px;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
+  background: rgba(100,70,20,0.1);
+  border: 1px solid rgba(100,70,20,0.25);
+  color: #5a3a10;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 2px;
+  transition: background 0.2s, border-color 0.2s;
+  text-transform: uppercase;
+}
+.actionBtn:hover {
+  background: rgba(100,70,20,0.2);
+  border-color: rgba(100,70,20,0.5);
 }
 
+/* ── Comments section ── */
 .commentsSection {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px dashed #1e293b;
-}
-
-.linkprofilename {
-  color: #e8e8e8;
-  text-decoration: none;
-}
-
-.linkprofilename:hover {
-  color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-color: #3b82f6;
-}
-
-@media (max-width: 640px) {
-  .postcard {
-    padding: 14px 14px 12px;
-    margin-bottom: 10px;
-  }
-
-  .profileImg {
-    width: 32px;
-    height: 32px;
-  }
-
-  .name {
-    font-size: 11px;
-  }
-
-  .content {
-    font-size: 12px;
-  }
-
-  .postImage {
-    max-height: 260px;
-  }
-
-  .actionBtn {
-    font-size: 9px;
-    padding: 4px 8px;
-    gap: 5px;
-  }
-
-  .postcard::before {
-    display: none;
-  }
-}
-
-.placeholderIcon {
-  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(100,70,20,0.3);
 }

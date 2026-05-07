@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import Post from '@/app/(protected)/feed/getposts/post/post';
-import styles from './getposts.module.css';
+import { useEffect, useRef } from "react";
+import Post from "@/app/(protected)/feed/getposts/post/post";
+import styles from "./getposts.module.css";
 
 export default function GetPosts({ GETPOSTS }) {
   let ref = useRef(null);

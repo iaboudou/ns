@@ -1,30 +1,46 @@
+/* ── Dark Fantasy – Layout ───────────────── */
+
 .wrapper {
   display: flex;
   min-height: 100vh;
-  max-width: 1400px;
+  max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
-  background: #020617;
+  background: #0A0A0F;
 }
 
+/* ─── LEFTBAR ───────────────────────────── */
+
 .leftbar {
+  width: 260px;
   flex-shrink: 0;
+
   position: sticky;
   top: 0;
   height: 100vh;
+
   z-index: 50;
+
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+
+  border-right: 1px solid #2a1f0f;
+  background: #0A0A0F;
 }
 
 .leftbar::-webkit-scrollbar {
   display: none;
 }
 
+/* ─── MAIN ──────────────────────────────── */
+
 .main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+
+  background: #0A0A0F;
 }
 
 .posts {
@@ -32,6 +48,8 @@
   flex-direction: column;
   width: 100%;
 }
+
+/* ─── INNER LAYOUT ──────────────────────── */
 
 .WRAPPER {
   display: flex;
@@ -43,34 +61,52 @@
   display: none;
 }
 
+/* ─── CENTER CONTENT ────────────────────── */
+
 .MIDDLE {
   flex-grow: 1;
   min-width: 0;
-  border-right: 1px solid #1e293b;
-  padding: 28px;
-  background: #020617;
+
+  padding: 32px;
+
+  border-right: 1px solid #2a1f0f;
+
+  background: #0A0A0F;
+  color: #E8E0CC;
+
+  font-family: "Crimson Text", "Georgia", serif;
 }
 
+/* ─── RIGHT PANEL ───────────────────────── */
+
 .RIGHT {
-  width: 300px;
+  width: 320px;
   flex-shrink: 0;
-  padding: 28px 20px;
+
+  padding: 32px 24px;
+
   display: flex;
   flex-direction: column;
   gap: 28px;
+
   position: sticky;
   top: 0;
+
   height: 100vh;
+
   overflow-y: auto;
-  background: #0f172a;
-  border-left: 1px solid #1e293b;
   -ms-overflow-style: none;
   scrollbar-width: none;
+
+  background: #0e0c14;
+  border-left: 1px solid #2a1f0f;
 }
 
 .RIGHT::-webkit-scrollbar {
   display: none;
 }
+
+/* ─── Responsive ────────────────────────── */
 
 @media (max-width: 1024px) {
   .RIGHT {
@@ -79,7 +115,7 @@
 
   .MIDDLE {
     border-right: none;
-    padding: 20px;
+    padding: 24px;
   }
 }
 
@@ -91,17 +127,23 @@
 
   .leftbar {
     position: fixed;
+
     bottom: 0;
     left: 0;
     right: 0;
     top: auto;
-    height: auto;
+
     width: 100%;
+    height: auto;
+
     z-index: 100;
+
+    border-right: none;
+    border-top: 1px solid #2a1f0f;
   }
 
   .MIDDLE {
-    padding: 12px;
     width: 100%;
+    padding: 14px;
   }
 }

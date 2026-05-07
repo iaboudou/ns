@@ -25,7 +25,7 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if last == "" {
 		if filter != "" {
 			rows, err = db.Query(`
-				SELECT g.id, g.title, g.description, g.created_at
+				SELECT g.id, g.title, g.description, g.created_at, g.image
 				FROM groups g
 				WHERE NOT EXISTS (
 					SELECT 1 FROM group_members gm
@@ -33,18 +33,18 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				)
 				AND g.title LIKE ?
 				ORDER BY g.created_at DESC, g.id DESC
-				LIMIT 10
+				LIMIT 8
 			`, userID, pattern)
 		} else {
 			rows, err = db.Query(`
-				SELECT g.id, g.title, g.description, g.created_at
+				SELECT g.id, g.title, g.description, g.created_at, g.image
 				FROM groups g
 				WHERE NOT EXISTS (
 					SELECT 1 FROM group_members gm
 					WHERE gm.group_id = g.id AND gm.user_id = ?
 				)
 				ORDER BY g.created_at DESC, g.id DESC
-				LIMIT 10
+				LIMIT 8
 			`, userID)
 		}
 	} else {
@@ -53,7 +53,7 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		if filter != "" {
 			rows, err = db.Query(`
-				SELECT g.id, g.title, g.description, g.created_at
+				SELECT g.id, g.title, g.description, g.created_at, g.image
 				FROM groups g
 				WHERE NOT EXISTS (
 					SELECT 1 FROM group_members gm
@@ -62,11 +62,11 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				AND g.title LIKE ?
 				AND (g.created_at < ? OR (g.created_at = ? AND g.id < ?))
 				ORDER BY g.created_at DESC, g.id DESC
-				LIMIT 10
+				LIMIT 8
 			`, userID, pattern, normalized, normalized, lastID)
 		} else {
 			rows, err = db.Query(`
-				SELECT g.id, g.title, g.description, g.created_at
+				SELECT g.id, g.title, g.description, g.created_at, g.image
 				FROM groups g
 				WHERE NOT EXISTS (
 					SELECT 1 FROM group_members gm
@@ -74,7 +74,7 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				)
 				AND (g.created_at < ? OR (g.created_at = ? AND g.id < ?))
 				ORDER BY g.created_at DESC, g.id DESC
-				LIMIT 10
+				LIMIT 8
 			`, userID, normalized, normalized, lastID)
 		}
 	}
@@ -90,10 +90,10 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	groups := []map[string]any{}
 
 	for rows.Next() {
-		var id, title, description string
+		var id, title, description, image string
 		var created_at time.Time
 
-		err := rows.Scan(&id, &title, &description, &created_at)
+		err := rows.Scan(&id, &title, &description, &created_at, &image)
 		if err != nil {
 			fmt.Println("error while getting groups suggestions :", err)
 			help.RespondServerError(w)
@@ -105,6 +105,7 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			"title":       title,
 			"description": description,
 			"created_at":  created_at,
+			"img":         image,
 		})
 	}
 

@@ -1,28 +1,67 @@
+/* ── createpost.module.css — Quest Board Theme ── */
+
+/* Le createpost est aussi un parchemin, plus grand */
 .createpost {
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  color: #e2e8f0;
   position: relative;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    linear-gradient(160deg, #ede0b8 0%, #d9c688 45%, #c9b06a 100%);
+  border-radius: 2px;
+  padding: 40px 28px 24px;
+  margin-bottom: 8px;
+  clip-path: polygon(
+    0% 1%, 2% 0%, 4% 1.5%, 6% 0.5%, 8% 1.8%,
+    10% 0.2%, 13% 1.2%, 16% 0%, 20% 1%, 25% 0.3%,
+    30% 1.5%, 35% 0%, 40% 1%, 45% 0.2%, 50% 1.5%,
+    55% 0%, 60% 1.2%, 65% 0.5%, 70% 1.8%, 75% 0%,
+    80% 1%, 85% 0.3%, 90% 1.5%, 95% 0.2%, 100% 1%,
+    100% 99%, 98% 100%, 95% 98.5%, 92% 100%, 88% 99%,
+    84% 100%, 80% 98.5%, 75% 100%, 70% 99%, 65% 100%,
+    60% 98.8%, 55% 100%, 50% 99%, 45% 100%, 40% 98.5%,
+    35% 100%, 30% 99.2%, 25% 100%, 20% 98.8%, 15% 100%,
+    10% 99%, 5% 100%, 2% 99%, 0% 100%
+  );
+  box-shadow:
+    2px 4px 16px rgba(0,0,0,0.55),
+    inset 0 0 40px rgba(139,90,30,0.12);
+}
+
+/* Pin */
+.createpost::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c0c0c0, #4a4a4a 60%, #1a1a1a);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  z-index: 2;
+}
+
+/* Titre */
+.createpost::after {
+  content: '⸻ POST A QUEST ⸻';
+  position: absolute;
+  top: 14px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: rgba(100,70,20,0.45);
+  pointer-events: none;
 }
 
 .topRow {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #1e293b;
-  padding-bottom: 14px;
-}
-
-.IMAGEICON{
-  width: 40px;
-  height: 40px;
-  color: #64748b;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 12px;
 }
 
 .userInfo {
@@ -34,71 +73,74 @@
 .profileImage {
   width: 40px;
   height: 40px;
-  object-fit: cover;
-  border: 1px solid #1e293b;
   border-radius: 50%;
-  filter: grayscale(100%);
-  display: block;
+  object-fit: cover;
+  border: 2px solid rgba(100,70,20,0.35);
+  background: rgba(100,70,20,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(100,70,20,0.5);
+  flex-shrink: 0;
+  filter: sepia(20%);
+}
+
+.IMAGEICON {
+  color: rgba(100,70,20,0.5);
 }
 
 .userName {
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #f1f5f9;
-  max-width: 200px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: inline-block;
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3d2008;
+  letter-spacing: 0.06em;
 }
 
 .postBtn {
-  background: #1e293b;
-  color: #cbd5f5;
-  border: 1px solid #334155;
-  border-radius: 999px;
-  padding: 8px 18px;
+  padding: 8px 20px;
+  background: #8B1A1A;
+  border: 1px solid rgba(139,26,26,0.5);
+  border-radius: 2px;
+  font-family: "Cinzel", serif;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
+  color: #ede0b8;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
   cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 1px 2px 6px rgba(0,0,0,0.4);
 }
+.postBtn:hover { background: #a01f1f; }
+.postBtn:active { transform: scale(0.97); }
 
 .textarea {
   width: 100%;
-  min-height: 100px;
-  padding: 14px;
-  border: 1px solid #1e293b;
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.7;
-  resize: none;
+  background: rgba(100,70,20,0.06);
+  border: 1px dashed rgba(100,70,20,0.3);
+  border-radius: 2px;
+  padding: 12px 14px;
+  font-family: "Crimson Text", serif;
+  font-size: 15px;
+  color: #2e1a05;
   outline: none;
-  background: #020617;
-  color: #e2e8f0;
-  scrollbar-width: none;
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
 }
-
-.textarea::-webkit-scrollbar {
-  display: none;
-}
-
-.textarea::placeholder {
-  color: #475569;
-}
-
-.textarea:focus {
-  border-color: #3b82f6;
-}
+.textarea:focus { border-color: rgba(100,70,20,0.6); }
+.textarea::placeholder { color: rgba(80,50,10,0.4); font-style: italic; }
 
 .bottomRow {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-top: 6px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .pictureinput {
@@ -106,192 +148,170 @@
   align-items: center;
 }
 
-.fileInput {
-  display: none;
-}
+.fileInput { display: none; }
 
 .fileLabel {
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 6px;
-  cursor: pointer;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #64748b;
-  max-width: 250px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #020617;
+  gap: 7px;
+  padding: 6px 12px;
+  background: rgba(100,70,20,0.08);
+  border: 1px solid rgba(100,70,20,0.25);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s;
 }
+.fileLabel:hover { border-color: rgba(100,70,20,0.5); }
 
 .filename {
+  font-family: "Crimson Text", serif;
+  font-size: 12px;
+  color: rgba(80,50,10,0.6);
+  max-width: 120px;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .privacySelect {
-  padding: 6px 10px;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  background: rgba(100,70,20,0.08);
+  border: 1px solid rgba(100,70,20,0.25);
+  border-radius: 2px;
+  padding: 6px 12px;
+  font-family: "Crimson Text", serif;
+  font-size: 13px;
+  color: #3d2008;
   outline: none;
   cursor: pointer;
-  background: #020617;
-  color: #94a3b8;
+  transition: border-color 0.2s;
 }
+.privacySelect:focus { border-color: rgba(100,70,20,0.5); }
 
-.privacySelect:focus {
-  border-color: #3b82f6;
-  color: #e2e8f0;
-}
-
+/* ── SelectFriends ── */
 .selectFriendInput {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
   width: 100%;
-  max-width: 300px;
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-left: 3px solid #3b82f6;
-  border-radius: 12px;
-  padding: 14px;
-  z-index: 50;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .searchInput {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  font-size: 11px;
-  text-transform: uppercase;
+  background: rgba(100,70,20,0.06);
+  border: 1px dashed rgba(100,70,20,0.3);
+  border-radius: 2px;
+  padding: 9px 14px;
+  font-family: "Crimson Text", serif;
+  font-size: 14px;
+  color: #2e1a05;
   outline: none;
-  background: #020617;
-  color: #e2e8f0;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
 }
-
-.searchInput::placeholder {
-  color: #475569;
-}
-
-.searchInput:focus {
-  border-color: #3b82f6;
-}
+.searchInput:focus { border-color: rgba(100,70,20,0.55); }
+.searchInput::placeholder { color: rgba(80,50,10,0.4); font-style: italic; }
 
 .selectedusers {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
-  padding: 6px 0;
+  gap: 8px;
 }
 
 .NouserSelected {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #475569;
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(80,50,10,0.45);
 }
 
 .selecteduserscontainer {
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 3px;
   display: flex;
-  background: #020617;
+  align-items: center;
+  gap: 6px;
+  background: rgba(100,70,20,0.12);
+  border: 1px solid rgba(100,70,20,0.25);
+  border-radius: 20px;
+  padding: 3px 10px 3px 4px;
 }
 
-.selecteduseravatar,
-.userAvatar {
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  border: 1px solid #1e293b;
+.selecteduseravatar {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  filter: grayscale(100%);
+  object-fit: cover;
+  background: rgba(100,70,20,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(100,70,20,0.5);
 }
+
+.selecteduserscontainer span {
+  font-family: "Crimson Text", serif;
+  font-size: 12px;
+  color: #3d2008;
+}
+
+.selecteduserscontainer button {
+  background: none;
+  border: none;
+  color: rgba(80,50,10,0.5);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  transition: color 0.2s;
+}
+.selecteduserscontainer button:hover { color: #8B1A1A; }
 
 .usersList {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-height: 150px;
+  max-height: 160px;
   overflow-y: auto;
-  padding: 6px;
+  scrollbar-width: none;
 }
+.usersList::-webkit-scrollbar { display: none; }
 
 .userItem {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 10px;
+  padding: 7px 12px;
+  background: none;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
-  color: #94a3b8;
-  font-size: 11px;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  width: 100%;
+}
+.userItem:hover {
+  background: rgba(100,70,20,0.1);
+  border-color: rgba(100,70,20,0.25);
 }
 
 .activeUser {
-  color: #f1f5f9;
-  border-color: #3b82f6;
-  background: #1e293b;
+  background: rgba(100,70,20,0.15);
+  border-color: rgba(139,26,26,0.4);
 }
 
-@media (max-width: 640px) {
-  .createpost {
-    padding: 14px;
-    gap: 10px;
-    border-left-width: 2px;
-  }
-
-  .topRow {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .userName {
-    font-size: 10px;
-    max-width: 140px;
-  }
-
-  .textarea {
-    font-size: 12px;
-    min-height: 80px;
-    padding: 10px;
-  }
-
-  .bottomRow {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .fileLabel {
-    font-size: 9px;
-    padding: 5px 10px;
-    max-width: 160px;
-  }
-
-  .privacySelect {
-    font-size: 9px;
-    padding: 5px 8px;
-  }
-
-  .postBtn {
-    font-size: 9px;
-    padding: 6px 14px;
-  }
-}
-
-.imageIcon {
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(100,70,20,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(100,70,20,0.5);
   flex-shrink: 0;
+}
+
+.userItem span {
+  font-family: "Crimson Text", serif;
+  font-size: 14px;
+  color: #3d2008;
 }

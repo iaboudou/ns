@@ -1,85 +1,56 @@
+/* ── about.module.css — Dark Fantasy ── */
+
 .aboutContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
-    margin: 40px auto;
-    overflow-x: hidden;
+  background: #0e0c14;
+  border: 1px solid #2a1f0f;
+  border-radius: 10px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 560px;
+  position: relative;
 }
 
-
+/* Titre doré */
 .cardTitle {
-    font-size: 14px;
-    font-weight: 800;
-    color: #e0e0e0;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 0 0 20px 0;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #333;
-    text-align: center;
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #C8892A;
+  margin: 0 0 20px;
+  opacity: 0.85;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #2a1f0f;
 }
 
+/* Chaque ligne */
 .infoRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0;
-    width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #13110a;
 }
-
-.infoRow:last-child {
-    border-bottom: none;
-}
+.infoRow:last-child { border-bottom: none; }
 
 .infoLabel {
-    font-size: 11px;
-    color: #666;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6b5a3e;
+  min-width: 100px;
+  flex-shrink: 0;
+  opacity: 0.8;
 }
 
 .infoValue {
-    font-size: 13px;
-    color: #e8e8e8;
-    font-weight: 500;
-    text-align: right;
-}
-
-@media (max-width: 768px) {
-    .aboutContainer {
-        margin: 20px auto;
-        padding: 0 10px;
-    }
-
-    .infoLabel {
-        font-size: 10px;
-    }
-
-    .infoValue {
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .aboutContainer {
-        margin: 10px auto;
-    }
-
-    .infoRow {
-        padding: 10px 0;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-
-    .infoValue {
-        text-align: left;
-    }
-
-    .cardTitle {
-        font-size: 12px;
-        margin-bottom: 15px;
-    }
+  font-family: "Crimson Text", serif;
+  font-size: 15px;
+  color: #E8E0CC;
+  letter-spacing: 0.02em;
 }

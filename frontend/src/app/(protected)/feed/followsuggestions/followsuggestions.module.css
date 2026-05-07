@@ -1,81 +1,114 @@
+/* ── followsuggestions.module.css — Dark Fantasy ── */
+
 .followsuggestions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  color: #e2e8f0;
-  padding: 10px 0;
+  gap: 16px;
 }
 
+/* ── Header ── */
 .header {
+  font-family: "Cinzel", serif;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #64748b;
-  border-bottom: 1px solid #1e293b;
-  padding-bottom: 8px;
+  color: #C8892A;
+  opacity: 0.8;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2a1f0f;
+  display: block;
 }
 
+/* ── List ── */
 .list {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
+/* ── Item ── */
 .item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: transparent;
-  border-bottom: 1px solid #1e293b;
-  padding: 8px 0;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
 }
 
+.item:hover {
+  background: #13110a;
+  border-color: #2a1f0f;
+}
+
+/* ── Avatar ── */
 .avatar {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #1e293b;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid #2a1f0f;
   flex-shrink: 0;
-}
-
-.meta {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.name {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #94a3b8;
-  letter-spacing: 0.05em;
-}
-
-.followBtn {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  cursor: pointer;
-  color: #cbd5f5;
-}
-
-.followBtn:hover {
-  background: #334155;
-  color: #f1f5f9;
-  border-color: #3b82f6;
+  filter: sepia(10%);
 }
 
 .placeholderIcon {
-  color: #e2e8f0;
+  width: 36px;
+  height: 36px;
+  color: #3a2e1e;
+  flex-shrink: 0;
 }
+
+/* ── Meta ── */
+.meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.name {
+  font-family: "Cinzel", serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #E8E0CC;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Follow button ── */
+.followBtn {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  background: #C8892A;
+  border: none;
+  border-radius: 3px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: #0A0A0F;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.followBtn:hover { background: #d4972e; }
+.followBtn:active { transform: scale(0.96); }
+
+/* Unfollow state */
+.followBtn[data-status="following"],
+.followBtn:not(:empty)[title="unfollow"] {
+  background: transparent;
+  border: 1px solid #2a1f0f;
+  color: #6b5a3e;
+}
+

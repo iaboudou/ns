@@ -1,11 +1,46 @@
+/* ── getposts.module.css — Quest Board Theme ── */
+
 .wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  width: 100%;
+  gap: 32px;
+  padding: 24px 16px;
+}
+
+/* Image de fond fixe du tableau */
+.wrapper::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/questboard.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Overlay sombre pour lisibilité */
+.wrapper::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10,8,15,0.55) 0%, rgba(10,8,15,0.4) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Les posts passent au dessus */
+.wrapper > * {
+  position: relative;
+  z-index: 1;
 }
 
 .leading {
   display: block;
-  height: 20px;
+  height: 1px;
+  position: relative;
+  z-index: 1;
 }

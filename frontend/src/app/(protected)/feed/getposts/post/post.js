@@ -1,11 +1,11 @@
-import styles from './post.module.css';
-import Comments from '@/app/(protected)/feed/getposts/post/getcomment/getcomments';
-import CreateComment from '@/app/(protected)/feed/getposts/post/createcomment/createcomment';
-import { fetchComments, set_comment_in_state } from './actions';
-import { timeAgo } from '@/_lib/timeago';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { MessageCircle, Users } from 'lucide-react';
+import styles from "./post.module.css";
+import Comments from "@/app/(protected)/feed/getposts/post/getcomment/getcomments";
+import CreateComment from "@/app/(protected)/feed/getposts/post/createcomment/createcomment";
+import { fetchComments, set_comment_in_state } from "./actions";
+import { timeAgo } from "@/_lib/timeago";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { MessageCircle, Users } from "lucide-react";
 
 export default function Post({ POST }) {
   //post image
@@ -14,17 +14,19 @@ export default function Post({ POST }) {
 
   // profile image
   const profileimage = POST.post.profile_image;
-  const fullprofileimage = profileimage ? `http://localhost:4001/pics/${profileimage}` : '';
+  const fullprofileimage = profileimage
+    ? `http://localhost:4001/pics/${profileimage}`
+    : "";
 
   if (!POST.post) return null;
 
   //  fetch 10 comments from the server for a post starting at its offset,
   async function get10Comments(post_id) {
     let data = await fetchComments(post_id, POST.post?.offset || 0);
-    if (!data?.length) return
+    if (!data?.length) return;
 
-    if (Array.isArray(data)) set_comment_in_state(POST.setState, post_id, data, POST.state);
-
+    if (Array.isArray(data))
+      set_comment_in_state(POST.setState, post_id, data, POST.state);
   }
 
   let COMMENTS = {
@@ -34,17 +36,25 @@ export default function Post({ POST }) {
   };
 
   let path = usePathname();
-  let u = localStorage.getItem('user');
-  let id = u ? JSON.parse(u).ID : '';
+  let u = localStorage.getItem("user");
+  let id = u ? JSON.parse(u).ID : "";
 
   return (
     <div className={styles.postcard}>
       <div className={styles.header}>
         {
-          <Link href={id != POST.post.user_id ? `/profile/${POST.post.user_id}` : `/profile/me`}>
-            {
-              fullprofileimage? <img src={fullprofileimage} className={styles.profileImg} /> : <Users className={styles.placeholderIcon} />
+          <Link
+            href={
+              id != POST.post.user_id
+                ? `/profile/${POST.post.user_id}`
+                : `/profile/me`
             }
+          >
+            {fullprofileimage ? (
+              <img src={fullprofileimage} className={styles.profileImg} />
+            ) : (
+              <Users className={styles.placeholderIcon} />
+            )}
           </Link>
         }
 
@@ -52,17 +62,28 @@ export default function Post({ POST }) {
         <div className={styles.meta}>
           <div className={styles.nameRow}>
             <span className={styles.name}>
-              <Link className={styles.linkprofilename} href={id != POST.post.user_id ? `/profile/${POST.post.user_id}` : `/profile/me`}>
+              <Link
+                className={styles.linkprofilename}
+                href={
+                  id != POST.post.user_id
+                    ? `/profile/${POST.post.user_id}`
+                    : `/profile/me`
+                }
+              >
                 {POST.post.firstname} {POST.post.lastname}
               </Link>
             </span>
-            {!path.includes('/group') && <span className={styles.handle}>@{POST.post.privacy ?? ''}</span>}
+            {!path.includes("/group") && (
+              <span className={styles.handle}>@{POST.post.privacy ?? ""}</span>
+            )}
           </div>
           <span className={styles.date}>{timeAgo(POST.post.created_at)}</span>
         </div>
       </div>
 
-      {POST.post.content && <p className={styles.content}>{POST.post.content}</p>}
+      {POST.post.content && (
+        <p className={styles.content}>{POST.post.content}</p>
+      )}
 
       {fullImageURL && <img src={fullImageURL} className={styles.postImage} />}
 
@@ -78,14 +99,17 @@ export default function Post({ POST }) {
             }
           }}
         >
-         <MessageCircle size={16} />
-          {POST.post.number_of_comments || 0}
+          <MessageCircle size={14} />
+          opinions ({POST.post.number_of_comments || 0})
         </button>
       </div>
 
       {POST.openComments[POST.post.id] && (
         <div className={styles.commentsSection}>
-          <CreateComment post={POST.post} onCommentCreated={POST.onCommentCreated} />
+          <CreateComment
+            post={POST.post}
+            onCommentCreated={POST.onCommentCreated}
+          />
           <Comments COMMENTS={COMMENTS} />
         </div>
       )}

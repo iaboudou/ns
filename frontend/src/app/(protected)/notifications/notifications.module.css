@@ -1,122 +1,178 @@
+/* ── notifications.module.css — Dark Fantasy ── */
+
 .page {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  color: #f1f5f9;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
+/* ─── Header ─────────────────────────────── */
 .header {
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #2a1f0f;
+  margin-bottom: 8px;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f8fafc;
+  font-family: "Cinzel", serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: #E8E0CC;
+  letter-spacing: 0.08em;
   margin: 0;
 }
 
-.countBadge {
-  background: #334155;
-  color: #94a3b8;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
+/* ─── List ───────────────────────────────── */
 .list {
   display: flex;
   flex-direction: column;
 }
 
+/* ─── Item ───────────────────────────────── */
 .item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: 14px;
+  padding: 14px 12px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #13110a;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  position: relative;
 }
 
-.item:last-child {
-  border-bottom: none;
+.item:hover {
+  background: #0e0c14;
+  border-left-color: #C8892A;
 }
 
+/* Non lue */
 .unread {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(200,137,42,0.04);
+  border-left-color: #C8892A;
 }
 
+/* ─── Avatar ─────────────────────────────── */
 .avatarWrapper {
   flex-shrink: 0;
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  background: #1e293b;
+  border: 1px solid #2a1f0f;
 }
 
+/* ─── Content ────────────────────────────── */
 .content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   min-width: 0;
 }
 
 .text {
+  font-family: "Crimson Text", serif;
+  font-size: 14px;
+  color: #9D8EC7;
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  color: #cbd5e1;
+  line-height: 1.5;
 }
 
 .name {
-  color: #f1f5f9;
-  font-weight: 600;
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #E8E0CC;
+  letter-spacing: 0.04em;
 }
 
 .time {
-  font-size: 0.8rem;
-  color: #64748b;
-  display: block;
-  margin-top: 2px;
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 11px;
+  color: #3a2e1e;
 }
 
+/* ─── Unread dot ─────────────────────────── */
 .unreadDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #6366f1;
-  margin-left: 1rem;
+  background: #C8892A;
+  box-shadow: 0 0 6px rgba(200,137,42,0.5);
+  flex-shrink: 0;
 }
 
-/* Loading State */
+/* ─── Loading ────────────────────────────── */
 .loading {
-  text-align: center;
-  padding: 3rem 0;
-  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 0;
+  color: #3a2e1e;
 }
 
-/* Empty State */
+.loading p {
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #6b5a3e;
+  margin: 0;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #2a1f0f;
+  border-top-color: #C8892A;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Empty state ────────────────────────── */
 .empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 60px 0;
   text-align: center;
-  padding: 4rem 1rem;
-  color: #64748b;
+}
+
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid #2a1f0f;
+  background: #0e0c14;
+  margin-bottom: 4px;
 }
 
 .empty p {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #94a3b8;
-  margin: 0 0 0.5rem 0;
+  font-family: "Cinzel", serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #6b5a3e;
+  margin: 0;
+  text-transform: uppercase;
 }
 
 .empty span {
-  font-size: 0.9rem;
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: #3a2e1e;
 }
-
-

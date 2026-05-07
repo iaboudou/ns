@@ -75,9 +75,9 @@ type Message struct {
 	Content      string `json:"content"`
 	CreatedAt    int64  `json:"created_at"`
 
-	PortKey          string `json:"portKey"`
-	LastReadID       string `json:"last_read_Id"`
-	LastReadTime     int64  `json:"last_read_time"`
+	PortKey      string `json:"portKey"`
+	LastReadID   string `json:"last_read_Id"`
+	LastReadTime int64  `json:"last_read_time"`
 }
 
 // this is for the ws
@@ -114,17 +114,20 @@ type GroupeInfo struct {
 	MemberAmount       int    `json:"members"`
 	Posts              []Post `json:"posts"`
 	UnreadMessageCount int    `json:"unreadMsg"`
+	Image              string `json:"image"`
 }
 
 type Group struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Image       string `json:"image"`
 }
 
 type Event struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Date        string `json:"date"`
+	Vote        string `json:"vote"`
 }
 
 // represent user in ws connection
@@ -145,8 +148,8 @@ type Hub struct {
 
 // FollowNotif is sent through Hub.Notify when a follow event occurs
 type FollowNotif struct {
-	FromUser    User
-	ToUserID    string
-	NotifType   string // "follow_request" or "follow_accepted"
-	GroupID string // for groups notif
+	FromUser  User
+	ToUserID  string
+	NotifType string // "follow_request" or "follow_accepted"
+	GroupID   string // for groups notif
 }

@@ -1,267 +1,447 @@
-/* ── Dark/gold palette ──────────────────────────────────────
-   bg-deep:   #0f0e0c
-   bg-card:   #1a1814
-   bg-raised: #221f19
-   gold:      #c9a84c
-   gold-lt:   #e8c87a
-   text:      #f0e6cc
-   muted:     #9a8e76
-   dim:       #5a5244
-   ─────────────────────────────────────────────────────────── */
+/* ── groups.module.css — Dark Fantasy ── */
 
+/* ─── Layout ─────────────────────────────── */
 .groupsWrapper {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  font-family: var(--font-sans, system-ui, sans-serif);
-  color: #f0e6cc;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100vh;
+  background: #0A0A0F;
 }
 
-/* ── Tabs ─────────────────────────────────────────────────── */
-/*
-  Key fixes:
-  - width: 100% + box-sizing: border-box → fills wrapper, never grows beyond it
-  - table-layout trick replaced by explicit flex: 1 1 0 + min-width: 0
-  - overflow: hidden + text-overflow: ellipsis on each tab → long labels truncate
-*/
+/* ─── Tabs ───────────────────────────────── */
 .tabs {
   display: flex;
+  justify-content: center;
   gap: 4px;
-  width: 100%;
-  box-sizing: border-box;
-  background: #1a1814;
-  border: 0.5px solid rgba(201, 168, 76, 0.25);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 1.75rem;
+  padding: 0 24px;
+  border-bottom: 1px solid #2a1f0f;
+  background: #0e0c14;
 }
 
 .tabButton {
-  flex: 1 1 0;
-  min-width: 0;
-  text-align: center;
-  padding: 9px 8px;
-  border-radius: 9px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #9a8e76;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #9D8EC7;
   text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: background 0.15s, color 0.15s;
-  cursor: pointer;
-  display: block;
+  padding: 14px 18px 12px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .tabButton:hover {
-  background: #221f19;
-  color: #e8c87a;
+  color: #C8892A;
 }
 
 .tabButton[aria-current="page"],
-.tabButtonActive {
-  background: #2b2619;
-  color: #e8c87a;
-  font-weight: 500;
-  box-shadow: 0 0 0 0.5px rgba(201, 168, 76, 0.45);
+.tabButton.active {
+  color: #C8892A;
+  border-bottom-color: #C8892A;
 }
 
+/* ─── Content area ───────────────────────── */
 .content {
+  padding: 28px 24px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  align-items: center;
+  gap: 24px;
 }
 
-.content>button,
-button.createButton {
-  align-self: center;
-  padding: 8px 20px;
-  font-size: 14px;
-  font-weight: 500;
+/* ─── Groups grid ────────────────────────── */
+.groupsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* ─── Group card (frame with bg photo) ──── */
+.groupCard {
+  position: relative;
+  aspect-ratio: 3 / 4;
   border-radius: 8px;
-  border: 0.5px solid rgba(201, 168, 76, 0.35);
-  background: transparent;
-  color: #c9a84c;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, transform 0.1s;
-}
-
-.content>button:hover,
-button.createButton:hover {
-  background: rgba(201, 168, 76, 0.08);
-  color: #e8c87a;
-}
-
-.content>button:active,
-button.createButton:active {
-  transform: scale(0.98);
-}
-
-.form {
-  background: #1a1814;
-  border: 0.5px solid rgba(201, 168, 76, 0.2);
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
+  overflow: hidden;
+  border: 1px solid #2a1f0f;
+  text-decoration: none;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  background-color: #0e0c14;
+  background-image:
+    /* default fallback: dark parchment texture */
+    repeating-linear-gradient(135deg,
+      #13110a 0px, #13110a 1px,
+      transparent 1px, transparent 18px),
+    linear-gradient(to bottom, #1a1410, #0e0c14);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.groupCard:hover {
+  border-color: #C8892A;
+  transform: translateY(-4px);
+  box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(200, 137, 42, 0.15);
+}
+
+/* Dark gradient overlay at bottom for text legibility */
+.groupCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      transparent 30%,
+      rgba(10, 8, 15, 0.6) 60%,
+      rgba(10, 8, 15, 0.95) 100%);
+  z-index: 1;
+}
+
+/* Gold corner ornaments */
+.groupCard::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(200, 137, 42, 0.15);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+  transition: border-color 0.2s;
+}
+
+.groupCard:hover::after {
+  border-color: rgba(200, 137, 42, 0.35);
+}
+
+/* Text inside card */
+.groupCard h3 {
+  position: relative;
+  z-index: 3;
+  font-family: "Cinzel", serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #E8E0CC;
+  letter-spacing: 0.06em;
+  margin: 0;
+  padding: 0 14px 4px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.groupCard p {
+  position: relative;
+  z-index: 3;
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 12px;
+  color: #9D8EC7;
+  margin: 0;
+  padding: 0 14px 14px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* ─── Create group button — same frame, no text ── */
+.createGroupCard {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px dashed #2a1f0f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  background: #0e0c14;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.createGroupCard:hover {
+  border-color: #C8892A;
+  background: #13110a;
+  transform: translateY(-4px);
+}
+
+.createGroupCard::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(200, 137, 42, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+  transition: border-color 0.2s;
+}
+
+.createGroupCard:hover::after {
+  border-color: rgba(200, 137, 42, 0.3);
+}
+
+.createGroupIcon {
+  font-size: 28px;
+  color: #C8892A;
+  opacity: 0.7;
+  z-index: 1;
+  line-height: 1;
+}
+
+.createGroupLabel {
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6b5a3e;
+  z-index: 1;
+  transition: color 0.2s;
+}
+
+.createGroupCard:hover .createGroupLabel {
+  color: #C8892A;
+}
+
+/* ─── Create group form ──────────────────── */
+.form {
+  background: #0e0c14;
+  border: 1px solid #2a1f0f;
+  border-radius: 10px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .input {
   width: 100%;
-  box-sizing: border-box;
-  padding: 9px 12px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 0.5px solid rgba(201, 168, 76, 0.2);
-  background: #0f0e0c;
-  color: #f0e6cc;
+  background: #13110a;
+  border: 1px solid #2a1f0f;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: "Crimson Text", serif;
+  font-size: 15px;
+  color: #E8E0CC;
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.input::placeholder {
-  color: #f0e6cc;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
 .input:focus {
-  border-color: rgba(201, 168, 76, 0.55);
-  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+  border-color: #C8892A;
+}
+
+.input::placeholder {
+  color: #3a2e1e;
+  font-style: italic;
 }
 
 .groupError {
+  font-family: "Crimson Text", serif;
+  font-style: italic;
   font-size: 13px;
-  color: #e07070;
-  margin: 0 0 4px;
+  color: #8B1A1A;
+  padding: 8px 12px;
+  background: rgba(139, 26, 26, 0.08);
+  border: 1px solid rgba(139, 26, 26, 0.25);
+  border-radius: 6px;
+  margin: 0;
 }
 
 .primaryButton {
-  padding: 8px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 8px;
+  padding: 12px;
+  background: #C8892A;
   border: none;
-  background: #c9a84c;
-  color: #0f0e0c;
+  border-radius: 6px;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #0A0A0F;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-  align-self: flex-start;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .primaryButton:hover {
-  background: #e8c87a;
+  background: #d4972e;
 }
 
 .primaryButton:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
-.groupsList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-
-.groupCard {
-  display: block;
-  background: #1a1814;
-  border: 0.5px solid rgba(201, 168, 76, 0.18);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.15s, background 0.15s;
-  /* contain overflow from long words */
-  min-width: 0;
-  overflow: hidden;
-}
-
-.groupCard:hover {
-  background: #221f19;
-  border-color: rgba(201, 168, 76, 0.38);
-}
-
-.groupCard h3 {
-  font-size: 15px;
-  font-weight: 500;
-  margin: 0 0 6px;
-  color: #e8c87a;
-  /* truncate long titles */
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.groupCard p {
-  font-size: 13px;
-  color: #9a8e76;
-  margin: 0 0 12px;
-  line-height: 1.5;
-  /* clamp description to 3 lines */
-  display: -webkit-box;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  /* break very long words / no-space strings */
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-.groupCard .primaryButton {
-  margin-top: 4px;
-}
-
-/* ── Invite actions (inside groupCard, tab=invites) ─────────
-   À ajouter dans groups.module.css
-   Les styles acceptBtn / rejectBtn sont déjà définis dans
-   group.module.css — on réutilise juste le wrapper ici.
-   ─────────────────────────────────────────────────────────── */
-
-.inviteActions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.inviteActions .acceptBtn,
-.inviteActions .rejectBtn {
-  flex: 1;
-  padding: 7px 10px;
-  border-radius: 7px;
-  font-size: 0.82rem;
+/* ─── Load more ──────────────────────────── */
+.loadMoreBtn {
+  align-self: center;
+  padding: 10px 28px;
+  background: transparent;
+  border: 1px solid #2a1f0f;
+  border-radius: 6px;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #9D8EC7;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: color 0.2s, border-color 0.2s;
 }
 
-/* accept */
-.inviteActions .acceptBtn {
-  border: 0.5px solid rgba(74, 222, 128, 0.35);
-  background: rgba(74, 222, 128, 0.08);
-  color: #86efac;
+.loadMoreBtn:hover {
+  color: #C8892A;
+  border-color: #C8892A;
 }
 
-.inviteActions .acceptBtn:hover {
-  background: rgba(74, 222, 128, 0.18);
-  color: #bbf7d0;
+.loadMoreBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-/* decline */
-.inviteActions .rejectBtn {
-  border: 0.5px solid rgba(239, 68, 68, 0.35);
-  background: rgba(239, 68, 68, 0.08);
-  color: #fca5a5;
+/* ─── File input (create group form) ────── */
+.form input[type="file"] {
+  width: 100%;
+  background: #13110a;
+  border: 1px solid #2a1f0f;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: "Crimson Text", serif;
+  font-size: 13px;
+  color: #6b5a3e;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-.inviteActions .rejectBtn:hover {
-  background: rgba(239, 68, 68, 0.18);
-  color: #fecaca;
+.form input[type="file"]:hover {
+  border-color: #C8892A;
+}
+
+.form input[type="file"]::file-selector-button {
+  background: #13110a;
+  border: 1px solid #2a1f0f;
+  border-radius: 4px;
+  padding: 6px 14px;
+  margin-right: 12px;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C8892A;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form input[type="file"]::file-selector-button:hover {
+  background: #1a160d;
+  border-color: #C8892A;
+  color: #E8E0CC;
+}
+
+/* ─── Invite actions inside groupCard ───── */
+.inviteActions {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+  padding: 0 14px 14px;
+}
+
+.acceptBtn {
+  flex: 1;
+  padding: 7px 0;
+  background: rgba(200, 137, 42, 0.15);
+  border: 1px solid #C8892A;
+  border-radius: 4px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C8892A;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.acceptBtn:hover {
+  background: #C8892A;
+  color: #0A0A0F;
+}
+
+.rejectBtn {
+  flex: 1;
+  padding: 7px 0;
+  background: rgba(139, 26, 26, 0.1);
+  border: 1px solid rgba(139, 26, 26, 0.4);
+  border-radius: 4px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8B1A1A;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.rejectBtn:hover {
+  background: #8B1A1A;
+  color: #E8E0CC;
+}
+
+.loadMoreTrigger {
+  height: 40px;
+  width: 100%;
+}
+
+/* ─── Datetime input ─────────────────────── */
+.input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+.input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(1) saturate(2) hue-rotate(10deg);
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+/* ─── Create event form — même dimensions qu'un EventCard ── */
+.eventForm {
+  background: #0e0c14;
+  border: 1px solid #2a1f0f;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.eventForm .formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }

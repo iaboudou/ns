@@ -28,18 +28,19 @@ export default function Login() {
       const credentials = isValidInput(formData);
 
       if (!credentials) {
-        setError("Invalid credential");
+        setError("The ritual is incomplete");
         return;
       }
 
       const ok = await handleLogin(credentials.email, credentials.password);
       if (!ok) {
-        setError("Invalid credential");
+        setError("The seal rejects you");
         return;
       }
+
       router.replace("/");
     } catch {
-      setError("Something went wrong");
+      setError("The ritual has failed");
     } finally {
       setSubmitting(false);
     }
@@ -52,29 +53,31 @@ export default function Login() {
 
       <form className={styles.formLogin} onSubmit={onSubmit}>
         <div className={styles.logoBlock}>
-          <h2 className={styles.heading}>Welcome !</h2>
-          <p className={styles.subheading}>Login to you account</p>
+          <h2 className={styles.heading}>Return, Wanderer</h2>
+          <p className={styles.subheading}>
+            Enter your credentials to reclaim your path
+          </p>
         </div>
 
         <div className={styles.fieldGroup}>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">Ethereal Sigil</label>
           <input
             type="email"
             id="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder="seimor@gmail.com"
             disabled={submitting}
           />
         </div>
 
         <div className={styles.fieldGroup}>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Sacred Seal</label>
           <div className={styles.fieldWrap}>
             <input
               type={showPwd ? "text" : "password"}
               id="password"
               name="password"
-              placeholder="Enter you password"
+              placeholder="Your password sir ..."
               disabled={submitting}
             />
 
@@ -82,7 +85,7 @@ export default function Login() {
               type="button"
               className={styles.eyeBtn}
               onClick={() => setShowPwd((v) => !v)}
-              aria-label={showPwd ? "Masquer" : "Afficher"}
+              aria-label={showPwd ? "Hide" : "Show"}
             >
               {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -92,13 +95,15 @@ export default function Login() {
         {error && <p className={styles.error}>{error}</p>}
 
         <button type="submit" disabled={submitting}>
-          {submitting ? <span className={styles.spinner} /> : "Se connecter"}
+          {submitting ? <span className={styles.spinner} /> : "Enter the Gate"}
         </button>
 
         <div className={styles.footer}>
-          No account yet ? <Link href="/register">Register</Link>
+          No pact yet ? <Link href="/register">Forge one</Link>
         </div>
       </form>
+
+      <img src="http://localhost:4001/pics/sword.png" alt="sword" />
     </div>
   );
 }

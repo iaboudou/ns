@@ -20,7 +20,7 @@ export default async function handleFetchGroups({
     setLoading(true);
     const newGroups = await GetGroups(tab, search, lastId, lastTime);
 
-    if (newGroups.length < 10) setHasMore(false);
+    if (newGroups.length < 8) setHasMore(false);
 
     setGroups(
       isReset

@@ -1,16 +1,18 @@
-html, body {
+html,
+body {
   height: auto;
   min-height: 100%;
-  background-color: #141414;
+  background-color: #0A0A0F;
 }
 
 body {
-  color: #e8e8e8;
+  color: #E8E0CC;
   margin: 0;
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  font-family: "Crimson Text", "Georgia", serif;
 }
 
 * {

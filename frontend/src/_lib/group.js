@@ -61,14 +61,10 @@ export async function getUsers(
   else throw new Error(res.message); //error possible: 500/404
 }
 
-export async function CreateGroup(title, description) {
+export async function CreateGroup(formData) {
   const resp = await fetch(`${BASE}/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      title,
-      description,
-    }),
+    body: formData,
     credentials: "include",
     next: { revalidate: 0 },
   });
@@ -79,7 +75,7 @@ export async function CreateGroup(title, description) {
   else throw new Error(result.message); //error possible: 500/400/409
 }
 
-export async function CreateEvent(title, description, date, groupId) {
+export async function CreateEvent(title, description, date, groupId, vote) {
   const resp = await fetch(`${BASE}/${groupId}/events`, {
     method: "POST",
     headers: {
@@ -89,6 +85,7 @@ export async function CreateEvent(title, description, date, groupId) {
       title,
       description,
       date,
+      vote,
     }),
     credentials: "include",
   });

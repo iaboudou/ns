@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -16,13 +15,36 @@ import (
 func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID string) {
 	var group models.Group
 
-	err := json.NewDecoder(r.Body).Decode(&group)
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		help.Respond(w, &models.Response{
 			Code:    http.StatusBadRequest,
-			Message: "Invalid body",
+			Message: "Invalid form data",
 		})
+		fmt.Println(err)
 		return
+	}
+
+	group.Title = r.FormValue("title")
+	group.Description = r.FormValue("description")
+
+	file, header, err := r.FormFile("image")
+	if err == nil && header.Size != 0 {
+		defer file.Close()
+		if !help.IsPictureFormatCorrect(file, header) {
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: "invalid image",
+			})
+			return
+		}
+
+		filename := help.SaveFile(file, header.Filename)
+		if filename == "" {
+			help.RespondServerError(w)
+			return
+		}
+		group.Image = filename
 	}
 
 	mistake := ValidateGroup(&group)
@@ -36,14 +58,14 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 
 	groupId, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("error generating group id: ", err)
+		fmt.Println("error generating group id:", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	tx, err := db.Begin()
 	if err != nil {
-		fmt.Println("error generating transaction for group creation: ", err)
+		fmt.Println("error generating transaction for group creation:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -51,8 +73,20 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 	defer tx.Rollback()
 
 	_, err = tx.Exec(`
-			INSERT INTO groups (id, creator_id, title, description )
-			Values (?, ?, ?, ?)`, groupId.String(), userID, group.Title, group.Description)
+		INSERT INTO groups (
+			id,
+			creator_id,
+			title,
+			description,
+			image
+		)
+		VALUES (?, ?, ?, ?, ?)`,
+		groupId.String(),
+		userID,
+		group.Title,
+		group.Description,
+		group.Image,
+	)
 	if err != nil {
 		if strings.Contains(strings.ToLower(err.Error()), "unique") {
 			help.Respond(w, &models.Response{
@@ -62,22 +96,30 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 			return
 		}
 
-		fmt.Println("error inserting group in group table: ", err)
+		fmt.Println("error inserting group:", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	_, err = tx.Exec(`
-			INSERT INTO group_members (group_id, user_id, role, status)
-			VALUES (?, ?, 'creator', 'accepted')`, groupId.String(), userID)
+		INSERT INTO group_members (
+			group_id,
+			user_id,
+			role,
+			status
+		)
+		VALUES (?, ?, 'creator', 'accepted')`,
+		groupId.String(),
+		userID,
+	)
 	if err != nil {
-		fmt.Println("error inserting creator group in group_members table: ", err)
+		fmt.Println("error inserting creator:", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	if err := tx.Commit(); err != nil {
-		fmt.Println("error commiting transactions: ", err)
+		fmt.Println("error committing transaction:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -88,6 +130,7 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 			"id":          groupId.String(),
 			"title":       group.Title,
 			"description": group.Description,
+			"image":       group.Image,
 		},
 	})
 }

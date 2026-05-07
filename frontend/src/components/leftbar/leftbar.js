@@ -31,7 +31,6 @@ export default function Leftbar() {
     }
   }, [pathname]);
 
-
   const handleLogout = async () => {
     if (loading) return;
     setLoading(true);
@@ -61,23 +60,25 @@ export default function Leftbar() {
           title="Home"
         >
           <Home />
+          Quests
         </Link>
-        <Link href="/friends" className={styles.buttonLink} title="Friends">
-          <Handshake />
-        </Link>
+
         <Link href="/groups/joins" className={styles.buttonLink} title="Groups">
           <Users />
         </Link>
+
         <Link href="/chat" className={styles.buttonLink} title="Chat">
           <MessageSquare />
         </Link>
-        
-        <Link href="/notifications" className={styles.buttonLink} title="Notifications">
+
+        <Link
+          href="/notifications"
+          className={styles.buttonLink}
+          title="Notifications"
+        >
           <Bell />
           {unreadNotifCount > 0 && (
-            <div className={styles.NOTIF}>
-              {unreadNotifCount}
-            </div>
+            <div className={styles.NOTIF}>{unreadNotifCount}</div>
           )}
         </Link>
 

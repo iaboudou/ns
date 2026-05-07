@@ -94,9 +94,16 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 			"nickname":      nickname,
 			"firstname":     firstname,
 			"lastname":      lastname,
+			"fullname":      firstname + " " + lastname,
 			"profile_image": profile_image,
 			"created_at":    created_at,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		fmt.Println(err)
+		help.RespondServerError(w)
+		return
 	}
 
 	help.Respond(w, &models.Response{

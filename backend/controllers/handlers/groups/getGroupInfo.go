@@ -16,10 +16,10 @@ func GetGroupBasicInfo(w http.ResponseWriter, r *http.Request, db *sql.DB, group
 
 	var creator_id string
 	err := db.QueryRow(`
-	SELECT title, description, creator_id
+	SELECT title, description, creator_id, image
 	FROM groups
 	WHERE id = ?
-	`, groupID).Scan(&info.Title, &info.Description, &creator_id)
+	`, groupID).Scan(&info.Title, &info.Description, &creator_id, &info.Image)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			help.RespondNotFound(w, "This group doesn't exist")

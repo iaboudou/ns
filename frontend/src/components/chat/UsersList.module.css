@@ -1,102 +1,155 @@
+/* ── UsersList.module.css — Dark Fantasy ── */
+
 .userContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding: 8px;
 }
 
-.userContainer::-webkit-scrollbar {
-  display: none;
+/* ─── Title ──────────────────────────────── */
+.userContainer h3 {
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #C8892A;
+  opacity: 0.8;
+  margin: 0;
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid #2a1f0f;
+  flex-shrink: 0;
 }
 
-.input {
-  width: 100%;
-  background: #202020;
-  border: none;
-  border-radius: 8px;
-  color: #e0e0e0;
-  padding: 10px 12px;
-  font-size: 14px;
-  outline: none;
-  box-sizing: border-box;
-  margin-bottom: 16px;
-}
-
-.input::placeholder {
-  color: #606060;
-}
-
+/* ─── List ───────────────────────────────── */
 .userList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: none;
+  padding: 8px 0;
 }
+.userList::-webkit-scrollbar { display: none; }
 
+/* ─── Search input ───────────────────────── */
+.input {
+  margin: 4px 12px 8px;
+  background: #13110a;
+  border: 1px solid #2a1f0f;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-family: "Crimson Text", serif;
+  font-size: 13px;
+  color: #E8E0CC;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  width: calc(100% - 24px);
+}
+.input:focus { border-color: #C8892A; }
+.input::placeholder { color: #3a2e1e; font-style: italic; }
+
+/* ─── User item ──────────────────────────── */
 .userItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  gap: 10px;
+  padding: 10px 16px;
   text-decoration: none;
-  color: inherit;
-  border-radius: 8px;
-  transition: background 0.2s;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.userItem:hover {
+  background: #13110a;
+  border-left-color: #C8892A;
 }
 
+/* Active — conversation ouverte */
+.userItem[aria-current="page"],
+.userItemActive {
+  background: #13110a;
+  border-left-color: #C8892A;
+}
+
+/* ─── User info ──────────────────────────── */
 .userInfo {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  min-width: 0;
 }
 
 .fullname {
-  font-size: 16px;
-  font-weight: 500;
-  color: #ffffff;
+  font-family: "Cinzel", serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #E8E0CC;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nickname {
-  font-size: 13px;
-  color: #808080;
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 11px;
+  color: #6b5a3e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.onlineBtn {
-  width: 10px;
-  height: 10px;
-  background-color: #2ecc71;
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
-}
-
+/* ─── Status (badge + online dot) ───────── */
 .userStatus {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .unreadBadge {
-  background-color: #ff4757;
-  color: white;
-  font-size: 0.7rem;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
   min-width: 18px;
   height: 18px;
+  background: #8B1A1A;
+  border-radius: 20px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: #E8E0CC;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(255, 71, 87, 0.3);
+  padding: 0 4px;
+  box-shadow: 0 0 6px rgba(139,26,26,0.5);
 }
 
-@media (max-width: 768px) {
-  .userItem {
-    padding: 10px;
-  }
-  .fullname {
-    font-size: 15px;
-  }
+.onlineBtn {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #C8892A;
+  box-shadow: 0 0 6px rgba(200,137,42,0.6);
+  flex-shrink: 0;
 }
+
+/* ─── Load more ──────────────────────────── */
+.userList > button {
+  margin: 8px 12px 4px;
+  padding: 7px 0;
+  background: transparent;
+  border: 1px solid #2a1f0f;
+  border-radius: 4px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b5a3e;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.userList > button:hover { color: #C8892A; border-color: #C8892A; }
+.userList > button:disabled { opacity: 0.4; cursor: not-allowed; }

@@ -31,6 +31,12 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 			data, err = c.DB.GetFollowersDB(targetID, q)
 		case "following":
 			data, err = c.DB.GetFollowingDB(targetID, q)
+		case "requests":
+			data, err = c.DB.GetFollowRequestsDB(targetID)
+			if err != nil {
+				help.RespondServerError(w)
+				return
+			}
 		default:
 			help.Respond(w, &models.Response{
 				Code:    http.StatusBadRequest,

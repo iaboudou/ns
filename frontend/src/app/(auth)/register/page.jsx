@@ -18,7 +18,7 @@ export default function RegisterPage() {
 
     const [error, ok] = ValidateInput(formData);
     if (!ok) {
-      setError(error || "Please fill in all required fields");
+      setError(error || "You missed something, adventurer");
       return;
     }
 
@@ -34,31 +34,31 @@ export default function RegisterPage() {
   return (
     <div className={styles.page}>
       <form className={styles.formRegister} onSubmit={onSubmit}>
-        <h2>Create Account</h2>
+        <h2>Swear the Oath</h2>
 
         <div className={styles.row}>
           <div>
-            <label>First Name</label>
-            <input type="text" name="firstname" placeholder="John" />
+            <label>Bloodline Name</label>
+            <input type="text" name="firstname" placeholder="Your first name" />
           </div>
           <div>
-            <label>Last Name</label>
-            <input type="text" name="lastname" placeholder="Doe" />
+            <label>Given Name</label>
+            <input type="text" name="lastname" placeholder="Your last name" />
           </div>
         </div>
 
         <div>
-          <label>Email</label>
-          <input type="email" name="email" placeholder="you@example.com" />
+          <label>Sigil</label>
+          <input type="email" name="email" placeholder="seimor@gmail.com" />
         </div>
 
         <div>
-          <label>Password</label>
+          <label>Seal</label>
           <div className={styles.fieldWrap}>
             <input
               type={showPwd ? "text" : "password"}
               name="password"
-              placeholder="••••••••"
+              placeholder="Your password sir ..."
             />
 
             <button
@@ -74,11 +74,11 @@ export default function RegisterPage() {
 
         <div className={styles.row}>
           <div>
-            <label>Date of Birth</label>
+            <label>Birth Omen</label>
             <input type="date" name="dob" />
           </div>
           <div>
-            <label>Gender</label>
+            <label>Vessel</label>
             <div className={styles.radioGroup}>
               <label>
                 <input type="radio" name="gender" value="male" /> Male
@@ -92,36 +92,42 @@ export default function RegisterPage() {
 
         <div>
           <label>
-            Avatar <span>(optional)</span>
+            Mark of Identity <span>(optional)</span>
           </label>
           <input type="file" name="avatar" accept="image/*" />
         </div>
 
         <div>
           <label>
-            Nickname <span>(optional)</span>
+            Alias <span>(optional)</span>
           </label>
-          <input type="text" name="nickname" placeholder="coolname42" />
+          <input
+            type="text"
+            name="nickname"
+            placeholder="Name whispered in the dark"
+          />
         </div>
 
         <div>
           <label>
-            About Me <span>(optional)</span>
+            Chronicle <span>(optional)</span>
           </label>
           <textarea
             name="about"
-            placeholder="Tell us a little about yourself…"
+            placeholder="Tell your story... or remain silent."
           />
         </div>
 
         {error && <span className={styles.error}>{error}</span>}
 
-        <button type="submit">Register</button>
+        <button type="submit">Join the guild</button>
 
         <div className={styles.footer}>
-          Already have an account? <Link href="/login">Login</Link>
+          Already bound ? <Link href="/login">Identify yourself</Link>
         </div>
       </form>
+
+      <img src="http://localhost:4001/pics/scroll.png" alt="scroll" />
     </div>
   );
 }

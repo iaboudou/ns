@@ -1,10 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import styles from '@/components/groups/styles/groups.module.css';
-import HandleCreateGroup from '@/components/groups/joins/CreateGroup';
-import handleFetchGroups from '@/components/groups/utils/fetchGroups';
-import DisplayMyGroup from '@/components/groups/joins/DisplayMyGroups';
+import { useEffect, useRef, useState } from "react";
+
+import styles from "@/components/groups/styles/groups.module.css";
+import cardStyles from "@/components/groups/styles/groups-cards.module.css";
+
+import HandleCreateGroup from "@/components/groups/joins/CreateGroup";
+import DisplayMyGroup from "@/components/groups/joins/DisplayMyGroups";
+
+import handleFetchGroups from "@/components/groups/utils/fetchGroups";
 
 export default function DiscoverGroups() {
   const [groups, setGroups] = useState([]);
@@ -12,31 +16,72 @@ export default function DiscoverGroups() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const fetchParams = { groups, setGroups, setLoading, setHasMore, tab: 'mine' };
+  const observerRef = useRef(null);
+
+  const fetchParams = {
+    groups,
+    setGroups,
+    setLoading,
+    setHasMore,
+    tab: "mine",
+  };
 
   useEffect(() => {
     handleFetchGroups({ ...fetchParams, isReset: true });
   }, []);
 
+  useEffect(() => {
+    if (!observerRef.current || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+        if (!entry.isIntersecting || loading) return;
+
+        await handleFetchGroups({
+          ...fetchParams,
+          hasMore,
+        });
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [groups, hasMore, loading]);
+
   return (
     <>
-      <button onClick={() => setShowCreateGroupForm((v) => !v)}>create group</button>
-      {showCreateGroupForm && <HandleCreateGroup setGroups={setGroups} />}
-
-      {groups.length === 0 ? (
-        <p>you're not in any group. You can join one or better create your own !</p>
-      ) : (
-        <div className={styles.groupsList}>
-          {groups.map((g) => (
-            <DisplayMyGroup key={g.id} group={g} />
-          ))}
-        </div>
+      {showCreateGroupForm && (
+        <HandleCreateGroup setGroups={setGroups} />
       )}
 
-      {hasMore && (
-        <button className={styles.loadMoreBtn} onClick={() => handleFetchGroups({ ...fetchParams, hasMore })} disabled={loading}>
-          {loading ? 'Loading...' : 'Load More'}
+      <div className={cardStyles.groupsList}>
+        <button
+          type="button"
+          className={cardStyles.createGroupCard}
+          onClick={() => setShowCreateGroupForm((v) => !v)}
+        >
+          <span className={cardStyles.createGroupIcon}>✦</span>
+          <span className={cardStyles.createGroupLabel}>
+            Create Group
+          </span>
         </button>
+
+        {groups.map((g) => (
+          <DisplayMyGroup key={g.id} group={g} />
+        ))}
+      </div>
+
+      {hasMore && (
+        <div
+          ref={observerRef}
+          className={styles.loadMoreTrigger}
+        >
+          {loading ? "Loading..." : ""}
+        </div>
       )}
     </>
   );

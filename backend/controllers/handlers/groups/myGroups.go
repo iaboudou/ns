@@ -21,25 +21,25 @@ func GetJoinedGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	if last == "" {
 		rows, err = db.Query(`
-			SELECT g.id, g.title, g.description, g.created_at
+			SELECT g.id, g.title, g.description, g.created_at, g.image
 			FROM group_members gm
 			JOIN groups g ON gm.group_id = g.id
 			WHERE gm.user_id = ? AND gm.status = "accepted"
 			ORDER BY g.created_at DESC, g.id DESC
-			LIMIT 10
+			LIMIT 8
 		`, userID)
 	} else {
 		normalized := strings.Replace(last, "T", " ", 1)
 		normalized = strings.TrimSuffix(normalized, "Z")
 
 		rows, err = db.Query(`
-			SELECT g.id, g.title, g.description, g.created_at
+			SELECT g.id, g.title, g.description, g.created_at, g.image
 			FROM group_members gm
 			JOIN groups g ON gm.group_id = g.id
 			WHERE gm.user_id = ? AND gm.status = "accepted"
 			  AND (g.created_at < ? OR (g.created_at = ? AND g.id < ?))
 			ORDER BY g.created_at DESC, g.id DESC
-			LIMIT 10
+			LIMIT 8
 		`, userID, normalized, normalized, lastID)
 	}
 
@@ -54,10 +54,10 @@ func GetJoinedGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	groups := []map[string]any{}
 
 	for rows.Next() {
-		var id, title, description string
+		var id, title, description, image string
 		var created_at time.Time
 
-		err := rows.Scan(&id, &title, &description, &created_at)
+		err := rows.Scan(&id, &title, &description, &created_at, &image)
 		if err != nil {
 			fmt.Println("error while getting users's group")
 			help.RespondServerError(w)
@@ -69,6 +69,7 @@ func GetJoinedGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			"title":       title,
 			"description": description,
 			"created_at":  created_at,
+			"img":         image,
 		})
 	}
 

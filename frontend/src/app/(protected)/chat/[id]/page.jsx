@@ -19,24 +19,25 @@ export default function Page() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const resp = await fetch(`http://localhost:4001/api/getUsers?search=${params.id}`, {
-          credentials: "include"
-        });
+        const resp = await fetch(
+          `http://localhost:4001/api/getUsers?search=${params.id}`,
+          {
+            credentials: "include",
+          },
+        );
         const res = await resp.json();
         if (res.code === 200 && res.data.length > 0) {
           // extra filter
-          const user = res.data.find(u => u.id === params.id);
+          const user = res.data.find((u) => u.id === params.id);
           if (user) setChatUser(user);
         }
-      } catch (err) {
-      }
+      } catch (err) {}
     };
     if (params.id) fetchUser();
   }, [params.id]);
 
   useEffect(() => {
     if (port && params.id) {
-      // mark messages as read in DB
       port.postMessage({
         type: "send",
         payload: {
@@ -58,9 +59,11 @@ export default function Page() {
   }, [port, params.id]);
 
   // filter messages for this specific conversation
-  const conversationMessages = messages.filter(
-    (msg) => msg.sender_id === params.id || msg.receiver_id === params.id
-  ).sort((a, b) => a.created_at - b.created_at);
+  const conversationMessages = messages
+    .filter(
+      (msg) => msg.sender_id === params.id || msg.receiver_id === params.id,
+    )
+    .sort((a, b) => a.created_at - b.created_at);
 
   // scroll to bottom when messages change
   useEffect(() => {
@@ -87,15 +90,33 @@ export default function Page() {
     });
   };
 
-  const commonEmojis = ["👍", "😀", "😂", "🥰", "😎", "🤔", "😅", "🔥", "❤️", "🙏", "✨", "🎉"];
+
+  const commonEmojis = [
+    "👍",
+    "😀",
+    "😂",
+    "🥰",
+    "😎",
+    "🤔",
+    "😅",
+    "🔥",
+    "❤️",
+    "🙏",
+    "✨",
+    "🎉",
+  ];
 
   return (
     <div className={styles.chatContainer}>
       <div className={styles.chatHeader}>
         {chatUser ? (
           <>
-            <span className={styles.headerName}>{chatUser.firstname} {chatUser.lastname}</span>
-            {chatUser.nickname && <span className={styles.headerNick}> @{chatUser.nickname}</span>}
+            <span className={styles.headerName}>
+              {chatUser.firstname} {chatUser.lastname}
+            </span>
+            {chatUser.nickname && (
+              <span className={styles.headerNick}> @{chatUser.nickname}</span>
+            )}
           </>
         ) : (
           `Loading chat...`
@@ -124,7 +145,7 @@ export default function Page() {
 
       <div className={styles.inputArea}>
         <div className={styles.emojiWrapper}>
-          <button 
+          <button
             className={styles.emojiToggle}
             onClick={() => setShowEmojis(!showEmojis)}
           >
@@ -132,12 +153,12 @@ export default function Page() {
           </button>
           {showEmojis && (
             <div className={styles.emojiPicker}>
-              {commonEmojis.map(emoji => (
-                <span 
-                  key={emoji} 
+              {commonEmojis.map((emoji) => (
+                <span
+                  key={emoji}
                   className={styles.emojiItem}
                   onClick={() => {
-                    setInputText(prev => prev + emoji);
+                    setInputText((prev) => prev + emoji);
                     setShowEmojis(false);
                   }}
                 >
@@ -156,13 +177,17 @@ export default function Page() {
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-               const content = inputText.trim();
-               if (content === "") return;
-               sendMessage({
-                 type: "send",
-                 payload: { type: "chat", receiver_Id: params.id, content: content },
-               });
-               setInputText("");
+              const content = inputText.trim();
+              if (content === "") return;
+              sendMessage({
+                type: "send",
+                payload: {
+                  type: "chat",
+                  receiver_Id: params.id,
+                  content: content,
+                },
+              });
+              setInputText("");
             }
           }}
         />
