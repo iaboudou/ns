@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -26,7 +25,6 @@ func GetGroupBasicInfo(w http.ResponseWriter, r *http.Request, db *sql.DB, group
 			return
 		}
 
-		fmt.Println(err)
 		help.RespondServerError(w)
 		return
 	}
@@ -38,7 +36,6 @@ func GetGroupBasicInfo(w http.ResponseWriter, r *http.Request, db *sql.DB, group
 	err = db.QueryRow(`SELECT COUNT(*) FROM group_members
 	WHERE status ='accepted' AND group_id = ?`, groupID).Scan(&info.MemberAmount)
 	if err != nil {
-		fmt.Println("error while getting amount of group member :", err)
 		help.RespondServerError(w)
 		return
 	}

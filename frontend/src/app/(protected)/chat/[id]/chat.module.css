@@ -213,3 +213,9 @@
   color: #6b5a3e;
   margin: 0;
 }
+
+@media (max-width: 1000px) {
+  .chatContainer {
+    height: 72vh;
+  }
+}

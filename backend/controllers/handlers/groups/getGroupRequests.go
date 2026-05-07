@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -63,7 +62,6 @@ func GetGroupRequests(w http.ResponseWriter, r *http.Request, db *sql.DB, groupI
 	}
 
 	if err != nil {
-		fmt.Println("error generating query to retrieve group request", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -78,7 +76,6 @@ func GetGroupRequests(w http.ResponseWriter, r *http.Request, db *sql.DB, groupI
 
 		err := rows.Scan(&id, &nickname, &firstname, &lastname, &joined_at)
 		if err != nil {
-			fmt.Println("error in scan while retrieving group request", err)
 			help.RespondServerError(w)
 			return
 		}

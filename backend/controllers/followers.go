@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -118,7 +117,6 @@ func (c *Controller) GetSuggestionFollowers(w http.ResponseWriter, r *http.Reque
 
 	suggestions, err := c.DB.GetSuggestionUsersDB(userID)
 	if err != nil {
-		fmt.Printf("Error getting suggestions: %v\n", err)
 		help.RespondServerError(w)
 		return
 	}

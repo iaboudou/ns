@@ -85,7 +85,6 @@ func SelectOldMessages(db *sql.DB, msg *models.Message) ([]map[string]any, error
 			"receiver_profile":  receiverProfile,
 		})
 	}
-
 	return messages, nil
 }
 

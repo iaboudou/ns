@@ -12,7 +12,7 @@ export default function Page() {
   const [chatUser, setChatUser] = useState(null);
   const scrollRef = useRef(null);
 
-  const { messages, sendMessage, port, hasMoreMap } = useWebSocket();
+  const { messages, sendMessage, port, hasMoreMap, portKey, sendFocus } = useWebSocket();
   const hasMore = hasMoreMap[params.id] !== false; // default true
 
   // fetch user details for the header
@@ -31,7 +31,7 @@ export default function Page() {
           const user = res.data.find((u) => u.id === params.id);
           if (user) setChatUser(user);
         }
-      } catch (err) {}
+      } catch (err) { }
     };
     if (params.id) fetchUser();
   }, [params.id]);
@@ -56,8 +56,10 @@ export default function Page() {
         },
       });
     }
-  }, [port, params.id]);
 
+
+  }, [port, params.id]);
+  
   // filter messages for this specific conversation
   const conversationMessages = messages
     .filter(

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -80,7 +79,6 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	if err != nil {
-		fmt.Println("error creating rows for group suggestion: ", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -95,7 +93,6 @@ func GetUnknownGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		err := rows.Scan(&id, &title, &description, &created_at, &image)
 		if err != nil {
-			fmt.Println("error while getting groups suggestions :", err)
 			help.RespondServerError(w)
 			return
 		}

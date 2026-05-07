@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -21,7 +20,6 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 			Code:    http.StatusBadRequest,
 			Message: "Invalid form data",
 		})
-		fmt.Println(err)
 		return
 	}
 
@@ -58,14 +56,12 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 
 	groupId, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("error generating group id:", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	tx, err := db.Begin()
 	if err != nil {
-		fmt.Println("error generating transaction for group creation:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -96,7 +92,6 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 			return
 		}
 
-		fmt.Println("error inserting group:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -113,13 +108,11 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 		userID,
 	)
 	if err != nil {
-		fmt.Println("error inserting creator:", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	if err := tx.Commit(); err != nil {
-		fmt.Println("error committing transaction:", err)
 		help.RespondServerError(w)
 		return
 	}

@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -50,7 +49,6 @@ func VoteEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, eventID, user
 			ON CONFLICT(event_id, user_id)
 			DO UPDATE SET status = excluded.status;`, eventID, userID, vote)
 	if err != nil {
-		fmt.Println("error inserting or updating vote: ", err)
 		help.RespondServerError(w)
 		return
 	}

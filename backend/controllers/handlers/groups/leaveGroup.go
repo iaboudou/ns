@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -24,7 +23,6 @@ func LeaveGroup(w http.ResponseWriter, db *sql.DB, groupID, userID string) {
 	_, err = db.Exec(`DELETE FROM group_members
 	WHERE group_id = ? AND user_id = ?`, groupID, userID)
 	if err != nil {
-		fmt.Println("error while removing a user from a group: ", err)
 		help.RespondServerError(w)
 		return
 	}

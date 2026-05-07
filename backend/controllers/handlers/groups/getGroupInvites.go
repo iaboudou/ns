@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -43,7 +42,6 @@ func GetGroupInvites(w http.ResponseWriter, r *http.Request, db *sql.DB, userID 
 	}
 
 	if err != nil {
-		fmt.Println(err)
 		help.RespondServerError(w)
 		return
 	}
@@ -58,7 +56,6 @@ func GetGroupInvites(w http.ResponseWriter, r *http.Request, db *sql.DB, userID 
 
 		err := rows.Scan(&id, &title, &description, &joined_at, &image)
 		if err != nil {
-			fmt.Println(err)
 			help.RespondServerError(w)
 			return
 		}

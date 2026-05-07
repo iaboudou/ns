@@ -122,7 +122,6 @@ export default function UsersList() {
               let receiver = u.id
               let f = await alreadyfollowhim(receiver)
               if (f) {
-                console.log(f)
                 window.location.href = `/chat/${u.id}`
               } else {
                 alert(`you can't send message to <${u.firstname + " " + u.lastname}>, he's not following you and he has private profile`)

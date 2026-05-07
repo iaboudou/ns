@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -69,7 +68,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 	}
 
 	if err != nil {
-		fmt.Println(err)
 		help.RespondServerError(w)
 		return
 	}
@@ -84,7 +82,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 
 		err := rows.Scan(&id, &nickname, &firstname, &lastname, &profile_image, &created_at)
 		if err != nil {
-			fmt.Println(err)
 			help.RespondServerError(w)
 			return
 		}
@@ -101,7 +98,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 	}
 
 	if err := rows.Err(); err != nil {
-		fmt.Println(err)
 		help.RespondServerError(w)
 		return
 	}

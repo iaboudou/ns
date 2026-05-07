@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	handlers "rtf/controllers/handlers/chat"
 	"rtf/models"
 	"rtf/pkg/db/sqlite"
@@ -21,7 +19,6 @@ func (c *Controller) RunBroker() {
 
 			err := handlers.Connect(clients, db, client)
 			if err != nil {
-				fmt.Println("broker: connect error:", err)
 				continue
 			}
 
@@ -33,7 +30,6 @@ func (c *Controller) RunBroker() {
 			case "load_history":
 				err := GetOldMessages(clients, db, msg)
 				if err != nil {
-					fmt.Println("broker: failed to load history:", err)
 				}
 
 			case "load_group_history":

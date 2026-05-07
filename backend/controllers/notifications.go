@@ -94,7 +94,6 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 
 		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadBool, &createdAtRaw, &firstname, &lastname, &profileImage, &groupID)
 		if err != nil {
-			fmt.Println("Scan error:", err)
 			continue
 		}
 

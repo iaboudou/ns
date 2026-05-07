@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -53,7 +52,6 @@ func GetGroupEvents(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID,
 	}
 
 	if err != nil {
-		fmt.Println("error creating rows to retrieve event: ", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -68,7 +66,6 @@ func GetGroupEvents(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID,
 
 		err := rows.Scan(&author_nickname, &author_firstname, &author_lastname, &id, &title, &description, &date, &created_at)
 		if err != nil {
-			fmt.Println("error while retrieving event basic data:", err)
 			help.RespondServerError(w)
 			return
 		}
@@ -85,7 +82,6 @@ func GetGroupEvents(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID,
 			WHERE event_id = ?
 		`, userID, id).Scan(&going, &notgoing, &voted)
 		if err != nil {
-			fmt.Println("error while retrieving event responses: ", err)
 			help.RespondServerError(w)
 			return
 		}

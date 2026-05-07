@@ -43,7 +43,7 @@ const notifLink = (n) => {
     case "follow":
       return `/profile/${n.ref_id}`;
     case "follow_request":
-      return `/friends`;
+      return `/profile/me?section=requests`;
     case "follow_accepted":
       return `/profile/${n.ref_id}`;
 

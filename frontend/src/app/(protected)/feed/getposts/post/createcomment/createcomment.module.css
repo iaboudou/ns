@@ -16,7 +16,7 @@
   font-size: 14px;
   color: #2e1a05;
   outline: none;
-  resize: vertical;
+  resize: none;
   min-height: 56px;
   line-height: 1.6;
   box-sizing: border-box;

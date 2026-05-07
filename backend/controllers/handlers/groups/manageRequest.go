@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -62,7 +61,6 @@ func ManageRequest(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, 
 	}
 
 	if err != nil {
-		fmt.Println("error while managing group request:", err)
 		help.RespondServerError(w)
 		return
 	}

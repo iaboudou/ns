@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -44,7 +43,6 @@ func GetJoinedGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	if err != nil {
-		fmt.Println("error creating rows for geting groups: ", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -59,7 +57,6 @@ func GetJoinedGroups(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		err := rows.Scan(&id, &title, &description, &created_at, &image)
 		if err != nil {
-			fmt.Println("error while getting users's group")
 			help.RespondServerError(w)
 			return
 		}

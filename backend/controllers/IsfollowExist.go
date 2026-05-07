@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -21,8 +20,6 @@ func (c *Controller) IsfollowExist(w http.ResponseWriter, r *http.Request) {
 
 	q := r.URL.Query()
 	receiver := q.Get("receiver")
-	fmt.Println("receiver: ", receiver)
-	fmt.Println("sender: ", sender)
 
 	isfollow := c.DB.IsFollowExist(sender, receiver)
 

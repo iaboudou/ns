@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -25,7 +24,6 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 
 	_, err = db.Exec(`INSERT INTO group_members (group_id, user_id, type) VALUES (?, ?, ?)`, groupID, userID, Type)
 	if err != nil {
-		fmt.Println("error while adding group request:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -46,7 +44,6 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 	if CurrentUser == userID {
 		requester, err := sqlite.GetUserByID(db, CurrentUser)
 		if err != nil {
-			fmt.Println("error while getting group requester info:", err)
 			help.RespondServerError(w)
 			return
 		}

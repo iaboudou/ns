@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -10,8 +9,9 @@ import (
 	"rtf/help"
 	"rtf/models"
 
-	"github.com/gofrs/uuid/v5"
 	"rtf/pkg/db/sqlite"
+
+	"github.com/gofrs/uuid/v5"
 )
 
 func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *models.Hub, groupID, userID string) {
@@ -37,14 +37,12 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 
 	eventId, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("error generating event id: ", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	tx, err := db.Db.Begin()
 	if err != nil {
-		fmt.Println("error starting transaction:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -57,7 +55,6 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 	`, eventId.String(), groupID, userID, event.Title, event.Description, event.Date)
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("error inserting event in db:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -70,14 +67,12 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 	`, eventId.String(), userID, event.Vote)
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("error inserting or updating vote:", err)
 		help.RespondServerError(w)
 		return
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		fmt.Println("error committing transaction:", err)
 		help.RespondServerError(w)
 		return
 	}
@@ -106,7 +101,6 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 	err = db.Db.QueryRow(`SELECT nickname, firstname, lastname FROM users WHERE
 	id = ?`, userID).Scan(&author_nickname, &author_firstname, &author_lastname)
 	if err != nil {
-		fmt.Println("error getting user name creating event: ", err)
 		help.RespondServerError(w)
 		return
 	}

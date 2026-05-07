@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"rtf/help"
@@ -33,7 +32,6 @@ func DeleteGroup(w http.ResponseWriter, db *sql.DB, groupID, userID string) {
 	_, err = db.Exec(`DELETE FROM groups
 			 WHERE id = ? AND creator_id = ?`, groupID, userID)
 	if err != nil {
-		fmt.Println("error while deleting group :", err)
 		help.RespondServerError(w)
 		return
 	}
