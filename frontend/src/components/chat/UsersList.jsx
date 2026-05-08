@@ -11,7 +11,7 @@ export default function UsersList() {
   const [hasMore, setHasmore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const { onlineUsers, port, messages } = useWebSocket();
+  const { onlineUsers, port, messages, readConversations } = useWebSocket();
 
   const handleFetchUsers = async (currentSearch, isReset = false) => {
     if (!hasMore && !isReset) return;
@@ -99,6 +99,19 @@ export default function UsersList() {
       return newUsers;
     });
   }, [messages, params.id]);
+
+  // Clear unread count if messages were read in another tab
+  useEffect(() => {
+    if (readConversations) {
+      setUsers((prev) =>
+        prev.map((usr) =>
+          usr.id === readConversations.receiver_Id
+            ? { ...usr, unread_count: 0 }
+            : usr
+        )
+      );
+    }
+  }, [readConversations]);
 
   return (
     <div className={styles.userContainer}>

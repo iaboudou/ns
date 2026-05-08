@@ -93,6 +93,13 @@ self.addEventListener("connect", (e) => {
       case "send": {
         if (socket && socket.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify(msg.payload));
+          
+          if (msg.payload && msg.payload.type === "mark_read") {
+            broadcast({
+              event: "messages_read",
+              receiver_Id: msg.payload.receiver_Id
+            });
+          }
         }
         break;
       }

@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import styles from "./chat.module.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function Page() {
@@ -59,13 +59,32 @@ export default function Page() {
 
 
   }, [port, params.id]);
-  
+
   // filter messages for this specific conversation
-  const conversationMessages = messages
-    .filter(
-      (msg) => msg.sender_id === params.id || msg.receiver_id === params.id,
-    )
-    .sort((a, b) => a.created_at - b.created_at);
+  const conversationMessages = useMemo(() => {
+    return messages
+      .filter((msg) => msg.sender_id === params.id || msg.receiver_id === params.id)
+      .sort((a, b) => a.created_at - b.created_at);
+  }, [messages, params.id]);
+
+  const lastReadMsgId = useRef(null);
+
+  // mark new messages as read if they arrive while we are actively in the chat
+  useEffect(() => {
+    if (port && params.id && conversationMessages.length > 0) {
+      const lastMsg = conversationMessages[conversationMessages.length - 1];
+      if (lastMsg.isNew && lastMsg.sender_id === params.id && lastReadMsgId.current !== lastMsg.id) {
+        lastReadMsgId.current = lastMsg.id;
+        port.postMessage({
+          type: "send",
+          payload: {
+            type: "mark_read",
+            receiver_Id: params.id,
+          },
+        });
+      }
+    }
+  }, [conversationMessages, port, params.id]);
 
   // scroll to bottom when messages change
   useEffect(() => {

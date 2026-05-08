@@ -21,6 +21,7 @@ export const WebSocketProvider = ({ children }) => {
   const [hasMoreMap, setHasMoreMap] = useState({});
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [readConversations, setReadConversations] = useState(null);
   const pn = usePathname();
 
   useEffect(() => {
@@ -113,6 +114,11 @@ export const WebSocketProvider = ({ children }) => {
           break;
         }
 
+        case "messages_read": {
+          setReadConversations({ receiver_Id: msg.data.receiver_Id, timestamp: Date.now() });
+          break;
+        }
+
         case "unread_notifications_count": {
           setUnreadNotifCount(msg.data.count || 0);
           break;
@@ -170,6 +176,7 @@ export const WebSocketProvider = ({ children }) => {
         notifications,
         setNotifications,
         sendFocus,
+        readConversations,
       }}
     >
       {children}
