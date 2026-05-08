@@ -15,21 +15,11 @@ import {
 } from "lucide-react";
 
 import { useWebSocket } from "@/lib/UseWebsocket";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 export default function Leftbar() {
   const router = useRouter();
   const { port, unreadNotifCount, setUnreadNotifCount } = useWebSocket();
   const [loading, setLoading] = useState(false);
-  const pathname = usePathname();
-
-  // reset badge when user visits the notifications page
-  useEffect(() => {
-    if (pathname === "/notifications") {
-      setUnreadNotifCount(0);
-    }
-  }, [pathname]);
 
   const handleLogout = async () => {
     if (loading) return;
@@ -75,6 +65,7 @@ export default function Leftbar() {
           href="/notifications"
           className={styles.buttonLink}
           title="Notifications"
+          onClick={() => setUnreadNotifCount(0)}
         >
           <Bell />
           {unreadNotifCount > 0 && (

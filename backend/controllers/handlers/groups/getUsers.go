@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -30,44 +31,64 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 	var rows *sql.Rows
 
 	pattern := "%" + search + "%"
-
 	if last == "" {
 		if search != "" {
 			rows, err = db.Query(`
-				SELECT id, nickname, firstname, lastname, profile_image, created_at
-				FROM users
-				WHERE (nickname LIKE ? OR firstname LIKE ? OR lastname LIKE ?)
-				  AND id != ?
-				  AND id NOT IN (SELECT user_id FROM group_members WHERE group_id = ?)
-				ORDER BY created_at DESC, id DESC
-				LIMIT 10
-			`, pattern, pattern, pattern, userId, groupID)
+			SELECT u.id, u.nickname, u.firstname, u.lastname, u.profile_image, u.created_at
+			FROM users u
+			JOIN followers f ON f.follower_id = u.id
+			WHERE f.following_id = ?
+			  AND f.status = 'accepted'
+			  AND u.id != ?
+			  AND u.id NOT IN (
+			      SELECT user_id FROM group_members WHERE group_id = ?
+			  )
+			  AND (
+			    u.nickname LIKE ? OR
+			    u.firstname LIKE ? OR
+			    u.lastname LIKE ? OR
+			    u.firstname || ' ' || u.lastname LIKE ?
+			  )
+			ORDER BY u.created_at DESC, u.id DESC
+			LIMIT 10
+		`, userId, userId, groupID, pattern, pattern, pattern, pattern)
 		} else {
 			rows, err = db.Query(`
-				SELECT id, nickname, firstname, lastname, profile_image, created_at
-				FROM users
-				WHERE id != ?
-				  AND id NOT IN (SELECT user_id FROM group_members WHERE group_id = ?)
-				ORDER BY created_at DESC, id DESC
-				LIMIT 10
-			`, userId, groupID)
+			SELECT u.id, u.nickname, u.firstname, u.lastname, u.profile_image, u.created_at
+			FROM users u
+			JOIN followers f ON f.follower_id = u.id
+			WHERE f.following_id = ?
+			  AND f.status = 'accepted'
+			  AND u.id != ?
+			  AND u.id NOT IN (
+			      SELECT user_id FROM group_members WHERE group_id = ?
+			  )
+			ORDER BY u.created_at DESC, u.id DESC
+			LIMIT 10
+		`, userId, userId, groupID)
 		}
 	} else {
 		normalized := strings.Replace(last, "T", " ", 1)
 		normalized = strings.TrimSuffix(normalized, "Z")
 
 		rows, err = db.Query(`
-			SELECT id, nickname, firstname, lastname, profile_image, created_at
-			FROM users
-			WHERE (created_at < ? OR (created_at = ? AND id < ?))
-			  AND id != ?
-			  AND id NOT IN (SELECT user_id FROM group_members WHERE group_id = ?)
-			ORDER BY created_at DESC, id DESC
-			LIMIT 10
-		`, normalized, normalized, lastID, userId, groupID)
+		SELECT u.id, u.nickname, u.firstname, u.lastname, u.profile_image, u.created_at
+		FROM users u
+		JOIN followers f ON f.follower_id = u.id
+		WHERE f.following_id = ?
+		  AND f.status = 'accepted'
+		  AND (u.created_at < ? OR (u.created_at = ? AND u.id < ?))
+		  AND u.id != ?
+		  AND u.id NOT IN (
+		      SELECT user_id FROM group_members WHERE group_id = ?
+		  )
+		ORDER BY u.created_at DESC, u.id DESC
+		LIMIT 10
+	`, userId, normalized, normalized, lastID, userId, groupID)
 	}
 
 	if err != nil {
+		fmt.Println(err)
 		help.RespondServerError(w)
 		return
 	}
@@ -82,6 +103,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 
 		err := rows.Scan(&id, &nickname, &firstname, &lastname, &profile_image, &created_at)
 		if err != nil {
+			fmt.Println(err)
 			help.RespondServerError(w)
 			return
 		}
@@ -98,6 +120,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userI
 	}
 
 	if err := rows.Err(); err != nil {
+		fmt.Println(err)
 		help.RespondServerError(w)
 		return
 	}

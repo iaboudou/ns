@@ -31,7 +31,7 @@ export default function GroupHeader({ group, id }) {
             className={styles.secondaryButton}
             onClick={() => setHoverTab("invite friends")}
           >
-            Invite Friends
+            Invite Followers
           </button>
           {group.isCreator ? (
             <button

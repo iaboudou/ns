@@ -44,7 +44,7 @@ export default function DiscoverGroups() {
       },
       {
         threshold: 0.1,
-      }
+      },
     );
 
     observer.observe(observerRef.current);
@@ -54,21 +54,22 @@ export default function DiscoverGroups() {
 
   return (
     <>
-      {showCreateGroupForm && (
-        <HandleCreateGroup setGroups={setGroups} />
-      )}
-
       <div className={cardStyles.groupsList}>
-        <button
-          type="button"
-          className={cardStyles.createGroupCard}
-          onClick={() => setShowCreateGroupForm((v) => !v)}
-        >
-          <span className={cardStyles.createGroupIcon}>✦</span>
-          <span className={cardStyles.createGroupLabel}>
-            Create Group
-          </span>
-        </button>
+        {showCreateGroupForm ? (
+          <HandleCreateGroup
+            setGroups={setGroups}
+            setShowCreateGroupForm={setShowCreateGroupForm}
+          />
+        ) : (
+          <button
+            type="button"
+            className={cardStyles.createGroupCard}
+            onClick={() => setShowCreateGroupForm((v) => !v)}
+          >
+            <span className={cardStyles.createGroupIcon}>✦</span>
+            <span className={cardStyles.createGroupLabel}>Create Group</span>
+          </button>
+        )}
 
         {groups.map((g) => (
           <DisplayMyGroup key={g.id} group={g} />
@@ -76,10 +77,7 @@ export default function DiscoverGroups() {
       </div>
 
       {hasMore && (
-        <div
-          ref={observerRef}
-          className={styles.loadMoreTrigger}
-        >
+        <div ref={observerRef} className={styles.loadMoreTrigger}>
           {loading ? "Loading..." : ""}
         </div>
       )}

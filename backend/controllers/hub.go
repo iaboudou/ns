@@ -28,9 +28,7 @@ func (c *Controller) RunBroker() {
 				sqlite.MarkRead(db, msg.SenderID, msg.ReceiverID)
 
 			case "load_history":
-				err := GetOldMessages(clients, db, msg)
-				if err != nil {
-				}
+				GetOldMessages(clients, db, msg)
 
 			case "load_group_history":
 				GetOldGroupMessages(clients, db, msg)
@@ -58,18 +56,45 @@ func (c *Controller) RunBroker() {
 				}
 
 			case "get_notifications":
-				GetNotificationsWS(clients, db, msg)
+				GetNotificationsWS(clients, db, msg.SenderID)
 
-			case "get_unread_notifications_count":
-				GetUnreadNotificationCountWS(clients, db, msg)
+			case "mark_notif_read":
+				db.Exec(`UPDATE notification_users SET is_read = 1 WHERE notification_id = ? AND user_id = ?`, msg.ID, msg.SenderID)
+
+				// case "get_unread_notifications_count":
+				// 	GetUnreadNotificationCountWS(clients, db, msg)
+				//
 			}
 
-		case notif := <-hub.Notify:
-			SendFollowNotification(clients, db, notif.FromUser, notif.ToUserID, notif.NotifType, notif.GroupID)
+		case notif := <-hub.Notif:
 
+			switch notif.Type {
+			case "event":
+				BroadCastEventCreation(db, clients, &notif)
+			case "group_invite":
+				Notify(db, clients, &notif)
+			case "group_request":
+				Notify(db, clients, &notif)
+			case "follow":
+				Notify(db, clients, &notif)
+				cs, ok := clients[notif.ReceiverID]
+
+				if ok {
+					for _, c := range cs {
+						c.Mu.Lock()
+						c.Ws.WriteJSON(map[string]any{
+							"event":    "join",
+							"newcomer": notif.SenderID,
+						})
+						c.Mu.Unlock()
+					}
+				}
+
+			case "follow_request":
+				Notify(db, clients, &notif)
+			}
 		case client := <-hub.Disconnect:
 			handlers.Disconnect(clients, client)
-
 		}
 	}
 }

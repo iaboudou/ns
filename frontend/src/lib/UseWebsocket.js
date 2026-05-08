@@ -21,8 +21,10 @@ export const WebSocketProvider = ({ children }) => {
   const [hasMoreMap, setHasMoreMap] = useState({});
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
-  const [readConversations, setReadConversations] = useState(null);
-  const pn = usePathname();
+
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
 
   useEffect(() => {
     if (port) return;
@@ -32,9 +34,7 @@ export const WebSocketProvider = ({ children }) => {
 
     worker.port.onmessage = (msg) => {
       const event = msg.data.event;
-
       switch (event) {
-
         case "connected": {
           setPortKey(msg.data.portKey);
           portKeyRef.current = msg.data.portKey;
@@ -49,6 +49,7 @@ export const WebSocketProvider = ({ children }) => {
 
         case "online_users": {
           setOnlineUsers(msg.data.users);
+          setUnreadNotifCount(msg.data.count);
           break;
         }
 
@@ -98,29 +99,36 @@ export const WebSocketProvider = ({ children }) => {
           break;
         }
 
-        case "notification": {
-          if (msg.data.showNotif) {
-            setUnreadNotifCount((prev) => prev + 1);
-          }
-
-          setNotifications((prev) => {
-            return [msg.data, ...prev];
+        case "messages_read": {
+          setReadConversations({
+            receiver_Id: msg.data.receiver_Id,
+            timestamp: Date.now(),
           });
           break;
         }
 
-        case "notifications_list": {
-          setNotifications(msg.data.data || []);
+        case "notifications": {
+          setNotifications((oldNotif) => {
+            const map = new Map(oldNotif.map((n) => [n.id, n]));
+            msg.data.notifications.forEach((n) => map.set(n.id, n));
+            return Array.from(map.values()).sort(
+              (a, b) => new Date(b.created_at) - new Date(a.created_at),
+            );
+          });
           break;
         }
 
-        case "messages_read": {
-          setReadConversations({ receiver_Id: msg.data.receiver_Id, timestamp: Date.now() });
-          break;
-        }
+        case "new_notification": {
+          if (!pathnameRef.current.includes("/notifications"))
+            setUnreadNotifCount((prev) => prev + 1);
 
-        case "unread_notifications_count": {
-          setUnreadNotifCount(msg.data.count || 0);
+          setNotifications((oldNotif) => {
+            const map = new Map(oldNotif.map((n) => [n.id, n]));
+            map.set(msg.data.notif.id, msg.data.notif);
+            return Array.from(map.values()).sort(
+              (a, b) => new Date(b.created_at) - new Date(a.created_at),
+            );
+          });
           break;
         }
       }
@@ -150,16 +158,18 @@ export const WebSocketProvider = ({ children }) => {
     [port],
   );
 
-
   // will be used to postMessage in case of focus
-  const sendFocus = useCallback((tabName) => {
-  if (port && portKey) {
-    port.postMessage({
-      type: "focus",
-      payload: { tab: tabName, portKey: portKey },
-    });
-  }
-}, [port, portKey]);
+  const sendFocus = useCallback(
+    (tabName) => {
+      if (port && portKey) {
+        port.postMessage({
+          type: "focus",
+          payload: { tab: tabName, portKey: portKey },
+        });
+      }
+    },
+    [port, portKey],
+  );
 
   return (
     <WebSocketContext.Provider
@@ -176,7 +186,6 @@ export const WebSocketProvider = ({ children }) => {
         notifications,
         setNotifications,
         sendFocus,
-        readConversations,
       }}
     >
       {children}

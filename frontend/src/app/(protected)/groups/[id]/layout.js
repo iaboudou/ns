@@ -26,18 +26,18 @@ export default async function SingleGroupLayout({ children, params }) {
 
         <div className={styles.groupFeedBtn}>
           <Link className={styles.groupFeedLink} href={`/groups/${id}/posts`}>
-            posts
+            Posts
           </Link>
           <Link className={styles.groupFeedLink} href={`/groups/${id}/chats`}>
-            chat
+            Chat
           </Link>
           <Link className={styles.groupFeedLink} href={`/groups/${id}/events`}>
-            events
+            Events
           </Link>
 
           {group.isCreator && (
             <Link className={styles.groupFeedLink} href={`/groups/${id}/requests`}>
-              join requests
+            Requests
             </Link>
           )}
         </div>

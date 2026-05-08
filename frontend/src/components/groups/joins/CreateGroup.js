@@ -5,7 +5,10 @@ import styles from "@/components/groups/styles/groups.module.css";
 import { CreateGroup } from "@/_lib/group";
 import { useState } from "react";
 
-export default function HandleCreateGroup({ setGroups }) {
+export default function HandleCreateGroup({
+  setGroups,
+  setShowCreateGroupForm,
+}) {
   const [groupTitle, setGroupTitle] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
   const [groupImage, setGroupImage] = useState(null);
@@ -40,6 +43,7 @@ export default function HandleCreateGroup({ setGroups }) {
             setError("");
 
             setGroups((prev) => [newGroup, ...prev]);
+            setShowCreateGroupForm((v) => !v);
           })
           .catch((err) => {
             if (err.message === "Something wrong happened. Please try later") {

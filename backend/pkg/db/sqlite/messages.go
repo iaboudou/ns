@@ -142,6 +142,7 @@ func GetChatUsers(db *sql.DB, userID string) ([]map[string]any, error) {
 	defer rows.Close()
 
 	users := []map[string]any{}
+	
 	for rows.Next() {
 		var id, firstname, lastname, profileImage string
 		var lastMsg int64

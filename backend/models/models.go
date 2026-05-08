@@ -114,7 +114,7 @@ type GroupeInfo struct {
 	MemberAmount       int    `json:"members"`
 	Posts              []Post `json:"posts"`
 	UnreadMessageCount int    `json:"unreadMsg"`
-	Image              string `json:"image"`
+	Image              string `json:"img"`
 }
 
 type Group struct {
@@ -143,13 +143,13 @@ type Hub struct {
 	Connect    chan *Client
 	Disconnect chan *Client
 	Broadcast  chan Message
-	Notify     chan FollowNotif
+	Notif      chan Notification
 }
 
 // FollowNotif is sent through Hub.Notify when a follow event occurs
-type FollowNotif struct {
-	FromUser  User
-	ToUserID  string
-	NotifType string // "follow_request" or "follow_accepted"
-	GroupID   string // for groups notif
+type Notification struct {
+	SenderID   string
+	ReceiverID string
+	Type       string
+	GroupID    string
 }

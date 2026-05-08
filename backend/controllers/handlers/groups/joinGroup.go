@@ -6,7 +6,6 @@ import (
 
 	"rtf/help"
 	"rtf/models"
-	"rtf/pkg/db/sqlite"
 )
 
 func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.DB, groupID, userID, Type string) {
@@ -28,37 +27,35 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 		return
 	}
 
-	CurrentUser := r.Context().Value("userID").(string)
+	CurrentUserID := r.Context().Value("userID").(string)
 
-	creator := models.User{}
+	var groupCreatorID string
 
-	db.QueryRow(`
-	SELECT u.id, u.nickname, u.firstname, u.lastname, u.profile_image 
+	err = db.QueryRow(`
+	SELECT u.id
 	FROM users u
 	JOIN group_members gm ON gm.user_id = u.id
 	WHERE gm.group_id = ? 
 	AND role = 'creator'
-	`, groupID).
-		Scan(&creator.ID, &creator.Nickname, &creator.Firstname, &creator.Lastname, &creator.ProfileImage)
+	`, groupID).Scan(&groupCreatorID)
+	if err != nil {
+		help.RespondServerError(w)
+		return
+	}
 
-	if CurrentUser == userID {
-		requester, err := sqlite.GetUserByID(db, CurrentUser)
-		if err != nil {
-			help.RespondServerError(w)
-			return
-		}
-
-		hub.Notify <- models.FollowNotif{
-			FromUser:  requester,
-			ToUserID:  creator.ID,
-			NotifType: "group_request",
-			GroupID:   groupID,
+	if CurrentUserID == groupCreatorID {
+		hub.Notif <- models.Notification{
+			SenderID:   groupCreatorID,
+			ReceiverID: userID,
+			Type:       "group_invite",
+			GroupID:    groupID,
 		}
 	} else {
-		hub.Notify <- models.FollowNotif{
-			FromUser:  creator,
-			ToUserID:  userID,
-			NotifType: "group_invite",
+		hub.Notif <- models.Notification{
+			SenderID:   userID,
+			ReceiverID: groupCreatorID,
+			Type:       "group_request",
+			GroupID:    groupID,
 		}
 	}
 

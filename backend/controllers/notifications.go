@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"database/sql"
-	"fmt"
 	"strings"
 	"time"
 
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 
 	"github.com/gofrs/uuid/v5"
 )
@@ -55,75 +55,54 @@ func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fro
 	}
 }
 
-func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
-
-	userID := msg.SenderID
-
+func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, userID string) error {
 	rows, err := db.Query(`
-		SELECT n.id, n.type, n.ref_id, n.is_read, n.created_at, n.group_id,
-		       u.firstname, u.lastname, u.profile_image
+		SELECT n.id, n.type, n.group_id, n.created_at, nu.is_read,
+		       u.id, u.nickname, u.firstname, u.lastname, u.profile_image
 		FROM notifications n
-		LEFT JOIN users u ON u.id = n.ref_id
-		WHERE n.user_id = ?
+		JOIN notification_users nu ON nu.notification_id = n.id
+		JOIN users u ON u.id = n.sender_id
+		WHERE nu.user_id = ?
 		ORDER BY n.created_at DESC
-		LIMIT 50
 	`, userID)
 	if err != nil {
 		return err
 	}
+
 	defer rows.Close()
 
-	type NotifRow struct {
-		ID        string `json:"id"`
-		Type      string `json:"type"`
-		RefID     string `json:"ref_id"`
-		IsRead    bool   `json:"is_read"`
-		CreatedAt int64  `json:"created_at"`
-		FromName  string `json:"from_name"`
-		FromImage string `json:"from_image"`
-		GroupId   string `json:"group_id"`
-	}
+	notifications := []map[string]any{}
 
-	notifs := []NotifRow{}
 	for rows.Next() {
-		var n NotifRow
-		var isReadBool bool
-		var refID, firstname, lastname, profileImage sql.NullString
-		var groupID string
-		var createdAtRaw interface{}
+		var id, notifType, groupID string
+		var createdAt time.Time
+		var isRead int
+		var senderID, senderNickname, senderFirstname, senderLastname, senderProfile string
 
-		err := rows.Scan(&n.ID, &n.Type, &refID, &isReadBool, &createdAtRaw, &firstname, &lastname, &profileImage, &groupID)
+		err := rows.Scan(&id, &notifType, &groupID, &createdAt, &isRead, &senderID, &senderNickname, &senderFirstname, &senderLastname, &senderProfile)
 		if err != nil {
-			continue
+			return err
 		}
 
-		n.RefID = refID.String
-
-		n.IsRead = isReadBool
-		n.FromName = firstname.String + " " + lastname.String
-		n.FromImage = profileImage.String
-
-		switch v := createdAtRaw.(type) {
-		case int64:
-			n.CreatedAt = v
-		case time.Time:
-			n.CreatedAt = v.Unix()
-		case string:
-			fmt.Sscanf(v, "%d", &n.CreatedAt)
-		case []byte:
-			fmt.Sscanf(string(v), "%d", &n.CreatedAt)
-		}
-
-		notifs = append(notifs, n)
+		notifications = append(notifications, map[string]any{
+			"id":              id,
+			"type":            notifType,
+			"group_id":        groupID,
+			"created_at":      createdAt,
+			"is_read":         isRead == 1,
+			"sender_id":       senderID,
+			"sender_nickname": senderNickname,
+			"sender_fullname": senderFirstname + " " + senderLastname,
+			"sender_profile":  senderProfile,
+		})
 	}
 
-	db.Exec(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, userID)
 	if cs, ok := clients[userID]; ok {
 		for _, c := range cs {
 			c.Mu.Lock()
 			c.Ws.WriteJSON(map[string]any{
-				"event": "notifications_list",
-				"data":  notifs,
+				"event":         "notifications",
+				"notifications": notifications,
 			})
 			c.Mu.Unlock()
 		}
@@ -131,24 +110,122 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, msg mod
 	return nil
 }
 
-func GetUnreadNotificationCountWS(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
-	userID := msg.SenderID
 
-	var count int
-	err := db.QueryRow(`SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0`, userID).Scan(&count)
+func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, notif *models.Notification) error {
+	notifID, err := uuid.NewV4()
 	if err != nil {
 		return err
 	}
 
-	if cs, ok := clients[userID]; ok {
-		for _, c := range cs {
-			c.Mu.Lock()
-			c.Ws.WriteJSON(map[string]any{
-				"event": "unread_notifications_count",
-				"count": count,
-			})
-			c.Mu.Unlock()
+	now := time.Now().UTC().Format("2006-01-02 15:04:05")
+
+	rows, err := db.Query(`
+		SELECT user_id 
+		FROM group_members
+		WHERE group_id = ? AND status = 'accepted'
+	`, notif.GroupID)
+	if err != nil {
+		return err
+	}
+
+	members := map[string]bool{}
+	var receivers []string
+
+	for rows.Next() {
+		var uid string
+		if err := rows.Scan(&uid); err != nil {
+			return err
+		}
+		members[uid] = true
+		if uid != notif.SenderID {
+			receivers = append(receivers, uid)
 		}
 	}
+	rows.Close()
+
+	if err := sqlite.InsertNotifInDB(db, notif, notifID, now, receivers); err != nil {
+		return err
+	}
+
+	sender, err := sqlite.GetUserByID(db, notif.SenderID)
+	if err != nil {
+		return err
+	}
+
+	for clientID, clientArr := range clients {
+		if clientID == notif.SenderID || !members[clientID] {
+			continue
+		}
+
+		for _, c := range clientArr {
+			c.Mu.Lock()
+			err := c.Ws.WriteJSON(map[string]any{
+				"event": "new_notification",
+				"notif": map[string]any{
+					"id":              notifID,
+					"type":            "event",
+					"is_read":         false,
+					"sender_id":       sender.ID,
+					"sender_nickname": sender.Nickname,
+					"sender_fullname": sender.Firstname + " " + sender.Lastname,
+					"sender_profile":  sender.ProfileImage,
+					"created_at":      now,
+					"group_id":        notif.GroupID,
+				},
+			})
+			c.Mu.Unlock()
+
+			if err != nil {
+				c.Ws.Close()
+			}
+		}
+	}
+
+	return nil
+}
+
+func Notify(db *sql.DB, clients map[string][]*models.Client, notif *models.Notification) error {
+	notifID, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
+	now := time.Now().UTC().Format("2006-01-02 15:04:05")
+
+	if err := sqlite.InsertNotifInDB(db, notif, notifID, now, []string{notif.ReceiverID}); err != nil {
+		return err
+	}
+
+	sender, err := sqlite.GetUserByID(db, notif.SenderID)
+	if err != nil {
+		return err
+	}
+
+	if cs, ok := clients[notif.ReceiverID]; ok {
+		for _, c := range cs {
+			c.Mu.Lock()
+			err := c.Ws.WriteJSON(map[string]any{
+				"event": "new_notification",
+				"notif": map[string]any{
+					"id":              notifID,
+					"type":            notif.Type,
+					"is_read":         false,
+					"sender_id":       sender.ID,
+					"sender_nickname": sender.Nickname,
+					"sender_fullname": sender.Firstname + " " + sender.Lastname,
+					"sender_profile":  sender.ProfileImage,
+					"receiver_id":     notif.ReceiverID,
+					"created_at":      now,
+					"group_id":        notif.GroupID,
+				},
+			})
+			c.Mu.Unlock()
+
+			if err != nil {
+				c.Ws.Close()
+			}
+		}
+	}
+
 	return nil
 }

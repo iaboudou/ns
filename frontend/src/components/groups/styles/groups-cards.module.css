@@ -9,7 +9,7 @@
 /* ── Grille ──────────────────────────────── */
 .groupsList {
   display: grid;
-  grid-template-columns: repeat(3, 220px);
+  grid-template-columns: repeat(4, 300px);
   gap: 16px;
 }
 
@@ -27,13 +27,6 @@
   cursor: pointer;
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 
-  /* fallback quand pas de photo */
-  background-color: #1a1814;
-  background-image:
-    repeating-linear-gradient(135deg,
-      #13110a 0px, #13110a 1px,
-      transparent 1px, transparent 18px),
-    linear-gradient(to bottom, #1e1b14, #0f0e0c);
   background-size: cover;
   background-position: center;
   box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.5);

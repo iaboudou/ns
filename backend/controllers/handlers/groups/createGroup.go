@@ -123,7 +123,7 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 			"id":          groupId.String(),
 			"title":       group.Title,
 			"description": group.Description,
-			"image":       group.Image,
+			"img":       group.Image,
 		},
 	})
 }
