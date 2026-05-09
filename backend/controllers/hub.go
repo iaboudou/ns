@@ -15,7 +15,13 @@ func (c *Controller) RunBroker() {
 		select {
 
 		case client := <-hub.Connect:
-			clients[client.ID] = append(clients[client.ID], client)
+			// Enforce single session: close any existing connections for this user
+			if existingClients, ok := clients[client.ID]; ok {
+				for _, c := range existingClients {
+					c.Ws.Close()
+				}
+			}
+			clients[client.ID] = []*models.Client{client}
 
 			err := handlers.Connect(clients, db, client)
 			if err != nil {

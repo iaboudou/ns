@@ -134,6 +134,12 @@ func (r *Repo) SetUserSession(w http.ResponseWriter, userID string) (string, tim
 	now := time.Now()
 	expiredAt := now.Add(24 * time.Hour)
 
+	// Remove any existing session for this user to enforce single-session policy
+	_, err = r.Db.Exec("DELETE FROM sessions WHERE user_id = ?", userID)
+	if err != nil {
+		return "", time.Time{}, errors.New("SERVER ERROR")
+	}
+
 	_, err = r.Db.Exec(`
 	INSERT INTO sessions (id, user_id, token, expires_at)
 	VALUES (?, ?, ?, ?)`,
