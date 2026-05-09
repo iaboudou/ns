@@ -1,5 +1,3 @@
-/* ── layout.module.css — Chat Dark Fantasy ── */
-
 .container {
   display: flex;
   height: 100vh;
@@ -7,7 +5,6 @@
   overflow: hidden;
 }
 
-/* ─── Left — liste des users ─────────────── */
 .left {
   width: 280px;
   flex-shrink: 0;
@@ -23,7 +20,6 @@
   display: none;
 }
 
-/* ─── Right — fenêtre de chat ────────────── */
 .right {
   flex: 1;
   display: flex;

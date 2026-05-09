@@ -1,5 +1,3 @@
-/* ── getposts.module.css — Quest Board Theme ── */
-
 .wrapper {
   position: relative;
   display: flex;
@@ -8,7 +6,6 @@
   padding: 24px 16px;
 }
 
-/* Image de fond fixe du tableau */
 .wrapper::before {
   content: '';
   position: fixed;
@@ -22,7 +19,6 @@
   z-index: 0;
 }
 
-/* Overlay sombre pour lisibilité */
 .wrapper::after {
   content: '';
   position: fixed;
@@ -31,7 +27,6 @@
   z-index: 0;
 }
 
-/* Les posts passent au dessus */
 .wrapper > * {
   position: relative;
   z-index: 1;

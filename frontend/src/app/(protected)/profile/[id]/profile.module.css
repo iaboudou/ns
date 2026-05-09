@@ -1,4 +1,3 @@
-/* ── Outer shell ── */
 .FATHER {
   display: flex;
   flex-direction: column;
@@ -8,13 +7,11 @@
   font-family: "Crimson Text", "Georgia", serif;
 }
 
-/* ── Top card (header + nav) ── */
 .pageWrapper {
   background: #0e0c14;
   border-bottom: 1px solid #2a1f0f;
 }
 
-/* ── Cover strip ── */
 .coverPhoto {
   height: 120px;
   background:
@@ -32,7 +29,6 @@
   position: relative;
 }
 
-/* Privacy / follow button inside cover */
 .infoText,
 .coverPhoto > button {
   font-family: "Cinzel", serif;
@@ -57,7 +53,6 @@
   border-color: #C8892A;
 }
 
-/* ── Profile info row ── */
 .profileInfo {
   display: flex;
   flex-direction: column;
@@ -119,7 +114,6 @@
   max-width: 520px;
 }
 
-/* Privacy toggle button (me page) */
 .toggleBtn {
   padding: 7px 16px;
   background: transparent;
@@ -141,7 +135,6 @@
   background: rgba(200,137,42,0.06);
 }
 
-/* ── Nav tabs ── */
 .NAV {
   border-top: 1px solid #2a1f0f;
   padding: 0 20px;
@@ -176,13 +169,11 @@
   border-bottom-color: #C8892A;
 }
 
-/* ── Main content area ── */
 .MAIN {
   padding: 28px;
   flex: 1;
 }
 
-/* ── User list (followers / following / requests) ── */
 .userListContainer {
   display: flex;
   flex-direction: column;
@@ -245,7 +236,6 @@
   padding: 20px 0;
 }
 
-/* ── Request actions ── */
 .requestActions {
   display: flex;
   gap: 8px;
@@ -283,7 +273,6 @@
   border-color: #8B1A1A;
 }
 
-/* ── Private profile message ── */
 .privateMessage {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,3 @@
-/* ── Dark Fantasy – Layout ───────────────── */
-
 .wrapper {
   display: flex;
   min-height: 100vh;
@@ -8,8 +6,6 @@
   margin: 0 auto;
   background: #0A0A0F;
 }
-
-/* ─── LEFTBAR ───────────────────────────── */
 
 .leftbar {
   width: 260px;
@@ -33,8 +29,6 @@
   display: none;
 }
 
-/* ─── MAIN ──────────────────────────────── */
-
 .main {
   flex-grow: 1;
   display: flex;
@@ -49,8 +43,6 @@
   width: 100%;
 }
 
-/* ─── INNER LAYOUT ──────────────────────── */
-
 .WRAPPER {
   display: flex;
   width: 100%;
@@ -60,8 +52,6 @@
 .LEFT {
   display: none;
 }
-
-/* ─── CENTER CONTENT ────────────────────── */
 
 .MIDDLE {
   flex-grow: 1;
@@ -76,8 +66,6 @@
 
   font-family: "Crimson Text", "Georgia", serif;
 }
-
-/* ─── RIGHT PANEL ───────────────────────── */
 
 .RIGHT {
   width: 320px;
@@ -105,8 +93,6 @@
 .RIGHT::-webkit-scrollbar {
   display: none;
 }
-
-/* ─── Responsive ────────────────────────── */
 
 @media (max-width: 1024px) {
   .RIGHT {

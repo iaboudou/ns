@@ -1,6 +1,3 @@
-/* ── createpost.module.css — Quest Board Theme ── */
-
-/* Le createpost est aussi un parchemin, plus grand */
 .createpost {
   position: relative;
   background-image:
@@ -26,7 +23,6 @@
     inset 0 0 40px rgba(139,90,30,0.12);
 }
 
-/* Pin */
 .createpost::before {
   content: '';
   position: absolute;
@@ -41,7 +37,6 @@
   z-index: 2;
 }
 
-/* Titre */
 .createpost::after {
   content: '⸻ POST A QUEST ⸻';
   position: absolute;
@@ -187,7 +182,6 @@
 }
 .privacySelect:focus { border-color: rgba(100,70,20,0.5); }
 
-/* ── SelectFriends ── */
 .selectFriendInput {
   width: 100%;
   margin-top: 12px;

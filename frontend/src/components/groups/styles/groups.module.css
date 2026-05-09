@@ -1,6 +1,3 @@
-/* ── groups.module.css — Dark Fantasy ── */
-
-/* ─── Layout ─────────────────────────────── */
 .groupsWrapper {
   display: flex;
   flex-direction: column;
@@ -9,7 +6,6 @@
   background: #0A0A0F;
 }
 
-/* ─── Tabs ───────────────────────────────── */
 .tabs {
   display: flex;
   justify-content: center;
@@ -42,7 +38,6 @@
   border-bottom-color: #C8892A;
 }
 
-/* ─── Content area ───────────────────────── */
 .content {
   padding: 28px 24px;
   display: flex;
@@ -50,14 +45,12 @@
   gap: 24px;
 }
 
-/* ─── Groups grid ────────────────────────── */
 .groupsList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 }
 
-/* ─── Group card (frame with bg photo) ──── */
 .groupCard {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -72,7 +65,6 @@
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   background-color: #0e0c14;
   background-image:
-    /* default fallback: dark parchment texture */
     repeating-linear-gradient(135deg,
       #13110a 0px, #13110a 1px,
       transparent 1px, transparent 18px),
@@ -88,7 +80,6 @@
   box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(200, 137, 42, 0.15);
 }
 
-/* Dark gradient overlay at bottom for text legibility */
 .groupCard::before {
   content: '';
   position: absolute;
@@ -100,7 +91,6 @@
   z-index: 1;
 }
 
-/* Gold corner ornaments */
 .groupCard::after {
   content: '';
   position: absolute;
@@ -119,7 +109,6 @@
   border-color: rgba(200, 137, 42, 0.35);
 }
 
-/* Text inside card */
 .groupCard h3 {
   position: relative;
   z-index: 3;
@@ -150,7 +139,6 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
-/* ─── Create group button — same frame, no text ── */
 .createGroupCard {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -214,7 +202,6 @@
   color: #C8892A;
 }
 
-/* ─── Create group form ──────────────────── */
 .form {
   background: #0e0c14;
   border: 1px solid #2a1f0f;
@@ -290,7 +277,6 @@
   transform: scale(0.97);
 }
 
-/* ─── Load more ──────────────────────────── */
 .loadMoreBtn {
   align-self: center;
   padding: 10px 28px;
@@ -317,7 +303,6 @@
   cursor: not-allowed;
 }
 
-/* ─── File input (create group form) ────── */
 .form input[type="file"] {
   width: 100%;
   background: #13110a;
@@ -358,7 +343,6 @@
   color: #E8E0CC;
 }
 
-/* ─── Invite actions inside groupCard ───── */
 .inviteActions {
   position: relative;
   z-index: 3;
@@ -414,7 +398,6 @@
   width: 100%;
 }
 
-/* ─── Datetime input ─────────────────────── */
 .input[type="datetime-local"] {
   color-scheme: dark;
 }
@@ -425,7 +408,6 @@
   cursor: pointer;
 }
 
-/* ─── Create event form — même dimensions qu'un EventCard ── */
 .eventForm {
   background: #0e0c14;
   border: 1px solid #2a1f0f;

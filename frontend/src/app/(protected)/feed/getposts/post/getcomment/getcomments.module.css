@@ -1,12 +1,9 @@
-/* ── getcomments.module.css — Quest Board Theme ── */
-
 .commentscontainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* Chaque commentaire = petit parchemin secondaire */
 .postcard {
   background: linear-gradient(135deg, #e8d9a8 0%, #d4c07a 100%);
   border-radius: 2px;
@@ -58,6 +55,9 @@ small.NAME {
   color: #2e1a05;
   line-height: 1.6;
   margin: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .commentimg {

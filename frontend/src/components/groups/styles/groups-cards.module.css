@@ -1,19 +1,9 @@
-/* ── groups-cards.module.css ──────────────────────────────────
-   À importer EN PLUS de groups.module.css.
-   Ne touche pas aux tabs, form, input, loadMore existants.
-   Ajoute uniquement les styles pour :
-   - .groupCard  (carte avec photo de fond)
-   - .createGroupCard (même frame, bouton create)
-   ─────────────────────────────────────────────────────────── */
-
-/* ── Grille ──────────────────────────────── */
 .groupsList {
   display: grid;
   grid-template-columns: repeat(4, 300px);
   gap: 16px;
 }
 
-/* ── Carte groupe — frame avec photo de fond ── */
 .groupCard {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -38,7 +28,6 @@
   box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.65), 0 0 12px rgba(201, 168, 76, 0.12);
 }
 
-/* overlay gradient bas → texte lisible */
 .groupCard::before {
   content: '';
   position: absolute;
@@ -50,7 +39,6 @@
   z-index: 1;
 }
 
-/* cadre doré intérieur */
 .groupCard::after {
   content: '';
   position: absolute;
@@ -102,7 +90,6 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
-/* ── Carte "Create Group" — même frame, pas de texte ── */
 .createGroupCard {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -171,7 +158,6 @@
   color: #c9a84c;
 }
 
-/* ─── Ask to join button inside groupCard ── */
 .groupCard .primaryButton,
 .askToJoinBtn {
   position: relative;

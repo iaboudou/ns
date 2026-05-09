@@ -1,6 +1,3 @@
-/* ── Dark Fantasy – Login ── */
-
-/* ─── Layout ─────────────────────────────── */
 .page {
   min-height: 100vh;
   background: #060608;
@@ -14,7 +11,6 @@
   overflow: hidden;
 }
 
-/* ─── Background orbs (décoratifs) ──────── */
 .bgOrb1 {
   position: absolute;
   width: 400px;
@@ -37,7 +33,6 @@
   pointer-events: none;
 }
 
-/* ─── Form card ──────────────────────────── */
 .formLogin {
   background: #0A0A0F;
   border: 1px solid #2a1f0f;
@@ -54,7 +49,6 @@
   z-index: 1;
 }
 
-/* ─── Logo / heading block ───────────────── */
 .logoBlock {
   display: flex;
   flex-direction: column;
@@ -80,7 +74,6 @@
   margin: 0;
 }
 
-/* ─── Field group ────────────────────────── */
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -125,7 +118,6 @@
   cursor: not-allowed;
 }
 
-/* ─── Password wrapper ───────────────────── */
 .fieldWrap {
   position: relative;
   display: flex;
@@ -153,7 +145,6 @@
   color: #C8892A;
 }
 
-/* ─── Submit button ──────────────────────── */
 .formLogin button[type="submit"] {
   width: 100%;
   padding: 15px;
@@ -187,7 +178,6 @@
   cursor: not-allowed;
 }
 
-/* ─── Spinner ────────────────────────────── */
 .spinner {
   width: 18px;
   height: 18px;
@@ -202,7 +192,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* ─── Error message ──────────────────────── */
 .error {
   font-family: "Crimson Text", serif;
   font-style: italic;
@@ -217,7 +206,6 @@
   margin: 0;
 }
 
-/* ─── Footer link ────────────────────────── */
 .footer {
   font-family: "Crimson Text", serif;
   font-size: 13px;
@@ -236,7 +224,6 @@
   color: #8B1A1A;
 }
 
-/* ─── Image (right panel) ────────────────── */
 .page > img {
   width: 46%;
   max-width: 560px;
@@ -249,7 +236,6 @@
   z-index: 1;
 }
 
-/* ─── Responsive ─────────────────────────── */
 @media (max-width: 900px) {
   .page {
     flex-direction: column;

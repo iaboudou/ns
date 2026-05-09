@@ -1,12 +1,9 @@
-/* ── followsuggestions.module.css — Dark Fantasy ── */
-
 .followsuggestions {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* ── Header ── */
 .header {
   font-family: "Cinzel", serif;
   font-size: 10px;
@@ -20,7 +17,6 @@
   display: block;
 }
 
-/* ── List ── */
 .list {
   list-style: none;
   margin: 0;
@@ -30,7 +26,6 @@
   gap: 4px;
 }
 
-/* ── Item ── */
 .item {
   display: flex;
   align-items: center;
@@ -46,7 +41,6 @@
   border-color: #2a1f0f;
 }
 
-/* ── Avatar ── */
 .avatar {
   width: 36px;
   height: 36px;
@@ -64,7 +58,6 @@
   flex-shrink: 0;
 }
 
-/* ── Meta ── */
 .meta {
   flex: 1;
   min-width: 0;
@@ -84,7 +77,6 @@
   text-overflow: ellipsis;
 }
 
-/* ── Follow button ── */
 .followBtn {
   flex-shrink: 0;
   padding: 5px 12px;
@@ -104,7 +96,6 @@
 .followBtn:hover { background: #d4972e; }
 .followBtn:active { transform: scale(0.96); }
 
-/* Unfollow state */
 .followBtn[data-status="following"],
 .followBtn:not(:empty)[title="unfollow"] {
   background: transparent;

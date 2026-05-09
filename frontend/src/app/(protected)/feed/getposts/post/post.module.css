@@ -1,11 +1,8 @@
-/* ── post.module.css — Quest Board Theme ── */
-
 @keyframes pinDrop {
   from { transform: translateY(-6px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
-/* ── Post card = parchemin épinglé ── */
 .postcard {
   position: relative;
   background-image:
@@ -22,7 +19,6 @@
   animation: pinDrop 0.3s ease both;
 }
 
-/* Pin métallique */
 .postcard::before {
   content: '';
   position: absolute;
@@ -37,7 +33,6 @@
   z-index: 2;
 }
 
-/* Divider décoratif */
 .postcard::after {
   content: '⸻ ✦ ⸻';
   position: absolute;
@@ -50,7 +45,6 @@
   pointer-events: none;
 }
 
-/* ── Header ── */
 .header {
   display: flex;
   align-items: center;
@@ -120,7 +114,6 @@
   font-style: italic;
 }
 
-/* ── Content ── */
 .content {
   font-family: "Crimson Text", serif;
   font-size: 15px;
@@ -128,6 +121,9 @@
   line-height: 1.75;
   letter-spacing: 0.02em;
   margin: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .postImage {
@@ -139,7 +135,6 @@
   filter: sepia(10%);
 }
 
-/* ── Actions ── */
 .postActions {
   display: flex;
   align-items: center;
@@ -170,7 +165,6 @@
   border-color: rgba(100,70,20,0.5);
 }
 
-/* ── Comments section ── */
 .commentsSection {
   display: flex;
   flex-direction: column;
