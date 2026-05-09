@@ -23,6 +23,9 @@ export async function fetchFriendsUsers(search = "") {
 }
 
 export const createpost = async (state) => {
+    if (state.privacy !== "public" && state.privacy !== "private" && state.privacy !== "followers") {
+        return null;
+    }
 
     const formData = new FormData();
     formData.append("text", state.text.trim());

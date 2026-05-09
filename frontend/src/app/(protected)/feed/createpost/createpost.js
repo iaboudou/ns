@@ -7,24 +7,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SelectFreinds } from "./select_freinds";
 import { User, Image as ImageIcon } from "lucide-react";
+import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function CreatePost({ CREATEPOST }) {
+  const { myInfo } = useWebSocket();
   let path = usePathname();
 
   const [state, setState] = useState(() => {
-    const a = JSON.parse(localStorage.getItem("user") || "null");
     return {
       privacy: "public",
       text: "",
       picture: null,
       selectedUsers: [],
-      porsonel_info: a,
       group_id: path.split("/")?.[2],
     };
   });
 
   // profile picture on home
-  const imageURL = state.porsonel_info?.Avatar;
+  const imageURL = myInfo?.profile_image;
   const fullImageURL = imageURL
     ? `http://localhost:4001/pics/${imageURL}`
     : null;
@@ -35,9 +35,9 @@ export default function CreatePost({ CREATEPOST }) {
       let post = await createpost(state);
       if (post) {
         // take the user info
-        post.firstname = state.porsonel_info?.Firstname;
-        post.lastname = state.porsonel_info?.Lastname;
-        post.profile_image = state.porsonel_info?.Avatar;
+        post.firstname = myInfo?.firstname;
+        post.lastname = myInfo?.lastname;
+        post.profile_image = myInfo?.profile_image;
 
         CREATEPOST.onPostCreated(post);
         CREATEPOST.setState((prev) => ({
@@ -81,9 +81,9 @@ export default function CreatePost({ CREATEPOST }) {
 
             {/* user full name*/}
             <span className={styles.userName}>
-              {state.porsonel_info?.Firstname +
+              {myInfo?.firstname +
                 " " +
-                state.porsonel_info?.Lastname}
+                myInfo?.lastname}
             </span>
           </div>
           <button type="submit" className={styles.postBtn}>

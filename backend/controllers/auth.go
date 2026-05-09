@@ -143,13 +143,10 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	userID, ok := r.Context().Value("userID").(string)
-	if !ok {
-		help.RespondNotOK(w, "unauthorized")
-		return
+	cookie, err := r.Cookie("session_id")
+	if err == nil && cookie.Value != "" {
+		c.DB.DisconnectUser(cookie.Value)
 	}
-
-	c.DB.DisconnectUser(userID)
 
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_id",

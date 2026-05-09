@@ -15,8 +15,10 @@ import { about } from "../about/about";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchPersonalInfo } from "@/_lib/personal_info";
 import { Lock, User } from "lucide-react";
+import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function ProfilePage() {
+  const { myInfo } = useWebSocket();
   const router = useRouter();
 
   //
@@ -32,13 +34,10 @@ export default function ProfilePage() {
 
   // about
   useEffect(() => {
-    let uuid = JSON.parse(localStorage.getItem("user") || "null")?.ID;
-    if (!uuid) return;
-    (async () => {
-      let data = await fetchPersonalInfo(uuid);
-      setUser(data);
-    })();
-  }, []);
+    if (myInfo) {
+      setUser(myInfo);
+    }
+  }, [myInfo]);
 
   // followers & following
   useEffect(() => {

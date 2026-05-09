@@ -6,8 +6,10 @@ import { timeAgo } from "@/_lib/timeago";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageCircle, Users } from "lucide-react";
+import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function Post({ POST }) {
+  const { myInfo } = useWebSocket();
   //post image
   const imageURL = POST.post.image_url;
   const fullImageURL = imageURL ? `http://localhost:4001/${imageURL}` : null;
@@ -36,8 +38,7 @@ export default function Post({ POST }) {
   };
 
   let path = usePathname();
-  let u = localStorage.getItem("user");
-  let id = u ? JSON.parse(u).ID : "";
+  let id = myInfo?.id || "";
 
   return (
     <div className={styles.postcard}>

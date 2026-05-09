@@ -21,10 +21,24 @@ export const WebSocketProvider = ({ children }) => {
   const [hasMoreMap, setHasMoreMap] = useState({});
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [myInfo, setMyInfo] = useState(null);
 
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
+
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const resp = await fetch(`http://localhost:4001/api/getpersonalinfo`, {
+          credentials: "include"
+        });
+        const res = await resp.json();
+        if (res.user) setMyInfo(res.user);
+      } catch { }
+    };
+    fetchMe();
+  }, []);
 
   useEffect(() => {
     if (port) return;
@@ -186,6 +200,7 @@ export const WebSocketProvider = ({ children }) => {
         notifications,
         setNotifications,
         sendFocus,
+        myInfo,
       }}
     >
       {children}

@@ -33,6 +33,12 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	post.UserID = userID
 	post.Content = strings.TrimSpace(r.FormValue("text"))
 	post.Privacy = strings.TrimSpace(r.FormValue("privacy"))
+
+	if post.Privacy != "public" && post.Privacy != "private" && post.Privacy != "followers" {
+		help.RespondNotOK(w, "badrequest")
+		return
+	}
+
 	post.GroupID = strings.TrimSpace(r.FormValue("group_id"))
 
 	if post.Privacy == "private" {

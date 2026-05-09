@@ -25,7 +25,7 @@ func (c *Controller) GetFriends(w http.ResponseWriter, r *http.Request) {
 	var users []models.FollowSuggestion
 	var er error
 	if isallusers == "true" {
-		users, er = c.DB.GetUsers(userID)
+		users, er = c.DB.GetUsers(userID, q)
 	}else {
 		users, er = c.DB.GetFollowersDB(userID, q)
 	}

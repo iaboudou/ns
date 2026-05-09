@@ -125,11 +125,6 @@ func (r *Repo) IsUserExist(email, password string) (string, error) {
 
 // set new session in case of user login
 func (r *Repo) SetUserSession(w http.ResponseWriter, userID string) (string, time.Time, error) {
-	_, err := r.Db.Exec("DELETE FROM sessions WHERE user_id = ?", userID)
-	if err != nil {
-		return "", time.Time{}, errors.New("SERVER ERROR")
-	}
-
 	sessionUUID, err := uuid.NewV7()
 	if err != nil {
 		return "", time.Time{}, errors.New("SERVER ERROR")
@@ -154,8 +149,8 @@ func (r *Repo) SetUserSession(w http.ResponseWriter, userID string) (string, tim
 }
 
 // delete the session from the DB in case of logout
-func (r *Repo) DisconnectUser(userID string) error {
-	_, er := r.Db.Exec("UPDATE users SET session_id=NULL, session_created_at=NULL, session_expired_at=NULL WHERE id=?", userID)
+func (r *Repo) DisconnectUser(token string) error {
+	_, er := r.Db.Exec("DELETE FROM sessions WHERE token = ?", token)
 	if er != nil {
 		return errors.New("SERVER ERROR")
 	}
@@ -620,11 +615,19 @@ func (r *Repo) ManageFollowDB(followerID string, followingID string, decision st
 	return nil
 }
 
-func (r *Repo) GetUsers(userid string) ([]models.FollowSuggestion, error) {
+func (r *Repo) GetUsers(userid string, query string) ([]models.FollowSuggestion, error) {
 	users := []models.FollowSuggestion{}
-	rows, er := r.Db.Query(`
-		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
-		FROM users u`)
+	
+	q := `SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy FROM users u WHERE u.id != ?`
+	args := []any{userid}
+
+	if query != "" {
+		q += " AND (u.firstname LIKE ? OR u.lastname LIKE ? OR u.firstname || ' ' || u.lastname LIKE ? OR u.nickname LIKE ?)"
+		pattern := "%" + query + "%"
+		args = append(args, pattern, pattern, pattern, pattern)
+	}
+
+	rows, er := r.Db.Query(q, args...)
 
 	if er != nil {
 		return nil, er
@@ -654,7 +657,7 @@ func (r *Repo) GetFollowersDB(targetID string, query string) ([]models.FollowSug
 	args := []any{targetID}
 
 	if query != "" {
-		q += " AND (u.firstname LIKE ? OR u.lastname LIKE ? OR u.firstname || ' ' || u.lastname LIKE ?)"
+		q += " AND (u.firstname LIKE ? OR u.lastname LIKE ? OR u.firstname || ' ' || u.lastname LIKE ? OR u.nickname LIKE ?)"
 		p := "%" + query + "%"
 		args = append(args, p, p, p, p)
 	}
