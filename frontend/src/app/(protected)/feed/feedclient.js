@@ -91,7 +91,6 @@ export default function FeedClient({ INFO = {} }) {
         {state.posts && state.posts?.length !== 0
           ? <GetPosts GETPOSTS={GETPOSTS} />
           : <div className={styles.emptyPosts}>
-              <div className={styles.emptyIcon} />
               <h2>No posts yet</h2>
             </div>}
       </>;

@@ -236,48 +236,25 @@
 .sendButton:hover { background: #d4972e; }
 .sendButton:active { transform: scale(0.97); }
 
-/* ─── Placeholder (aucun chat sélectionné) ── */
 .emptyState {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
   min-height: 100%;
   padding: 32px;
-  color: #6b5a3e;
   text-align: center;
-  background:
-    radial-gradient(circle at center, rgba(200, 137, 42, 0.08), transparent 34%),
-    linear-gradient(180deg, rgba(19, 17, 10, 0.36), transparent 62%);
-}
-
-.emptyState::before {
-  content: "";
-  width: 58px;
-  height: 58px;
-  border: 1px solid #3b2a13;
-  border-radius: 50%;
-  background:
-    linear-gradient(#c8892a, #c8892a) center / 24px 2px no-repeat,
-    linear-gradient(90deg, #c8892a, #c8892a) center / 2px 24px no-repeat,
-    #13110a;
-  box-shadow:
-    0 0 0 8px rgba(42, 31, 15, 0.28),
-    0 18px 40px rgba(0, 0, 0, 0.45);
-  opacity: 0.82;
 }
 
 .emptyState h1 {
   font-family: "Cinzel", serif;
-  font-size: clamp(15px, 2vw, 22px);
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #d8c792;
+  color: #6b5a3e;
   margin: 0;
-  text-shadow: 0 2px 18px rgba(200, 137, 42, 0.18);
 }
 
 @media (max-width: 1000px) {
