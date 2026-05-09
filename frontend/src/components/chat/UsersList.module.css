@@ -45,6 +45,19 @@
 .input:focus { border-color: #C8892A; }
 .input::placeholder { color: #3a2e1e; font-style: italic; }
 
+.warning {
+  margin: 4px 12px 8px;
+  padding: 10px 12px;
+  background: rgba(139, 26, 26, 0.1);
+  border: 1px solid rgba(139, 26, 26, 0.3);
+  border-radius: 6px;
+  color: #d8a68f;
+  font-family: "Crimson Text", serif;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.35;
+}
+
 .userItem {
   display: flex;
   align-items: center;

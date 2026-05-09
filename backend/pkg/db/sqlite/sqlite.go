@@ -812,7 +812,7 @@ func (r *Repo) GetUserByIDDB(userID string) (models.User, error) {
 
 func (r *Repo) IsFollowExist(sender, receiver string) bool {
 	var exists int
-	err := r.Db.QueryRow(`SELECT 1 FROM followers WHERE follower_id=? AND following_id=? LIMIT 1`, receiver, sender).
+	err := r.Db.QueryRow(`SELECT 1 FROM followers WHERE follower_id=? AND following_id=? AND status='accepted' LIMIT 1`, receiver, sender).
 		Scan(&exists)
 
 	if err == nil {

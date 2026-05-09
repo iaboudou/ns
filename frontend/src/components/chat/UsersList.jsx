@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import styles from "./UsersList.module.css";
-import { useEffect, useState, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "@/lib/UseWebsocket";
+import styles from "./UsersList.module.css";
 
 export default function UsersList() {
+  const router = useRouter();
   const [users, setUsers] = useState([]);
   const [hasMore, setHasmore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [warning, setWarning] = useState("");
   const { onlineUsers, port, messages, readConversations } = useWebSocket();
 
   const handleFetchUsers = async (currentSearch, isReset = false) => {
@@ -47,7 +49,9 @@ export default function UsersList() {
           ? newUsers
           : (prev) => {
             const map = new Map(prev.map((u) => [u.id, u]));
-            newUsers.forEach((u) => map.set(u.id, u));
+            newUsers.forEach((u) => {
+              map.set(u.id, u);
+            });
             return Array.from(map.values());
           },
       );
@@ -70,17 +74,17 @@ export default function UsersList() {
   const params = useParams();
   const lastProcessedMsgId = useRef(null);
 
-  // Reorder users when a new message arrives
   useEffect(() => {
     if (messages.length === 0) return;
     const lastMsg = messages[messages.length - 1];
 
-    // only move to top if it's a new live message, not history loading
     if (!lastMsg.isNew || lastMsg.id === lastProcessedMsgId.current) return;
     lastProcessedMsgId.current = lastMsg.id;
 
     setUsers((prev) => {
-      const userIndex = prev.findIndex((u) => u.id === lastMsg.sender_id || u.id === lastMsg.receiver_id);
+      const userIndex = prev.findIndex(
+        (u) => u.id === lastMsg.sender_id || u.id === lastMsg.receiver_id,
+      );
       if (userIndex === -1) {
         handleFetchUsers(search, true);
         return prev;
@@ -100,23 +104,30 @@ export default function UsersList() {
     });
   }, [messages, params.id]);
 
-  // Clear unread count if messages were read in another tab
   useEffect(() => {
     if (readConversations) {
       setUsers((prev) =>
         prev.map((usr) =>
           usr.id === readConversations.receiver_Id
             ? { ...usr, unread_count: 0 }
-            : usr
-        )
+            : usr,
+        ),
       );
     }
   }, [readConversations]);
+
+  useEffect(() => {
+    if (!warning) return;
+
+    const timer = setTimeout(() => setWarning(""), 5000);
+    return () => clearTimeout(timer);
+  }, [warning]);
 
   return (
     <div className={styles.userContainer}>
       <h3>Users</h3>
       <div className={styles.userList}>
+        {warning && <p className={styles.warning}>{warning}</p>}
         <input
           className={styles.input}
           type="text"
@@ -131,21 +142,26 @@ export default function UsersList() {
             href="#"
             className={styles.userItem}
             onClick={async (e) => {
-              e.preventDefault()
-              // check if the sender already follow receiver
-              let receiver = u.id
-              let f = await alreadyfollowhim(receiver)
+              e.preventDefault();
+              const receiver = u.id;
+              const f = await alreadyfollowhim(receiver);
               if (f) {
-                window.location.href = `/chat/${u.id}`
+                setWarning("");
+                router.push(`/chat/${u.id}`);
               } else {
-                alert(`you can't send message to <${u.firstname + " " + u.lastname}>, he's not following you and he has private profile`)
-                window.location.href = `/chat`
-                return
+                setWarning(
+                  `You can't send a message to ${u.firstname} ${u.lastname}. This user has a private profile and is not following you.`,
+                );
+                router.replace(`/chat`);
+                return;
               }
 
-              // Reset unread count when clicking
-              setUsers(prev => prev.map(usr => usr.id === u.id ? { ...usr, unread_count: 0 } : usr));
-              port.postMessage({
+              setUsers((prev) =>
+                prev.map((usr) =>
+                  usr.id === u.id ? { ...usr, unread_count: 0 } : usr,
+                ),
+              );
+              port?.postMessage({
                 type: "send",
                 payload: {
                   type: "load_history",
@@ -153,13 +169,15 @@ export default function UsersList() {
                   last_read_time: 0,
                 },
               });
-            }
-
-            }
+            }}
           >
             <div className={styles.userInfo}>
-              <span className={styles.fullname}>{u.firstname} {u.lastname}</span>
-              {u.nickname && <span className={styles.nickname}>@{u.nickname}</span>}
+              <span className={styles.fullname}>
+                {u.firstname} {u.lastname}
+              </span>
+              {u.nickname && (
+                <span className={styles.nickname}>@{u.nickname}</span>
+              )}
             </div>
             <div className={styles.userStatus}>
               {u.unread_count > 0 && (
@@ -173,7 +191,11 @@ export default function UsersList() {
         ))}
 
         {hasMore && (
-          <button onClick={() => handleFetchUsers(search)} disabled={loading}>
+          <button
+            type="button"
+            onClick={() => handleFetchUsers(search)}
+            disabled={loading}
+          >
             {loading ? "Loading..." : "Load More"}
           </button>
         )}
@@ -182,19 +204,14 @@ export default function UsersList() {
   );
 }
 
-
-
-// it is very important to check if the receiver follow the sender or have public profile before open the conversation  
 async function alreadyfollowhim(receiver) {
-  const res = await fetch(`/api/isfollowexist?receiver=${receiver}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  )
-  let data = await res?.json()
+  const res = await fetch(`/api/isfollowexist?receiver=${receiver}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  const data = await res?.json();
   if (!res.ok) {
-    return null
+    return null;
   }
-  return data.followcheck?.isfollow
+  return data.followcheck?.isfollow;
 }

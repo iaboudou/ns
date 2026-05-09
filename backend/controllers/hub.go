@@ -26,6 +26,18 @@ func (c *Controller) RunBroker() {
 			switch msg.Type {
 			case "mark_read":
 				sqlite.MarkRead(db, msg.SenderID, msg.ReceiverID)
+				if cs, ok := clients[msg.SenderID]; ok {
+					for _, conn := range cs {
+						conn.Mu.Lock()
+						conn.Ws.WriteJSON(map[string]any{
+							"event": "messages_read",
+							"data": map[string]any{
+								"receiver_Id": msg.ReceiverID,
+							},
+						})
+						conn.Mu.Unlock()
+					}
+				}
 
 			case "load_history":
 				GetOldMessages(clients, db, msg)

@@ -76,6 +76,11 @@ export default function Page() {
         },
       });
 
+      port.postMessage({
+        type: "messages_read",
+        receiver_Id: chatUser.id,
+      });
+
       // load history
       port.postMessage({
         type: "send",
@@ -118,6 +123,11 @@ export default function Page() {
             type: "mark_read",
             receiver_Id: chatUser.id,
           },
+        });
+
+        port.postMessage({
+          type: "messages_read",
+          receiver_Id: chatUser.id,
         });
       }
     }

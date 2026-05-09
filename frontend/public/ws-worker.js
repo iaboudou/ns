@@ -80,6 +80,11 @@ self.addEventListener("connect", (e) => {
         break;
       }
 
+      case "messages_read": {
+        broadcast({ event: "messages_read", receiver_Id: msg.receiver_Id });
+        break;
+      }
+
       case "disconnect-tab": {
         ports.delete(msg.portKey);
         currenTab.delete(msg.portKey);

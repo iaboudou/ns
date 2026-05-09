@@ -22,6 +22,7 @@ export const WebSocketProvider = ({ children }) => {
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [myInfo, setMyInfo] = useState(null);
+  const [readConversations, setReadConversations] = useState(null);
 
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
@@ -219,6 +220,7 @@ export const WebSocketProvider = ({ children }) => {
         setNotifications,
         sendFocus,
         myInfo,
+        readConversations,
       }}
     >
       {children}
