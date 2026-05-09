@@ -48,7 +48,7 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 		return errors.New("message is empty")
 	}
 
-	if len(msg.Content) > 2000 {
+	if len(msg.Content) > 200 {
 		return errors.New("message is too long")
 	}
 
@@ -142,6 +142,10 @@ func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg mo
 func GroupChat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	if len(strings.TrimSpace(msg.Content)) == 0 {
 		return errors.New("message is empty")
+	}
+
+	if len(msg.Content) > 200 {
+		return errors.New("message is too long")
 	}
 
 	msg.CreatedAt = time.Now().UnixMilli()

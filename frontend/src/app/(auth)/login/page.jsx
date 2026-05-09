@@ -67,6 +67,9 @@ export default function Login() {
             name="email"
             placeholder="seimor@gmail.com"
             disabled={submitting}
+            required
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            title="Valid email required"
           />
         </div>
 
@@ -79,6 +82,9 @@ export default function Login() {
               name="password"
               placeholder="Your password sir ..."
               disabled={submitting}
+              required
+              minLength={3}
+              maxLength={32}
             />
 
             <button

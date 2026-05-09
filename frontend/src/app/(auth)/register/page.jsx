@@ -39,17 +39,17 @@ export default function RegisterPage() {
         <div className={styles.row}>
           <div>
             <label>Bloodline Name</label>
-            <input type="text" name="firstname" placeholder="Your first name" maxLength={12} />
+            <input type="text" name="firstname" placeholder="Your first name" required minLength={2} maxLength={12} pattern="^[a-zA-Z]{2,12}$" title="First name must be 2–12 letters" />
           </div>
           <div>
             <label>Given Name</label>
-            <input type="text" name="lastname" placeholder="Your last name" maxLength={12} />
+            <input type="text" name="lastname" placeholder="Your last name" required minLength={2} maxLength={12} pattern="^[a-zA-Z]{2,12}$" title="Last name must be 2–12 letters" />
           </div>
         </div>
 
         <div>
           <label>Sigil</label>
-          <input type="email" name="email" placeholder="seimor@gmail.com" />
+          <input type="email" name="email" placeholder="seimor@gmail.com" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Valid email required" />
         </div>
 
         <div>
@@ -59,6 +59,9 @@ export default function RegisterPage() {
               type={showPwd ? "text" : "password"}
               name="password"
               placeholder="Your password sir ..."
+              required
+              minLength={3}
+              maxLength={32}
             />
 
             <button
@@ -75,16 +78,16 @@ export default function RegisterPage() {
         <div className={styles.row}>
           <div>
             <label>Birth Omen</label>
-            <input type="date" name="dob" />
+            <input type="date" name="dob" required />
           </div>
           <div>
             <label>Vessel</label>
             <div className={styles.radioGroup}>
               <label>
-                <input type="radio" name="gender" value="male" /> Male
+                <input type="radio" name="gender" value="male" required /> Male
               </label>
               <label>
-                <input type="radio" name="gender" value="female" /> Female
+                <input type="radio" name="gender" value="female" required /> Female
               </label>
             </div>
           </div>
@@ -105,7 +108,10 @@ export default function RegisterPage() {
             type="text"
             name="nickname"
             placeholder="Name whispered in the dark"
+            minLength={2}
             maxLength={30}
+            pattern="^[a-zA-Z\s]{2,30}$"
+            title="Nickname must be 2–30 letters/spaces"
           />
         </div>
 
@@ -116,6 +122,7 @@ export default function RegisterPage() {
           <textarea
             name="about"
             placeholder="Tell your story... or remain silent."
+            minLength={1}
             maxLength={70}
           />
         </div>

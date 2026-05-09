@@ -163,6 +163,8 @@ export default function GroupChat() {
           placeholder="Type a group message..."
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
+          maxLength={200}
+          required
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               const content = inputText.trim();
