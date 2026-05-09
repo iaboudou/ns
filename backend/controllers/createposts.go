@@ -10,13 +10,13 @@ import (
 
 // handle create post
 func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	// get the user ID
+
 	if r.Method != http.MethodPost {
 		help.RespondNotOK(w, "notallowed")
 		return
 	}
-
-	defer r.Body.Close()
-	// get the user ID
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {

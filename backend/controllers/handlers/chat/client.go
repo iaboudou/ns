@@ -9,20 +9,37 @@ import (
 func Connect(clients map[string][]*models.Client, db *sql.DB, newClient *models.Client) error {
 	onlineUsers := []string{}
 
-	for clientId, cs := range clients {
-		if clientId == newClient.ID {
-			if len(cs) == 0 {
+	for clientID := range clients {
+		if clientID != newClient.ID {
+			onlineUsers = append(onlineUsers, clientID)
+		}
+	}
+
+	newClient.Mu.Lock()
+	newClient.Ws.WriteJSON(map[string]any{
+		"event": "online_users",
+		"users": onlineUsers,
+	})
+	newClient.Mu.Unlock()
+
+	// Only broadcast join when the user goes from offline to online.
+	if len(clients[newClient.ID]) == 1 {
+		for clientID, cs := range clients {
+			if clientID == newClient.ID {
 				continue
 			}
 
-			cs[0].Mu.Lock()
-			cs[0].Ws.WriteJSON(map[string]any{
-				"event": "online_users",
-				"users": onlineUsers,
-			})
-			cs[0].Mu.Unlock()
+			for _, c := range cs {
+				c.Mu.Lock()
+				c.Ws.WriteJSON(map[string]any{
+					"event":    "join",
+					"newcomer": newClient.ID,
+				})
+				c.Mu.Unlock()
+			}
 		}
 	}
+
 	return nil
 }
 

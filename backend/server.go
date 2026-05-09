@@ -26,7 +26,7 @@ func main() {
 		Connect:    make(chan *models.Client),
 		Disconnect: make(chan *models.Client),
 		Broadcast:  make(chan models.Message),
-		Notif:     make(chan models.Notification),
+		Notif:      make(chan models.Notification),
 	}
 
 	controller := &controllers.Controller{

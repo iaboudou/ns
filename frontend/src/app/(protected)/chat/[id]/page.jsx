@@ -1,48 +1,78 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import styles from "./chat.module.css";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useWebSocket } from "@/lib/UseWebsocket";
+import styles from "./chat.module.css";
 
 export default function Page() {
   const params = useParams();
+  const router = useRouter();
+  const chatId = params.id;
   const [inputText, setInputText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [chatUser, setChatUser] = useState(null);
   const scrollRef = useRef(null);
 
-  const { messages, sendMessage, port, hasMoreMap, portKey, sendFocus } = useWebSocket();
-  const hasMore = hasMoreMap[params.id] !== false; // default true
+  const { messages, sendMessage, port, hasMoreMap, onlineUsers } =
+    useWebSocket();
+  const hasMore = hasMoreMap[chatId] !== false; // default true
+  const isChatUserOnline = chatUser ? onlineUsers.includes(chatUser.id) : false;
 
   // fetch user details for the header
   useEffect(() => {
+    let ignore = false;
+
     const fetchUser = async () => {
       try {
         const resp = await fetch(
-          `/api/getUsers?search=${params.id}`,
+          `/api/getUsers?search=${encodeURIComponent(chatId)}`,
           {
             credentials: "include",
           },
         );
         const res = await resp.json();
-        if (res.code === 200 && res.data.length > 0) {
+        if (ignore) return;
+
+        if (
+          res.code === 200 &&
+          Array.isArray(res.data) &&
+          res.data.length > 0
+        ) {
           // extra filter
-          const user = res.data.find((u) => u.id === params.id);
-          if (user) setChatUser(user);
+          const user = res.data.find((u) => u.id === chatId);
+          if (user) {
+            setChatUser(user);
+            return;
+          }
         }
-      } catch (err) { }
+
+        router.replace("/chat");
+      } catch {
+        if (!ignore) router.replace("/chat");
+      }
     };
-    if (params.id) fetchUser();
-  }, [params.id]);
+
+    setChatUser(null);
+
+    if (chatId) {
+      fetchUser();
+    } else {
+      router.replace("/chat");
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [chatId, router]);
 
   useEffect(() => {
-    if (port && params.id) {
+    if (port && chatUser?.id) {
       port.postMessage({
         type: "send",
         payload: {
           type: "mark_read",
-          receiver_Id: params.id,
+          receiver_Id: chatUser.id,
         },
       });
 
@@ -51,46 +81,51 @@ export default function Page() {
         type: "send",
         payload: {
           type: "load_history",
-          receiver_Id: params.id,
+          receiver_Id: chatUser.id,
           last_read_time: 0,
         },
       });
     }
-
-
-  }, [port, params.id]);
+  }, [port, chatUser?.id]);
 
   // filter messages for this specific conversation
   const conversationMessages = useMemo(() => {
+    if (!chatUser?.id) return [];
+
     return messages
-      .filter((msg) => msg.sender_id === params.id || msg.receiver_id === params.id)
+      .filter(
+        (msg) =>
+          msg.sender_id === chatUser.id || msg.receiver_id === chatUser.id,
+      )
       .sort((a, b) => a.created_at - b.created_at);
-  }, [messages, params.id]);
+  }, [messages, chatUser?.id]);
 
   const lastReadMsgId = useRef(null);
 
   // mark new messages as read if they arrive while we are actively in the chat
   useEffect(() => {
-    if (port && params.id && conversationMessages.length > 0) {
+    if (port && chatUser?.id && conversationMessages.length > 0) {
       const lastMsg = conversationMessages[conversationMessages.length - 1];
-      if (lastMsg.isNew && lastMsg.sender_id === params.id && lastReadMsgId.current !== lastMsg.id) {
+      if (
+        lastMsg.isNew &&
+        lastMsg.sender_id === chatUser.id &&
+        lastReadMsgId.current !== lastMsg.id
+      ) {
         lastReadMsgId.current = lastMsg.id;
         port.postMessage({
           type: "send",
           payload: {
             type: "mark_read",
-            receiver_Id: params.id,
+            receiver_Id: chatUser.id,
           },
         });
       }
     }
-  }, [conversationMessages, port, params.id]);
+  }, [conversationMessages, port, chatUser?.id]);
 
   // scroll to bottom when messages change
   useEffect(() => {
     if (scrollRef.current) {
-      // if the last message is new, we definitely scroll to bottom
-      // if it's history, we might want to be careful, but for now let's scroll
       const lastMsg = conversationMessages[conversationMessages.length - 1];
       if (lastMsg?.isNew || conversationMessages.length <= 10) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -99,18 +134,17 @@ export default function Page() {
   }, [conversationMessages]);
 
   const handleLoadMore = () => {
-    if (conversationMessages.length === 0) return;
+    if (!port || !chatUser?.id || conversationMessages.length === 0) return;
     const oldestTime = conversationMessages[0].created_at;
     port.postMessage({
       type: "send",
       payload: {
         type: "load_history",
-        receiver_Id: params.id,
+        receiver_Id: chatUser.id,
         last_read_time: oldestTime,
       },
     });
   };
-
 
   const commonEmojis = [
     "👍",
@@ -127,36 +161,52 @@ export default function Page() {
     "🎉",
   ];
 
+  if (!chatUser) {
+    return (
+      <div className={styles.chatContainer}>
+        <div className={styles.emptyState}>
+          <h1>you did not select the chat yet</h1>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.chatContainer}>
       <div className={styles.chatHeader}>
-        {chatUser ? (
-          <>
-            <span className={styles.headerName}>
-              {chatUser.firstname} {chatUser.lastname}
-            </span>
-            {chatUser.nickname && (
-              <span className={styles.headerNick}> @{chatUser.nickname}</span>
-            )}
-          </>
-        ) : (
-          `Loading chat...`
-        )}
+        <div className={styles.headerIdentity}>
+          <span className={styles.headerName}>
+            {chatUser.firstname} {chatUser.lastname}
+          </span>
+          {chatUser.nickname && (
+            <span className={styles.headerNick}> @{chatUser.nickname}</span>
+          )}
+        </div>
+        <span
+          className={`${styles.headerStatus} ${isChatUserOnline ? styles.headerStatusOnline : ""}`}
+        >
+          <span className={styles.headerStatusDot} />
+          {isChatUserOnline ? "Online" : "Offline"}
+        </span>
       </div>
 
       <div className={styles.messagesArea} ref={scrollRef}>
         {hasMore && conversationMessages.length >= 10 && (
-          <button className={styles.loadMore} onClick={handleLoadMore}>
+          <button
+            type="button"
+            className={styles.loadMore}
+            onClick={handleLoadMore}
+          >
             Load older messages
           </button>
         )}
         {conversationMessages.map((msg) => (
           <div
             key={msg.id}
-            className={`${styles.messageRow} ${msg.sender_id !== params.id ? styles.sentRow : styles.receivedRow}`}
+            className={`${styles.messageRow} ${msg.sender_id !== chatUser.id ? styles.sentRow : styles.receivedRow}`}
           >
             <div
-              className={`${styles.messageBubble} ${msg.sender_id !== params.id ? styles.sentBubble : styles.receivedBubble}`}
+              className={`${styles.messageBubble} ${msg.sender_id !== chatUser.id ? styles.sentBubble : styles.receivedBubble}`}
             >
               {msg.content}
             </div>
@@ -167,6 +217,7 @@ export default function Page() {
       <div className={styles.inputArea}>
         <div className={styles.emojiWrapper}>
           <button
+            type="button"
             className={styles.emojiToggle}
             onClick={() => setShowEmojis(!showEmojis)}
           >
@@ -175,7 +226,8 @@ export default function Page() {
           {showEmojis && (
             <div className={styles.emojiPicker}>
               {commonEmojis.map((emoji) => (
-                <span
+                <button
+                  type="button"
                   key={emoji}
                   className={styles.emojiItem}
                   onClick={() => {
@@ -184,7 +236,7 @@ export default function Page() {
                   }}
                 >
                   {emoji}
-                </span>
+                </button>
               ))}
             </div>
           )}
@@ -204,7 +256,7 @@ export default function Page() {
                 type: "send",
                 payload: {
                   type: "chat",
-                  receiver_Id: params.id,
+                  receiver_Id: chatUser.id,
                   content: content,
                 },
               });
@@ -213,6 +265,7 @@ export default function Page() {
           }}
         />
         <button
+          type="button"
           className={styles.sendButton}
           onClick={(e) => {
             e.preventDefault();
@@ -222,7 +275,7 @@ export default function Page() {
               type: "send",
               payload: {
                 type: "chat",
-                receiver_Id: params.id,
+                receiver_Id: chatUser.id,
                 content: content,
               },
             });

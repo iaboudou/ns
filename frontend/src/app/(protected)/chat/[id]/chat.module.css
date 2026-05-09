@@ -13,11 +13,19 @@
 .chatHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   padding: 16px 24px;
   background: #0e0c14;
   border-bottom: 1px solid #2a1f0f;
   flex-shrink: 0;
+}
+
+.headerIdentity {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
 }
 
 .headerName {
@@ -33,6 +41,38 @@
   font-style: italic;
   font-size: 13px;
   color: #6b5a3e;
+}
+
+.headerStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5c4d36;
+}
+
+.headerStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a2e1e;
+  box-shadow: 0 0 0 3px rgba(58, 46, 30, 0.18);
+}
+
+.headerStatusOnline {
+  color: #c8892a;
+}
+
+.headerStatusOnline .headerStatusDot {
+  background: #c8892a;
+  box-shadow:
+    0 0 0 3px rgba(200, 137, 42, 0.18),
+    0 0 12px rgba(200, 137, 42, 0.72);
 }
 
 /* ─── Zone messages ──────────────────────── */
@@ -150,6 +190,9 @@
 }
 
 .emojiItem {
+  background: transparent;
+  border: 0;
+  font-family: inherit;
   font-size: 20px;
   cursor: pointer;
   padding: 4px;
@@ -200,18 +243,41 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  color: #3a2e1e;
+  gap: 16px;
+  min-height: 100%;
+  padding: 32px;
+  color: #6b5a3e;
+  text-align: center;
+  background:
+    radial-gradient(circle at center, rgba(200, 137, 42, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(19, 17, 10, 0.36), transparent 62%);
+}
+
+.emptyState::before {
+  content: "";
+  width: 58px;
+  height: 58px;
+  border: 1px solid #3b2a13;
+  border-radius: 50%;
+  background:
+    linear-gradient(#c8892a, #c8892a) center / 24px 2px no-repeat,
+    linear-gradient(90deg, #c8892a, #c8892a) center / 2px 24px no-repeat,
+    #13110a;
+  box-shadow:
+    0 0 0 8px rgba(42, 31, 15, 0.28),
+    0 18px 40px rgba(0, 0, 0, 0.45);
+  opacity: 0.82;
 }
 
 .emptyState h1 {
   font-family: "Cinzel", serif;
-  font-size: 14px;
+  font-size: clamp(15px, 2vw, 22px);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6b5a3e;
+  color: #d8c792;
   margin: 0;
+  text-shadow: 0 2px 18px rgba(200, 137, 42, 0.18);
 }
 
 @media (max-width: 1000px) {

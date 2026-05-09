@@ -1,10 +1,25 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
-import CreatePost from '@/app/(protected)/feed/createpost/createpost';
-import GetPosts from '@/app/(protected)/feed/getposts/getposts';
-import { onPostCreated, onCommentCreated, loadPosts, setOpenComment, fetchNewPostsWhileScrooling } from './actions';
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import CreatePost from "@/app/(protected)/feed/createpost/createpost";
+import GetPosts from "@/app/(protected)/feed/getposts/getposts";
+import {
+  fetchNewPostsWhileScrooling,
+  loadPosts,
+  onCommentCreated,
+  onPostCreated,
+  setOpenComment,
+} from "./actions";
+import styles from "./feedclient.module.css";
+
+const initialFeedState = {
+  posts: [],
+  openComments: {},
+  loading: true,
+  nbrofPosts: 0,
+  should_stop_fetching: false,
+};
 
 // home page
 // profile -> activity
@@ -13,15 +28,20 @@ import { usePathname } from 'next/navigation';
 // groups
 export default function FeedClient({ INFO = {} }) {
   // fetch the posts based on the route
-  const path = usePathname() || '';
+  const path = usePathname() || "";
   const isFetching = useRef(false);
 
   //
-  const [state, setState] = useState({ posts: [], openComments: {}, loading: true, nbrofPosts: 0, should_stop_fetching: false });
+  const [state, setState] = useState(initialFeedState);
   useEffect(() => {
     async function fetchposts() {
       try {
-        let p = await loadPosts(state, path, INFO.section, INFO.profileId);
+        let p = await loadPosts(
+          initialFeedState,
+          path,
+          INFO.section,
+          INFO.profileId,
+        );
         p = p.posts;
         setState((prev) => ({ ...prev, posts: p }));
       } catch {
@@ -34,7 +54,7 @@ export default function FeedClient({ INFO = {} }) {
   }, [INFO.section, path, INFO.profileId]);
 
   //
-  let GETPOSTS = {
+  const GETPOSTS = {
     state: state,
     setOpenComments: (postId) => setOpenComment(setState, postId),
     onCommentCreated: (post_id, comment) => {
@@ -43,24 +63,36 @@ export default function FeedClient({ INFO = {} }) {
     fetch: async () => {
       if (isFetching.current) return;
       isFetching.current = true;
-      await fetchNewPostsWhileScrooling(setState, state, loadPosts, path, INFO.section, INFO.profileId);
+      await fetchNewPostsWhileScrooling(
+        setState,
+        state,
+        loadPosts,
+        path,
+        INFO.section,
+        INFO.profileId,
+      );
       isFetching.current = false;
     },
     should_stop_fetching: state.should_stop_fetching,
     setState: setState,
   };
 
-  let CREATEPOST = {
+  const CREATEPOST = {
     onPostCreated: (newPost) => onPostCreated(setState, newPost),
     setState: setState,
   };
 
-  return state.loading ? (
-    <p>Loading...</p>
-  ) : (
-    <>
-      {path == '/' || path.includes('/groups') ? <CreatePost CREATEPOST={CREATEPOST} /> : ''}
-      {state.posts && state.posts?.length != 0 ? <GetPosts GETPOSTS={GETPOSTS} /> : 'no posts'}
-    </>
-  );
+  return state.loading
+    ? <p>Loading...</p>
+    : <>
+        {path === "/" || path.includes("/groups")
+          ? <CreatePost CREATEPOST={CREATEPOST} />
+          : ""}
+        {state.posts && state.posts?.length !== 0
+          ? <GetPosts GETPOSTS={GETPOSTS} />
+          : <div className={styles.emptyPosts}>
+              <div className={styles.emptyIcon} />
+              <h2>No posts yet</h2>
+            </div>}
+      </>;
 }

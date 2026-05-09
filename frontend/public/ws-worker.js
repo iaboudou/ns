@@ -2,6 +2,7 @@ let socket = null;
 const ports = new Map();
 const currenTab = new Map();
 let pendingMessages = [];
+let onlineUsers = [];
 
 function broadcast(data) {
   ports.forEach((port) => {
@@ -20,6 +21,11 @@ self.addEventListener("connect", (e) => {
     portKey: key,
   });
 
+  port.postMessage({
+    event: "online_users",
+    users: onlineUsers,
+  });
+
   port.onmessage = (event) => {
     const msg = event.data;
 
@@ -36,6 +42,9 @@ self.addEventListener("connect", (e) => {
           socket.onmessage = (e) => {
             try {
               const data = JSON.parse(e.data);
+              if (data.event === "online_users") onlineUsers = data.users || [];
+              if (data.event === "join" && !onlineUsers.includes(data.newcomer)) onlineUsers.push(data.newcomer);
+              if (data.event === "leave") onlineUsers = onlineUsers.filter((id) => id !== data.left);
               broadcast(data);
             } catch (err) {}
           };
@@ -43,6 +52,7 @@ self.addEventListener("connect", (e) => {
           socket.onclose = () => {
             socket = null;
             pendingMessages = [];
+            onlineUsers = [];
             broadcast({ event: "ws-close" });
           };
 
@@ -80,6 +90,7 @@ self.addEventListener("connect", (e) => {
       }
 
       case "logout": {
+        onlineUsers = [];
         socket.close();
         break;
       }
