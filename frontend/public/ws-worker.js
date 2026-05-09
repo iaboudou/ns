@@ -53,9 +53,20 @@ self.addEventListener("connect", (e) => {
 
       case "send": {
         if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(msg.payload));
         } else if (socket) {
           pendingMessages.push(msg.payload);
         }
+        break;
+      }
+
+      case "notifs_seen": {
+        broadcast({ event: "notifs_seen" });
+        break;
+      }
+
+      case "set_notif": {
+        broadcast({ event: "set_notif", notif: msg.notif });
         break;
       }
 

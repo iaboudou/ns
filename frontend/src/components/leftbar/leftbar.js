@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./leftbar.module.css";
@@ -18,7 +18,7 @@ import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function Leftbar() {
   const router = useRouter();
-  const { port, unreadNotifCount, setUnreadNotifCount } = useWebSocket();
+  const { port, unreadNotifCount } = useWebSocket();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -40,6 +40,26 @@ export default function Leftbar() {
     }
   };
 
+  useEffect(() => {
+    if (port) {
+      port.postMessage({
+        type: "send",
+        payload: {
+          type: "unread_notif",
+        },
+      });
+    }
+  }, [port]);
+
+  const updateLastseen = async () => {
+    const resp = await fetch("http://localhost:4001/api/last-notif", {
+      method: "PATCH",
+      credentials: "include",
+    });
+
+    if (!resp.ok) throw new Error("failed to set last read notif");
+  };
+
   return (
     <nav className={styles.leftbar}>
       <div className={styles.barElementContainer}>
@@ -50,7 +70,6 @@ export default function Leftbar() {
           title="Home"
         >
           <Home />
-          Quests
         </Link>
 
         <Link href="/groups/joins" className={styles.buttonLink} title="Groups">
@@ -65,7 +84,13 @@ export default function Leftbar() {
           href="/notifications"
           className={styles.buttonLink}
           title="Notifications"
-          onClick={() => setUnreadNotifCount(0)}
+          onClick={() => {
+            updateLastseen()
+              .then(() => {
+                port.postMessage({ type: "notifs_seen" });
+              })
+              .catch(console.error);
+          }}
         >
           <Bell />
           {unreadNotifCount > 0 && (

@@ -1,14 +1,22 @@
 import { SendDecision } from "@/_lib/group";
 import styles from "@/components/groups/styles/groups.module.css";
 import cardStyles from "@/components/groups/styles/groups-cards.module.css";
+import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function DisplayGroupInvite({ group, setGroups }) {
+  console.log(group);
+  const { port } = useWebSocket();
+
   const handleDecision = async (decision) => {
-    SendDecision(group.id, decision)
+    SendDecision(group.id, decision, "", group.invited_by)
       .then(() => {
         if (decision === "accepted")
           alert(`you are now a member of ${group.title}`);
         setGroups((prev) => prev.filter((g) => g.id !== group.id));
+        port.postMessage({
+          type: "set_notif",
+          notif: { type: "group_invite", sender_id: group.invited_by },
+        });
       })
       .catch((err) => alert(err.message));
   };

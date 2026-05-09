@@ -20,13 +20,6 @@ export default function NotificationsPage() {
 
   useEffect(() => setLoading(false), [notifications]);
 
-  useEffect(() => {
-    console.log("🟢 MOUNT NOTIFICATIONS PAGE");
-    return () => {
-      console.log("🔴 UNMOUNT NOTIFICATIONS PAGE");
-    };
-  }, []);
-
   return (
     <div className={styles.page}>
       <div className={styles.header}>

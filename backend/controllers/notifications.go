@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"strings"
 	"time"
 
 	"rtf/models"
@@ -10,50 +9,6 @@ import (
 
 	"github.com/gofrs/uuid/v5"
 )
-
-func SendFollowNotification(clients map[string][]*models.Client, db *sql.DB, fromUser models.User, toUserID, notifType, groupID string) {
-	id, err := uuid.NewV4()
-	if err != nil {
-		return
-	}
-
-	if strings.Contains(notifType, "follow") {
-		// if it already exist remove it to rewrite it
-		db.Exec(`DELETE FROM notifications WHERE user_id = ? AND type = ? AND ref_id = ?`, toUserID, notifType, fromUser.ID)
-	}
-
-	_, err = db.Exec(`
-		INSERT INTO notifications (id, user_id, type, ref_id, is_read, created_at, group_id)
-		VALUES (?, ?, ?, ?, 0, ?, ?)
-	`, id.String(), toUserID, notifType, fromUser.ID, time.Now().Unix(), groupID)
-	if err != nil {
-		return
-	}
-
-	// Push WS event if target user is online
-	cs, online := clients[toUserID]
-	if !online {
-		return
-	}
-
-	payload := map[string]any{
-		"event":      "notification",
-		"id":         id.String(),
-		"type":       notifType,
-		"ref_id":     fromUser.ID,
-		"from_name":  fromUser.Firstname + " " + fromUser.Lastname,
-		"from_image": fromUser.ProfileImage,
-		"created_at": time.Now().Unix(),
-		"is_read":    false,
-		"group_id":   groupID,
-	}
-
-	for _, c := range cs {
-		c.Mu.Lock()
-		c.Ws.WriteJSON(payload)
-		c.Mu.Unlock()
-	}
-}
 
 func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, userID string) error {
 	rows, err := db.Query(`
@@ -109,7 +64,6 @@ func GetNotificationsWS(clients map[string][]*models.Client, db *sql.DB, userID 
 	}
 	return nil
 }
-
 
 func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, notif *models.Notification) error {
 	notifID, err := uuid.NewV4()
@@ -185,6 +139,23 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 }
 
 func Notify(db *sql.DB, clients map[string][]*models.Client, notif *models.Notification) error {
+	var exists int
+	err := db.QueryRow(`
+		SELECT COUNT(*)
+		FROM notifications n
+		JOIN notification_users nu ON nu.notification_id = n.id
+		WHERE n.type = ?
+		AND n.sender_id = ?
+		AND nu.user_id = ?
+		AND n.group_id IS ?
+	`, notif.Type, notif.SenderID, notif.ReceiverID, notif.GroupID).Scan(&exists)
+	if err != nil {
+		return err
+	}
+	if exists > 0 {
+		return nil
+	}
+
 	notifID, err := uuid.NewV4()
 	if err != nil {
 		return err

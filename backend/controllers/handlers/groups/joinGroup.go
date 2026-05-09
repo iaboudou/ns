@@ -15,19 +15,29 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 		help.RespondNotFound(w, "This group doesn't exist")
 		return
 	}
-
 	if err != nil {
 		help.RespondServerError(w)
 		return
 	}
 
-	_, err = db.Exec(`INSERT INTO group_members (group_id, user_id, type) VALUES (?, ?, ?)`, groupID, userID, Type)
+	currentUserID := r.Context().Value("userID").(string)
+
+	if Type == "invite" {
+		_, err = db.Exec(
+			`INSERT INTO group_members (group_id, user_id, type, invited_by) VALUES (?, ?, ?, ?)`,
+			groupID, userID, Type, currentUserID,
+		)
+	} else {
+		_, err = db.Exec(
+			`INSERT INTO group_members (group_id, user_id, type) VALUES (?, ?, ?)`,
+			groupID, userID, Type,
+		)
+	}
+
 	if err != nil {
 		help.RespondServerError(w)
 		return
 	}
-
-	CurrentUserID := r.Context().Value("userID").(string)
 
 	var groupCreatorID string
 
@@ -43,7 +53,7 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 		return
 	}
 
-	if CurrentUserID == groupCreatorID {
+	if currentUserID == groupCreatorID {
 		hub.Notif <- models.Notification{
 			SenderID:   groupCreatorID,
 			ReceiverID: userID,

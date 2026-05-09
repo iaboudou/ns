@@ -13,12 +13,11 @@ import {
 } from "../actions";
 import { about } from "../about/about";
 import { useRouter, useSearchParams } from "next/navigation";
-import { fetchPersonalInfo } from "@/_lib/personal_info";
 import { Lock, User } from "lucide-react";
 import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function ProfilePage() {
-  const { myInfo } = useWebSocket();
+  const { myInfo, setNotifications, port } = useWebSocket();
   const router = useRouter();
 
   //
@@ -106,6 +105,10 @@ export default function ProfilePage() {
                             (oldRequester) => oldRequester.id !== u.id,
                           ),
                         );
+                        port.postMessage({
+                          type: "set_notif",
+                          notif: { type: "follow_request", sender_id: u.id },
+                        });
                       })
                       .catch(() => {})
                   }
@@ -122,6 +125,10 @@ export default function ProfilePage() {
                             (oldRequester) => oldRequester.id !== u.id,
                           ),
                         );
+                        port.postMessage({
+                          type: "set_notif",
+                          notif: { type: "follow_request", sender_id: u.id },
+                        });
                       })
                       .catch(() => {})
                   }

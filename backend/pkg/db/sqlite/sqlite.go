@@ -607,17 +607,31 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 func (r *Repo) ManageFollowDB(followerID string, followingID string, decision string) error {
 	if decision == "accepted" {
 		_, err := r.Db.Exec(`UPDATE followers SET status = 'accepted' WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
-		return err
+		if err != nil {
+			return err
+		}
 	} else if decision == "rejected" {
 		_, err := r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
-		return err
+		if err != nil {
+			return err
+		}
 	}
-	return nil
+
+	// Dans les deux cas, supprimer la notification follow_request
+	_, err := r.Db.Exec(`
+		DELETE FROM notifications
+		WHERE type = 'follow_request'
+		AND sender_id = ?
+		AND id IN (
+			SELECT notification_id FROM notification_users WHERE user_id = ?
+		)
+	`, followerID, followingID)
+	return err
 }
 
 func (r *Repo) GetUsers(userid string, query string) ([]models.FollowSuggestion, error) {
 	users := []models.FollowSuggestion{}
-	
+
 	q := `SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy FROM users u WHERE u.id != ?`
 	args := []any{userid}
 

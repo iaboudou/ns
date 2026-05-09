@@ -5,6 +5,7 @@ CREATE TABLE notification_users (
     notification_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     is_read INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(notification_id) REFERENCES notifications(id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );

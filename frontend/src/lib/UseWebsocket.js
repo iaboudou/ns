@@ -31,11 +31,11 @@ export const WebSocketProvider = ({ children }) => {
     const fetchMe = async () => {
       try {
         const resp = await fetch(`http://localhost:4001/api/getpersonalinfo`, {
-          credentials: "include"
+          credentials: "include",
         });
         const res = await resp.json();
         if (res.user) setMyInfo(res.user);
-      } catch { }
+      } catch {}
     };
     fetchMe();
   }, []);
@@ -54,15 +54,15 @@ export const WebSocketProvider = ({ children }) => {
           portKeyRef.current = msg.data.portKey;
           setPort(worker.port);
           worker.port.postMessage({ type: "connect" });
-          worker.port.postMessage({
-            type: "send",
-            payload: { type: "get_unread_notifications_count" },
-          });
           break;
         }
 
         case "online_users": {
           setOnlineUsers(msg.data.users);
+          break;
+        }
+
+        case "unread_notif": {
           setUnreadNotifCount(msg.data.count);
           break;
         }
@@ -140,10 +140,28 @@ export const WebSocketProvider = ({ children }) => {
             const map = new Map(oldNotif.map((n) => [n.id, n]));
             map.set(msg.data.notif.id, msg.data.notif);
             return Array.from(map.values()).sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at),
+              (a, b) => new Date(a.created_at) - new Date(b.created_at),
             );
           });
           break;
+        }
+
+        case "notifs_seen": {
+          setUnreadNotifCount(0);
+          break;
+        }
+
+        case "set_notif": {
+          const notif = msg.data.notif;
+          setNotifications((oldNotif) =>
+            oldNotif.filter(
+              (n) => n.sender_id !== notif.sender_id && n.type !== notif.type,
+            ),
+          );
+          setUnreadNotifCount((prev) => {
+            if (prev > 0) return prev - 1;
+            return prev;
+          });
         }
       }
     };

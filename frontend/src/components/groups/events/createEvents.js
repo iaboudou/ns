@@ -86,6 +86,8 @@ export default function CreateEvents({ groupId, setEvents }) {
           className={styles.input}
           type="datetime-local"
           value={eventDateTime}
+          min={new Date(Date.now() + 5 * 60 * 1000).toISOString().slice(0, 16)}
+          max="9999-12-31T23:59"
           onChange={(e) => setEventDateTime(e.target.value)}
         />
       </div>

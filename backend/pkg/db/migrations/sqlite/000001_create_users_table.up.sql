@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     birthday TEXT NOT NULL,
     gender TEXT NOT NULL,
     profile_image TEXT NOT NULL,
+    last_notif_seen DATE DEFAULT CURRENT_TIMESTAMP,
     created_at DATE DEFAULT CURRENT_TIMESTAMP,
     about_me TEXT DEFAULT NULL,
     account_privacy BOOLEAN DEFAULT 0

@@ -142,16 +142,19 @@ export async function SendVote(eventId, groupId, vote) {
   if (result.code === 200) return;
   else throw new Error(result.message); //error possible: 500/404/400
 }
-
-export async function SendDecision(groupId, decision, requesterId = "") {
+export async function SendDecision(
+  groupId,
+  decision,
+  requesterId = "",
+  invitedBy = "",
+) {
   const resp = await fetch(`${BASE}/${groupId}/requests`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       sender: requesterId,
       decision,
+      invited_by: invitedBy,
     }),
     credentials: "include",
   });
