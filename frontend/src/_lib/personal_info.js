@@ -1,5 +1,4 @@
-const BASE = "http://localhost:4001"
-
+const BASE = typeof window === "undefined" ? "http://localhost:4001" : "";
 // get personal info
 export async function fetchPersonalInfo(uuid) {
 

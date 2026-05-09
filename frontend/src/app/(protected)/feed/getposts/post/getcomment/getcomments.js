@@ -1,6 +1,6 @@
 "use client";
 
-let BASE = `http://localhost:4001`
+
 import { timeAgo } from "@/_lib/timeago";
 import styles from "./getcomments.module.css";
 import { Users } from "lucide-react";
@@ -16,7 +16,7 @@ export default function Comments({ COMMENTS }) {
               {
                 comment.profile_image ?
                   <img
-                    src={`${BASE}/pics/${comment.profile_image}`}
+                    src={`/pics/${comment.profile_image}`}
                     className={styles.avatar}
                   />
                   : 
@@ -29,7 +29,7 @@ export default function Comments({ COMMENTS }) {
             </div>
             <p>{comment.content}</p>
             {comment.image_url && (
-              <img src={`${BASE}${comment.image_url}`} className={styles.commentimg} />
+              <img src={comment.image_url} className={styles.commentimg} />
             )}
           </div>
         ))}

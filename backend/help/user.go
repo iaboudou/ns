@@ -59,6 +59,10 @@ func CanInsertUser(user *U) error {
 		return fmt.Errorf("Lastname required, max %d chars", config.MaxLastnameLength)
 	}
 
+	if len(user.Nickname) > config.MaxNicknameLength {
+		return fmt.Errorf("Nickname max %d chars", config.MaxNicknameLength)
+	}
+
 	if len(user.Password) < config.MinPasswordLength || len(user.Password) > config.MaxPasswordLength {
 		return fmt.Errorf("Password %d-%d chars", config.MinPasswordLength, config.MaxPasswordLength)
 	}
@@ -71,6 +75,10 @@ func CanInsertUser(user *U) error {
 		return errors.New("Gender must be 'male' or 'female'")
 	}
 	user.Gender = g
+
+	if len(user.About) > 70 {
+		return fmt.Errorf("About me max 70 chars")
+	}
 
 	return nil
 }

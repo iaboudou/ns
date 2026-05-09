@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+
 import {
   createContext,
   useContext,
@@ -30,7 +31,7 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const resp = await fetch(`http://localhost:4001/api/getpersonalinfo`, {
+        const resp = await fetch("/api/getpersonalinfo", {
           credentials: "include"
         });
         const res = await resp.json();

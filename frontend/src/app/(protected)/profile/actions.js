@@ -1,10 +1,10 @@
-const BASE = "http://localhost:4001";
+
 
 //
 export async function fetchSwitchPrivacy() {
-  let res = await fetch(`${BASE}/api/switchaccountprivacy`, {
+  let res = await fetch(`/api/switchaccountprivacy`, {
     credentials: "include",
-    method: "POST",
+    method: "PATCH",
   });
 
   let data = await res?.text();
@@ -20,7 +20,7 @@ export async function fetchSwitchPrivacy() {
 
 //
 export async function fetchFollowers(id) {
-  const res = await fetch(`${BASE}/api/follow?want=followers&id=${id}`, {
+  const res = await fetch(`/api/follow?want=followers&id=${id}`, {
     credentials: "include",
   });
   if (!res.ok) return [];
@@ -30,7 +30,7 @@ export async function fetchFollowers(id) {
 
 //
 export async function fetchFollowing(id) {
-  const res = await fetch(`${BASE}/api/follow?want=following&id=${id}`, {
+  const res = await fetch(`/api/follow?want=following&id=${id}`, {
     credentials: "include",
   });
   if (!res.ok) return [];
@@ -39,7 +39,7 @@ export async function fetchFollowing(id) {
 }
 
 export async function fetchRequests(id) {
-  const res = await fetch(`${BASE}/api/follow?want=requests&id=${id}`, {
+  const res = await fetch(`/api/follow?want=requests&id=${id}`, {
     credentials: "include",
   });
   if (!res.ok) return [];
@@ -49,8 +49,8 @@ export async function fetchRequests(id) {
 
 export async function ManageFollow(followerId, decision) {
   try {
-    const res = await fetch(`${BASE}/api/manage-follow`, {
-      method: "POST",
+    const res = await fetch(`/api/manage-follow`, {
+      method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",

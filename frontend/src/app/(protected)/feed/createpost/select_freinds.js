@@ -35,6 +35,7 @@ export function SelectFreinds({ STATE }) {
                 onChange={(e) =>
                     setState((prev) => ({ ...prev, search: e.target.value }))
                 }
+                maxLength={30}
             />
 
             {/* selected users */}
@@ -48,7 +49,7 @@ export function SelectFreinds({ STATE }) {
                             <div key={"selected" + u.id} className={styles.selecteduserscontainer}>
                                 {u.profile_image ? (
                                     <img
-                                        src={`http://localhost:4001/pics/${u.profile_image}`}
+                                        src={`/pics/${u.profile_image}`}
                                         alt=""
                                         className={styles.selecteduseravatar}
                                     />
@@ -96,7 +97,7 @@ export function SelectFreinds({ STATE }) {
                             >
                                 {u.profile_image ? (
                                     <img
-                                        src={`http://localhost:4001/pics/${u.profile_image}`}
+                                        src={`/pics/${u.profile_image}`}
                                         alt=""
                                         className={styles.userAvatar}
                                     />

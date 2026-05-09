@@ -25,14 +25,14 @@ export default function Leftbar() {
     if (loading) return;
     setLoading(true);
     try {
-      await fetch("http://localhost:4001/api/logout", {
+      await fetch("/api/logout", {
         method: "POST",
         credentials: "include",
       });
-      localStorage.removeItem("user");
+
       router.push("/login");
     } catch (error) {
-      localStorage.removeItem("user");
+
       router.push("/login");
     } finally {
       setLoading(false);

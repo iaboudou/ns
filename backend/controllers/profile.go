@@ -6,7 +6,7 @@ import (
 )
 
 func (c *Controller) SwitchAccountPrivacy(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodPatch {
 		help.RespondNotOK(w, "notallowed")
 		return
 	}

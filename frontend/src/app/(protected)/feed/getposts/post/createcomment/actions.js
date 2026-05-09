@@ -8,7 +8,7 @@ export async function createcomment(state, post_id) {
     if (state.picture) formdata.append("image_url", state.picture)
 
     try {
-        let res = await fetch(`http://localhost:4001/api/createcomment`, {
+        let res = await fetch(`/api/createcomment`, {
             method: "POST",
             credentials: "include",
             body: formdata

@@ -123,7 +123,7 @@ func (c *Controller) GetSuggestionFollowers(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodPatch {
 		help.Respond(w, &models.Response{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",

@@ -15,8 +15,8 @@ export default function GroupHeader({ group, id }) {
         className={styles.groupImage}
         src={
           group.img
-            ? `http://localhost:4001/pics/${group.img}`
-            : "http://localhost:4001/pics/pub.png"
+            ? `/pics/${group.img}`
+            : "/pics/pub.png"
         }
         alt={group.title}
       />

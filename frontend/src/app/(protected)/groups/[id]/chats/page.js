@@ -20,7 +20,7 @@ export default function GroupChat() {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const resp = await fetch(`http://localhost:4001/api/getpersonalinfo`, {
+        const resp = await fetch(`/api/getpersonalinfo`, {
           credentials: "include"
         });
         const res = await resp.json();
@@ -37,7 +37,7 @@ export default function GroupChat() {
   useEffect(() => {
     const fetchGroup = async () => {
       try {
-        const resp = await fetch(`http://localhost:4001/api/groups/${params.id}`, {
+        const resp = await fetch(`/api/groups/${params.id}`, {
           credentials: "include"
         });
         const res = await resp.json();

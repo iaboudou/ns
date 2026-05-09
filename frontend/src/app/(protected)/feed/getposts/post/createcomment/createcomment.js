@@ -29,6 +29,7 @@ export default function CreateComment({ post, onCommentCreated }) {
           value={state.text}
           onChange={(e) => setState({ ...state, text: e.target.value })}
           className={styles.textarea}
+          maxLength={500}
         />
 
         <div className={styles.pictureandsubmitcontainer}>

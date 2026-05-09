@@ -1,5 +1,4 @@
 
-let BASE = process.env.BACKEND_URL;
 // insert post to the state
 export function onPostCreated(setState, newPost) {
   setState((prev) => ({
@@ -57,7 +56,7 @@ export async function loadPosts(state, pathname, section, profileId) {
     group_id,
   })
 
-  const res = await fetch(`http://localhost:4001/api/getposts?${params.toString()}`, {
+  const res = await fetch(`/api/getposts?${params.toString()}`, {
     method: "GET",
     credentials: "include",
   })
