@@ -20,7 +20,7 @@ export default function Page() {
     const fetchUser = async () => {
       try {
         const resp = await fetch(
-          `http://localhost:4001/api/getUsers?search=${params.id}`,
+          `/api/getUsers?search=${params.id}`,
           {
             credentials: "include",
           },

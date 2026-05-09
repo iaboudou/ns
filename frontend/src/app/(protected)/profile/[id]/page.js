@@ -9,7 +9,7 @@ import { User, Lock } from 'lucide-react';
 import { FollowUser } from "@/app/(protected)/feed/followsuggestions/actions";
 
 
-const BASE = "http://localhost:4001"
+
 export default function ProfilePage() {
 
     const router = useRouter()
@@ -82,7 +82,7 @@ export default function ProfilePage() {
 
     //  
     const imageURL = user.profile_image;
-    const fullImageURL = imageURL ? `${BASE}/pics/${imageURL}` : "";
+    const fullImageURL = imageURL ? `/pics/${imageURL}` : "";
     return (
         <div className={styles.FATHER}>
 

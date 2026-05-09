@@ -53,7 +53,7 @@ export default function DisplayNotification({ notif, port, setNotifications }) {
         <img
           src={
             notif.sender_profile
-              ? `http://localhost:4001/pics/${notif.sender_profile}`
+              ? `/pics/${notif.sender_profile}`
               : "/default.jpg"
           }
           alt={

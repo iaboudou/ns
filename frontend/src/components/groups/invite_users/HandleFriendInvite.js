@@ -51,7 +51,7 @@ export default function InviteFriends({ groupId }) {
   return (
     <>
       <p>Invite Friends</p>
-      <input className={style.input} type="text" placeholder="looking for someone ?" value={search} onChange={(e) => setSearch(e.target.value)} />
+      <input className={style.input} type="text" placeholder="looking for someone ?" value={search} onChange={(e) => setSearch(e.target.value)} maxLength={30} />
       <div className={styles.userList}>
         {users.map((u) => (
           <DisplayUser key={u.id} u={u} groupId={groupId} setUsers={setUsers} />

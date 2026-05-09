@@ -12,12 +12,12 @@ export default function Post({ POST }) {
   const { myInfo } = useWebSocket();
   //post image
   const imageURL = POST.post.image_url;
-  const fullImageURL = imageURL ? `http://localhost:4001/${imageURL}` : null;
+  const fullImageURL = imageURL || null;
 
   // profile image
   const profileimage = POST.post.profile_image;
   const fullprofileimage = profileimage
-    ? `http://localhost:4001/pics/${profileimage}`
+    ? `/pics/${profileimage}`
     : "";
 
   if (!POST.post) return null;

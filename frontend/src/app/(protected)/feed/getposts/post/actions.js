@@ -1,5 +1,5 @@
 import { handleUnauthorized } from "@/_lib/redirect";
-let BASE = "http://localhost:4001";
+
 
 export async function createcomment(state, post_id) {
 
@@ -9,7 +9,7 @@ export async function createcomment(state, post_id) {
     if (state.picture) formdata.append("image_url", state.picture)
 
     try {
-        let res = await fetch(`${BASE}/api/createcomment`, {
+        let res = await fetch(`/api/createcomment`, {
             method: "POST",
             credentials: "include",
             body: formdata
@@ -24,7 +24,7 @@ export async function createcomment(state, post_id) {
 }
 
 export async function fetchComments(post_id, offset) {
-    let res = await fetch(`${BASE}/api/getcomments`, {
+    let res = await fetch(`/api/getcomments`, {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({ offset: offset, post_id: post_id }),

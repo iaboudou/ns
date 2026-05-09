@@ -26,7 +26,7 @@ export default function CreatePost({ CREATEPOST }) {
   // profile picture on home
   const imageURL = myInfo?.profile_image;
   const fullImageURL = imageURL
-    ? `http://localhost:4001/pics/${imageURL}`
+    ? `/pics/${imageURL}`
     : null;
 
   const handleSubmit = async (e) => {
@@ -97,6 +97,7 @@ export default function CreatePost({ CREATEPOST }) {
           placeholder="Describe your quest to the guild..."
           value={state.text}
           onChange={(e) => setState({ ...state, text: e.target.value })}
+          maxLength={600}
         />
 
         {/* create post image */}

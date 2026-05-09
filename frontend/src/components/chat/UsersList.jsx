@@ -24,7 +24,7 @@ export default function UsersList() {
       setLoading(true);
 
       const resp = await fetch(
-        `http://localhost:4001/api/getUsers?last=${lastTime}&lastId=${lastId}&search=${currentSearch}`,
+        `/api/getUsers?last=${lastTime}&lastId=${lastId}&search=${currentSearch}`,
         {
           method: "GET",
           credentials: "include",
@@ -123,6 +123,7 @@ export default function UsersList() {
           placeholder="looking for someone ?"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          maxLength={30}
         />
         {users.map((u) => (
           <Link
@@ -185,7 +186,7 @@ export default function UsersList() {
 
 // it is very important to check if the receiver follow the sender or have public profile before open the conversation  
 async function alreadyfollowhim(receiver) {
-  const res = await fetch(`http://localhost:4001/api/isfollowexist?receiver=${receiver}`,
+  const res = await fetch(`/api/isfollowexist?receiver=${receiver}`,
     {
       method: "GET",
       credentials: "include",

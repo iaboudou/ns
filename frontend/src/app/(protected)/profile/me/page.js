@@ -1,5 +1,5 @@
 "use client";
-const BASE = "http://localhost:4001";
+
 import styles from "./me.module.css";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -83,7 +83,7 @@ export default function ProfilePage() {
             <Link href={`/profile/${u.id}`} className={styles.userListItem}>
               {u.profile_image ? (
                 <img
-                  src={`${BASE}/pics/${u.profile_image}`}
+                  src={`/pics/${u.profile_image}`}
                   className={styles.smallAvatar}
                 />
               ) : (
@@ -167,7 +167,7 @@ export default function ProfilePage() {
 
   //
   const imageURL = user.profile_image;
-  const fullImageURL = imageURL ? `${BASE}/pics/${imageURL}` : "";
+  const fullImageURL = imageURL ? `/pics/${imageURL}` : "";
   return (
     <div className={styles.FATHER}>
       <div className={styles.pageWrapper}>

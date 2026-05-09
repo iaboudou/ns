@@ -1,5 +1,5 @@
 'use client';
-const BASE = "http://localhost:4001"
+
 import Link from 'next/link';
 import styles from './followsuggestions.module.css';
 import { FollowUser, GetUsers } from './actions';
@@ -44,7 +44,7 @@ export default function FollowSuggestions() {
         {suggestions.map((user) => {
           // get image
           const profileimage = user?.profile_image;
-          const fullprofileimage = profileimage ? `${BASE}/pics/${profileimage}` : '';
+          const fullprofileimage = profileimage ? `/pics/${profileimage}` : '';
 
           return (
             <li key={user.id} className={styles.item}>

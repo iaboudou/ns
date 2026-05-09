@@ -39,11 +39,11 @@ export default function RegisterPage() {
         <div className={styles.row}>
           <div>
             <label>Bloodline Name</label>
-            <input type="text" name="firstname" placeholder="Your first name" />
+            <input type="text" name="firstname" placeholder="Your first name" maxLength={12} />
           </div>
           <div>
             <label>Given Name</label>
-            <input type="text" name="lastname" placeholder="Your last name" />
+            <input type="text" name="lastname" placeholder="Your last name" maxLength={12} />
           </div>
         </div>
 
@@ -105,6 +105,7 @@ export default function RegisterPage() {
             type="text"
             name="nickname"
             placeholder="Name whispered in the dark"
+            maxLength={30}
           />
         </div>
 
@@ -115,6 +116,7 @@ export default function RegisterPage() {
           <textarea
             name="about"
             placeholder="Tell your story... or remain silent."
+            maxLength={70}
           />
         </div>
 
@@ -127,7 +129,7 @@ export default function RegisterPage() {
         </div>
       </form>
 
-      <img src="http://localhost:4001/pics/scroll.png" alt="scroll" />
+      <img src="/pics/scroll.png" alt="scroll" />
     </div>
   );
 }

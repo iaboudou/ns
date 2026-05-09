@@ -25,7 +25,7 @@ export default function Leftbar() {
     if (loading) return;
     setLoading(true);
     try {
-      await fetch("http://localhost:4001/api/logout", {
+      await fetch("/api/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -52,7 +52,7 @@ export default function Leftbar() {
   }, [port]);
 
   const updateLastseen = async () => {
-    const resp = await fetch("http://localhost:4001/api/last-notif", {
+    const resp = await fetch("/api/last-notif", {
       method: "PATCH",
       credentials: "include",
     });

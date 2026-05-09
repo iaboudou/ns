@@ -1,11 +1,11 @@
 import { handleUnauthorized } from "@/_lib/redirect";
 
-let BASE = process.env.BACKEND_URL;
+
 
 export async function fetchFriendsUsers(search = "") {
     try {
         const word = encodeURIComponent(search || "");
-        const res = await fetch(`http://localhost:4001/api/getfriends?q=${word}&allusers=true`, {
+        const res = await fetch(`/api/getfriends?q=${word}&allusers=true`, {
             credentials: "include",
         });
 
@@ -39,7 +39,7 @@ export const createpost = async (state) => {
         formData.append("allowed_users", r);
     }
     try {
-        const res = await fetch(`http://localhost:4001/api/createpost`, {
+        const res = await fetch(`/api/createpost`, {
             method: "POST",
             body: formData,
             credentials: "include",

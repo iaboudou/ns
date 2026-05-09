@@ -82,7 +82,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send notification if this was a new follow
-	if message == "request have been sent" {
+		if message == "request have been sent" {
 		c.Hub.Notif <- models.Notification{
 			SenderID:   userID,
 			ReceiverID: body["followed_id"].(string),
@@ -119,7 +119,7 @@ func (c *Controller) GetSuggestionFollowers(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *Controller) ManageFollow(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodPatch {
 		help.Respond(w, &models.Response{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",

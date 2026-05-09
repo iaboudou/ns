@@ -103,7 +103,7 @@ export default function Login() {
         </div>
       </form>
 
-      <img src="http://localhost:4001/pics/sword.png" alt="sword" />
+      <img src="/pics/sword.png" alt="sword" />
     </div>
   );
 }

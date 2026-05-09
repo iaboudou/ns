@@ -1,13 +1,12 @@
-// help.js
-
 export async function fetchRegister(formData) {
-  const response = await fetch(`${"http://localhost:4001"}/api/register`, {
+  const response = await fetch(`/api/register`, {
     method: "POST",
+    credentials: "include",
     body: formData,
   });
 
-  const er = await response.json();
-  if (!response.ok) return [false, er.message];
+  const er = await response.json().catch(() => ({}));
+  if (!response.ok) return [false, er.message || "Registration failed"];
   return [true, null];
 }
 
@@ -21,7 +20,7 @@ export function ValidateInput(formData) {
 
 
   const age = Math.floor(
-    (Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365)
+    (Date.now() - new Date(dob + "T00:00:00").getTime()) / (1000 * 60 * 60 * 24 * 365.25)
   );
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))

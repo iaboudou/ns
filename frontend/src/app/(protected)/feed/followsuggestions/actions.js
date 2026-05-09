@@ -1,4 +1,4 @@
-let BASE = "http://localhost:4001"
+
 import { handleUnauthorized } from "@/_lib/redirect";
 
 /**
@@ -6,7 +6,7 @@ import { handleUnauthorized } from "@/_lib/redirect";
  */
 export async function GetUsers(setUsers) {
   try {
-    const res = await fetch(`${BASE}/api/getsuggestionfollowers`, {
+    const res = await fetch(`/api/getsuggestionfollowers`, {
       credentials: "include"
     });
 
@@ -39,7 +39,7 @@ export async function GetUsers(setUsers) {
  */
 export async function FollowUser(userId) {
   try {
-    const res = await fetch(`${BASE}/api/follow`, {
+    const res = await fetch(`/api/follow`, {
       method: "POST",
       credentials: "include",
       headers: {

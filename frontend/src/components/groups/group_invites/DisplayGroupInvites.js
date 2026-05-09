@@ -27,9 +27,9 @@ export default function DisplayGroupInvite({ group, setGroups }) {
       style={
         group.img
           ? {
-              backgroundImage: `url(http://localhost:4001/pics/${group.img})`,
+              backgroundImage: `url(/pics/${group.img})`,
             }
-          : { backgroundImage: `url(http://localhost:4001/pics/pub.png)` }
+          : { backgroundImage: `url(/pics/pub.png)` }
       }
     >
       <h3>{group.title}</h3>
