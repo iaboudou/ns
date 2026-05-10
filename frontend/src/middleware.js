@@ -9,6 +9,9 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname === "/login" || pathname === "/register";
 
+  if (pathname.includes("/about")) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
   // if no session exists
   if (!session && !isAuthPage) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -31,7 +34,7 @@ export async function middleware(request) {
       if (!res.ok) {
         if (!isAuthPage) {
           const response = NextResponse.redirect(
-            new URL("/login", request.url),
+            new URL("/login", request.url)
           );
           response.cookies.delete("session_id");
           return response;
