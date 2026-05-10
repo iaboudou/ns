@@ -1,9 +1,9 @@
 .mainWrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: #0A0A0F;
-  color: #E8E0CC;
+  min-height: 70vh;
+  background: #0a0a0f;
+  color: #e8e0cc;
   font-family: "Crimson Text", "Georgia", serif;
 }
 
@@ -31,8 +31,13 @@
   flex-shrink: 0;
   background-color: #13110a;
   background-image:
-    repeating-linear-gradient(135deg, #13110a 0px, #13110a 1px, transparent 1px, transparent 18px),
-    linear-gradient(to bottom, #1a1410, #0e0c14);
+    repeating-linear-gradient(
+      135deg,
+      #13110a 0px,
+      #13110a 1px,
+      transparent 1px,
+      transparent 18px
+    ), linear-gradient(to bottom, #1a1410, #0e0c14);
 }
 
 .groupMeta {
@@ -47,7 +52,7 @@
   font-family: "Cinzel", serif;
   font-size: 20px;
   font-weight: 900;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.06em;
   margin: 0;
   white-space: nowrap;
@@ -58,7 +63,7 @@
 .groupInfo p {
   font-family: "Crimson Text", serif;
   font-size: 14px;
-  color: #9D8EC7;
+  color: #9d8ec7;
   margin: 0;
   line-height: 1.5;
 }
@@ -69,7 +74,7 @@
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   opacity: 0.8;
 }
 
@@ -90,15 +95,18 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #9D8EC7;
+  color: #9d8ec7;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
   white-space: nowrap;
 }
 
 .secondaryButton:hover {
-  color: #C8892A;
-  border-color: #C8892A;
+  color: #c8892a;
+  border-color: #c8892a;
   background: rgba(200, 137, 42, 0.05);
 }
 
@@ -115,16 +123,18 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #9D8EC7;
+  color: #9d8ec7;
   text-decoration: none;
   padding: 13px 18px 11px;
   border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
   white-space: nowrap;
 }
 
 .groupFeedLink:hover {
-  color: #C8892A;
+  color: #c8892a;
 }
 
 .down {
@@ -205,16 +215,18 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #9D8EC7;
+  color: #9d8ec7;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
   width: 100%;
   margin-top: 4px;
 }
 
 .loadMoreBtn:hover {
-  color: #C8892A;
-  border-color: #C8892A;
+  color: #c8892a;
+  border-color: #c8892a;
 }
 
 .loadMoreBtn:disabled {
@@ -227,7 +239,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #C8892A;
+  color: #c8892a;
   text-transform: uppercase;
   margin: 0;
   padding-bottom: 12px;
@@ -250,30 +262,33 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .buttonswrapper button:first-child {
   background: rgba(139, 26, 26, 0.1);
   border: 1px solid rgba(139, 26, 26, 0.4);
-  color: #8B1A1A;
+  color: #8b1a1a;
 }
 
 .buttonswrapper button:first-child:hover {
-  background: #8B1A1A;
-  color: #E8E0CC;
-  border-color: #8B1A1A;
+  background: #8b1a1a;
+  color: #e8e0cc;
+  border-color: #8b1a1a;
 }
 
 .buttonswrapper button:last-child {
   background: transparent;
   border: 1px solid #2a1f0f;
-  color: #9D8EC7;
+  color: #9d8ec7;
 }
 
 .buttonswrapper button:last-child:hover {
-  color: #C8892A;
-  border-color: #C8892A;
+  color: #c8892a;
+  border-color: #c8892a;
 }
 
 .userItem {
@@ -284,7 +299,9 @@
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid transparent;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .userItem:hover {
@@ -319,7 +336,7 @@
   font-family: "Cinzel", serif;
   font-size: 11px;
   font-weight: 600;
-  color: #C8892A;
+  color: #c8892a;
   letter-spacing: 0.05em;
   white-space: nowrap;
   overflow: hidden;
@@ -329,7 +346,7 @@
 .userName {
   font-family: "Crimson Text", serif;
   font-size: 12px;
-  color: #9D8EC7;
+  color: #9d8ec7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -346,14 +363,17 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #9D8EC7;
+  color: #9d8ec7;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .inviteBtn:hover {
-  color: #C8892A;
-  border-color: #C8892A;
+  color: #c8892a;
+  border-color: #c8892a;
   background: rgba(200, 137, 42, 0.05);
 }
 
@@ -383,7 +403,7 @@
   font-family: "Cinzel", serif;
   font-size: 12px;
   font-weight: 600;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.05em;
   margin: 0;
 }
@@ -397,21 +417,23 @@
 .acceptBtn {
   padding: 6px 16px;
   background: rgba(200, 137, 42, 0.1);
-  border: 1px solid #C8892A;
+  border: 1px solid #c8892a;
   border-radius: 4px;
   font-family: "Cinzel", serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .acceptBtn:hover {
-  background: #C8892A;
-  color: #0A0A0F;
+  background: #c8892a;
+  color: #0a0a0f;
 }
 
 .rejectBtn {
@@ -424,13 +446,15 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8B1A1A;
+  color: #8b1a1a;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .rejectBtn:hover {
-  background: #8B1A1A;
-  color: #E8E0CC;
-  border-color: #8B1A1A;
+  background: #8b1a1a;
+  color: #e8e0cc;
+  border-color: #8b1a1a;
 }

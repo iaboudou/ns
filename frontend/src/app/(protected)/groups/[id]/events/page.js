@@ -30,11 +30,9 @@ export default function GroupEvents({ params }) {
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {showCreateEvent && <CreateEvents groupId={id} setEvents={setEvents} />}
 
-        {events.length === 0 ? (
-          <p>There is no event for now but you can create your own !</p>
-        ) : (
-          events.map((e) => <EventCard key={e.id} event={e} groupId={id} />)
-        )}
+        {events.length === 0
+          ? <p>There is no event for now but you can create your own !</p>
+          : events.map((e) => <EventCard key={e.id} event={e} groupId={id} />)}
       </div>
 
       {hasMore && (

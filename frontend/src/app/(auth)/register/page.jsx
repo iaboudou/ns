@@ -39,17 +39,42 @@ export default function RegisterPage() {
         <div className={styles.row}>
           <div>
             <label>Bloodline Name</label>
-            <input type="text" name="firstname" placeholder="Your first name" required minLength={2} maxLength={12} pattern="^[a-zA-Z]{2,12}$" title="First name must be 2–12 letters" />
+            <input
+              type="text"
+              name="firstname"
+              placeholder="Your first name"
+              required
+              minLength={2}
+              maxLength={12}
+              pattern="^[a-zA-Z]{2,12}$"
+              title="First name must be 2–12 letters"
+            />
           </div>
           <div>
             <label>Given Name</label>
-            <input type="text" name="lastname" placeholder="Your last name" required minLength={2} maxLength={12} pattern="^[a-zA-Z]{2,12}$" title="Last name must be 2–12 letters" />
+            <input
+              type="text"
+              name="lastname"
+              placeholder="Your last name"
+              required
+              minLength={2}
+              maxLength={12}
+              pattern="^[a-zA-Z]{2,12}$"
+              title="Last name must be 2–12 letters"
+            />
           </div>
         </div>
 
         <div>
           <label>Sigil</label>
-          <input type="email" name="email" placeholder="seimor@gmail.com" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Valid email required" />
+          <input
+            type="email"
+            name="email"
+            placeholder="seimor@gmail.com"
+            required
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            title="Valid email required"
+          />
         </div>
 
         <div>
@@ -87,7 +112,8 @@ export default function RegisterPage() {
                 <input type="radio" name="gender" value="male" required /> Male
               </label>
               <label>
-                <input type="radio" name="gender" value="female" required /> Female
+                <input type="radio" name="gender" value="female" required />{" "}
+                Female
               </label>
             </div>
           </div>

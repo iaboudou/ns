@@ -14,9 +14,7 @@ export default function Page() {
   const [chatUser, setChatUser] = useState(null);
   const scrollRef = useRef(null);
 
-  const { messages, sendMessage, port, hasMoreMap, onlineUsers } =
-    useWebSocket();
-  const hasMore = hasMoreMap[chatId] !== false; // default true
+  const { messages, sendMessage, port, hasMore, onlineUsers } = useWebSocket();
   const isChatUserOnline = chatUser ? onlineUsers.includes(chatUser.id) : false;
 
   // fetch user details for the header
@@ -201,7 +199,7 @@ export default function Page() {
       </div>
 
       <div className={styles.messagesArea} ref={scrollRef}>
-        {hasMore && conversationMessages.length >= 10 && (
+        {hasMore && (
           <button
             type="button"
             className={styles.loadMore}

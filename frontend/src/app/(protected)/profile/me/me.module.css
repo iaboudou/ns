@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #0A0A0F;
-  color: #E8E0CC;
+  background: #0a0a0f;
+  color: #e8e0cc;
   font-family: "Crimson Text", "Georgia", serif;
 }
 
@@ -15,11 +15,13 @@
 .coverPhoto {
   height: 120px;
   background:
-    linear-gradient(to bottom, rgba(10,8,15,0.3), rgba(10,8,15,0.8)),
+    linear-gradient(to bottom, rgba(10, 8, 15, 0.3), rgba(10, 8, 15, 0.8)),
     repeating-linear-gradient(
       45deg,
-      #13110a 0px, #13110a 2px,
-      transparent 2px, transparent 14px
+      #13110a 0px,
+      #13110a 2px,
+      transparent 2px,
+      transparent 14px
     );
   display: flex;
   align-items: flex-end;
@@ -36,8 +38,8 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #E8E0CC;
-  background: rgba(10,8,15,0.6);
+  color: #e8e0cc;
+  background: rgba(10, 8, 15, 0.6);
   border: 1px solid #2a1f0f;
   border-radius: 4px;
   padding: 6px 14px;
@@ -45,12 +47,14 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 .infoText:hover,
 .coverPhoto > button:hover {
-  color: #C8892A;
-  border-color: #C8892A;
+  color: #c8892a;
+  border-color: #c8892a;
 }
 
 .profileInfo {
@@ -91,7 +95,7 @@
   font-family: "Cinzel", serif;
   font-size: 20px;
   font-weight: 900;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.06em;
   margin: 0;
 }
@@ -100,7 +104,7 @@
   font-family: "Crimson Text", serif;
   font-style: italic;
   font-size: 13px;
-  color: #C8892A;
+  color: #c8892a;
   margin: 0;
   font-weight: 400;
 }
@@ -108,7 +112,7 @@
 .profileBio {
   font-family: "Crimson Text", serif;
   font-size: 14px;
-  color: #E8E0CC;
+  color: #e8e0cc;
   margin: 0;
   line-height: 1.6;
   max-width: 520px;
@@ -124,15 +128,18 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #E8E0CC;
+  color: #e8e0cc;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
   white-space: nowrap;
 }
 .toggleBtn:hover {
-  color: #C8892A;
-  border-color: #C8892A;
-  background: rgba(200,137,42,0.06);
+  color: #c8892a;
+  border-color: #c8892a;
+  background: rgba(200, 137, 42, 0.06);
 }
 
 .NAV {
@@ -158,15 +165,19 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #9D8EC7;
+  color: #9d8ec7;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
-.navBtn:hover { color: #C8892A; }
+.navBtn:hover {
+  color: #c8892a;
+}
 
 .navBtnActive {
-  color: #C8892A;
-  border-bottom-color: #C8892A;
+  color: #c8892a;
+  border-bottom-color: #c8892a;
 }
 
 .MAIN {
@@ -190,7 +201,9 @@
   border-radius: 8px;
   transition: border-color 0.2s;
 }
-.userWrapper:hover { border-color: #3d2e1a; }
+.userWrapper:hover {
+  border-color: #3d2e1a;
+}
 
 .userListItem {
   display: flex;
@@ -221,7 +234,7 @@
   font-family: "Cinzel", serif;
   font-size: 12px;
   font-weight: 600;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
@@ -232,7 +245,7 @@
   font-family: "Crimson Text", serif;
   font-style: italic;
   font-size: 14px;
-  color: #9D8EC7;
+  color: #9d8ec7;
   padding: 20px 0;
 }
 
@@ -252,25 +265,31 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    transform 0.1s;
   border: none;
 }
-.actionBtn:active { transform: scale(0.96); }
+.actionBtn:active {
+  transform: scale(0.96);
+}
 
 .acceptBtn {
-  background: #C8892A;
-  color: #0A0A0F;
+  background: #c8892a;
+  color: #0a0a0f;
 }
-.acceptBtn:hover { background: #d4972e; }
+.acceptBtn:hover {
+  background: #d4972e;
+}
 
 .rejectBtn {
   background: transparent;
-  border: 1px solid rgba(139,26,26,0.4);
-  color: #8B1A1A;
+  border: 1px solid rgba(139, 26, 26, 0.4);
+  color: #8b1a1a;
 }
 .rejectBtn:hover {
-  background: rgba(139,26,26,0.1);
-  border-color: #8B1A1A;
+  background: rgba(139, 26, 26, 0.1);
+  border-color: #8b1a1a;
 }
 
 .privateMessage {
@@ -280,7 +299,7 @@
   justify-content: center;
   gap: 16px;
   padding: 60px 0;
-  color: #9D8EC7;
+  color: #9d8ec7;
 }
 
 .privateMessage h2 {
@@ -288,10 +307,10 @@
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #E8E0CC;
+  color: #e8e0cc;
   margin: 0;
 }
 
 .lockIcon {
-  color: #C8892A;
+  color: #c8892a;
 }

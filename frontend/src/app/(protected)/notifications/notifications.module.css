@@ -17,7 +17,7 @@
   font-family: "Cinzel", serif;
   font-size: 18px;
   font-weight: 900;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.08em;
   margin: 0;
 }
@@ -35,18 +35,20 @@
   text-decoration: none;
   border-bottom: 1px solid #13110a;
   border-left: 2px solid transparent;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   position: relative;
 }
 
 .item:hover {
   background: #0e0c14;
-  border-left-color: #C8892A;
+  border-left-color: #c8892a;
 }
 
 .unread {
-  background: rgba(200,137,42,0.04);
-  border-left-color: #C8892A;
+  background: rgba(200, 137, 42, 0.04);
+  border-left-color: #c8892a;
 }
 
 .avatarWrapper {
@@ -72,7 +74,7 @@
 .text {
   font-family: "Crimson Text", serif;
   font-size: 14px;
-  color: #9D8EC7;
+  color: #9d8ec7;
   margin: 0;
   line-height: 1.5;
 }
@@ -81,7 +83,7 @@
   font-family: "Cinzel", serif;
   font-size: 12px;
   font-weight: 700;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.04em;
 }
 
@@ -96,8 +98,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #C8892A;
-  box-shadow: 0 0 6px rgba(200,137,42,0.5);
+  background: #c8892a;
+  box-shadow: 0 0 6px rgba(200, 137, 42, 0.5);
   flex-shrink: 0;
 }
 
@@ -122,13 +124,15 @@
   width: 28px;
   height: 28px;
   border: 2px solid #2a1f0f;
-  border-top-color: #C8892A;
+  border-top-color: #c8892a;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty {

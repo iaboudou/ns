@@ -1,65 +1,66 @@
 import { handleUnauthorized } from "@/_lib/redirect";
 
-
-
 export async function fetchFriendsUsers(search = "") {
-    try {
-        const word = encodeURIComponent(search || "");
-        const res = await fetch(`/api/getfriends?q=${word}&allusers=true`, {
-            credentials: "include",
-        });
+  try {
+    const word = encodeURIComponent(search || "");
+    const res = await fetch(`/api/getfriends?q=${word}&allusers=true`, {
+      credentials: "include",
+    });
 
-        if (handleUnauthorized(res)) return [];
+    if (handleUnauthorized(res)) return [];
 
-        if (!res.ok) {
-            return [];
-        }
-
-        const data = await res.json().catch(() => ({}));
-        return data?.users || [];
-    } catch {
-        return [];
+    if (!res.ok) {
+      return [];
     }
+
+    const data = await res.json().catch(() => ({}));
+    return data?.users || [];
+  } catch {
+    return [];
+  }
 }
 
 export const createpost = async (state) => {
-    if (state.privacy !== "public" && state.privacy !== "private" && state.privacy !== "followers") {
-        return null;
-    }
+  if (
+    state.privacy !== "public" &&
+    state.privacy !== "private" &&
+    state.privacy !== "followers"
+  ) {
+    return null;
+  }
 
-    const formData = new FormData();
-    formData.append("text", state.text.trim());
-    formData.append("privacy", state.privacy);
-    formData.append("group_id", state.group_id || "");
+  const formData = new FormData();
+  formData.append("text", state.text.trim());
+  formData.append("privacy", state.privacy);
+  formData.append("group_id", state.group_id || "");
 
-    if (state.picture) formData.append("Image", state.picture);
+  if (state.picture) formData.append("Image", state.picture);
 
-    let r = (state.selectedUsers?.map(e => e.id) || []).join(",")
-    if (state.privacy === "private") {
-        formData.append("allowed_users", r);
-    }
-    try {
-        const res = await fetch(`/api/createpost`, {
-            method: "POST",
-            body: formData,
-            credentials: "include",
-        });
-        if (handleUnauthorized(res)) return null;
+  let r = (state.selectedUsers?.map((e) => e.id) || []).join(",");
+  if (state.privacy === "private") {
+    formData.append("allowed_users", r);
+  }
+  try {
+    const res = await fetch(`/api/createpost`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+    if (handleUnauthorized(res)) return null;
 
-        const data = await res.json().catch(() => ({}));
+    const data = await res.json().catch(() => ({}));
 
-        data.post.created_at = "now"
+    data.post.created_at = "now";
 
-        return data.post || null;
-    } catch (err) {
-        return null;
-    }
+    return data.post || null;
+  } catch (err) {
+    return null;
+  }
 };
 
-
 export function postIsValid(state) {
-    if (state.text == "" && state.picture == null) {
-        return false
-    }
-    return true
+  if (state.text == "" && state.picture == null) {
+    return false;
+  }
+  return true;
 }

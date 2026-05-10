@@ -10,7 +10,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   opacity: 0.8;
   padding-bottom: 10px;
   border-bottom: 1px solid #2a1f0f;
@@ -33,7 +33,9 @@
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid transparent;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .item:hover {
@@ -70,7 +72,7 @@
   font-family: "Cinzel", serif;
   font-size: 11px;
   font-weight: 600;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
@@ -80,21 +82,27 @@
 .followBtn {
   flex-shrink: 0;
   padding: 5px 12px;
-  background: #C8892A;
+  background: #c8892a;
   border: none;
   border-radius: 3px;
   font-family: "Cinzel", serif;
   font-size: 9px;
   font-weight: 700;
-  color: #0A0A0F;
+  color: #0a0a0f;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    transform 0.1s;
 }
 
-.followBtn:hover { background: #d4972e; }
-.followBtn:active { transform: scale(0.96); }
+.followBtn:hover {
+  background: #d4972e;
+}
+.followBtn:active {
+  transform: scale(0.96);
+}
 
 .followBtn[data-status="following"],
 .followBtn:not(:empty)[title="unfollow"] {
@@ -102,4 +110,3 @@
   border: 1px solid #2a1f0f;
   color: #6b5a3e;
 }
-

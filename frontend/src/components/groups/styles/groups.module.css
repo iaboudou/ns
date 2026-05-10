@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 0;
   min-height: 100vh;
-  background: #0A0A0F;
+  background: #0a0a0f;
 }
 
 .tabs {
@@ -21,21 +21,23 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #9D8EC7;
+  color: #9d8ec7;
   text-decoration: none;
   padding: 14px 18px 12px;
   border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .tabButton:hover {
-  color: #C8892A;
+  color: #c8892a;
 }
 
 .tabButton[aria-current="page"],
 .tabButton.active {
-  color: #C8892A;
-  border-bottom-color: #C8892A;
+  color: #c8892a;
+  border-bottom-color: #c8892a;
 }
 
 .content {
@@ -62,37 +64,47 @@
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
   background-color: #0e0c14;
   background-image:
-    repeating-linear-gradient(135deg,
-      #13110a 0px, #13110a 1px,
-      transparent 1px, transparent 18px),
-    linear-gradient(to bottom, #1a1410, #0e0c14);
+    repeating-linear-gradient(
+      135deg,
+      #13110a 0px,
+      #13110a 1px,
+      transparent 1px,
+      transparent 18px
+    ), linear-gradient(to bottom, #1a1410, #0e0c14);
   background-size: cover;
   background-position: center;
   box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .groupCard:hover {
-  border-color: #C8892A;
+  border-color: #c8892a;
   transform: translateY(-4px);
-  box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(200, 137, 42, 0.15);
+  box-shadow:
+    2px 8px 24px rgba(0, 0, 0, 0.7),
+    0 0 12px rgba(200, 137, 42, 0.15);
 }
 
 .groupCard::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom,
-      transparent 30%,
-      rgba(10, 8, 15, 0.6) 60%,
-      rgba(10, 8, 15, 0.95) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba(10, 8, 15, 0.6) 60%,
+    rgba(10, 8, 15, 0.95) 100%
+  );
   z-index: 1;
 }
 
 .groupCard::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 8px;
   left: 8px;
@@ -115,7 +127,7 @@
   font-family: "Cinzel", serif;
   font-size: 13px;
   font-weight: 700;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.06em;
   margin: 0;
   padding: 0 14px 4px;
@@ -128,7 +140,7 @@
   font-family: "Crimson Text", serif;
   font-style: italic;
   font-size: 12px;
-  color: #9D8EC7;
+  color: #9d8ec7;
   margin: 0;
   padding: 0 14px 14px;
   line-height: 1.4;
@@ -152,18 +164,21 @@
   gap: 10px;
   cursor: pointer;
   background: #0e0c14;
-  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
   box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .createGroupCard:hover {
-  border-color: #C8892A;
+  border-color: #c8892a;
   background: #13110a;
   transform: translateY(-4px);
 }
 
 .createGroupCard::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 8px;
   left: 8px;
@@ -181,7 +196,7 @@
 
 .createGroupIcon {
   font-size: 28px;
-  color: #C8892A;
+  color: #c8892a;
   opacity: 0.7;
   z-index: 1;
   line-height: 1;
@@ -199,7 +214,7 @@
 }
 
 .createGroupCard:hover .createGroupLabel {
-  color: #C8892A;
+  color: #c8892a;
 }
 
 .form {
@@ -227,14 +242,14 @@
   padding: 12px 14px;
   font-family: "Crimson Text", serif;
   font-size: 15px;
-  color: #E8E0CC;
+  color: #e8e0cc;
   outline: none;
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
 .input:focus {
-  border-color: #C8892A;
+  border-color: #c8892a;
 }
 
 .input::placeholder {
@@ -246,7 +261,7 @@
   font-family: "Crimson Text", serif;
   font-style: italic;
   font-size: 13px;
-  color: #8B1A1A;
+  color: #8b1a1a;
   padding: 8px 12px;
   background: rgba(139, 26, 26, 0.08);
   border: 1px solid rgba(139, 26, 26, 0.25);
@@ -256,17 +271,19 @@
 
 .primaryButton {
   padding: 12px;
-  background: #C8892A;
+  background: #c8892a;
   border: none;
   border-radius: 6px;
   font-family: "Cinzel", serif;
   font-size: 10px;
   font-weight: 700;
-  color: #0A0A0F;
+  color: #0a0a0f;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    transform 0.1s;
 }
 
 .primaryButton:hover {
@@ -286,16 +303,18 @@
   font-family: "Cinzel", serif;
   font-size: 10px;
   font-weight: 700;
-  color: #9D8EC7;
+  color: #9d8ec7;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .loadMoreBtn:hover {
-  color: #C8892A;
-  border-color: #C8892A;
+  color: #c8892a;
+  border-color: #c8892a;
 }
 
 .loadMoreBtn:disabled {
@@ -318,7 +337,7 @@
 }
 
 .form input[type="file"]:hover {
-  border-color: #C8892A;
+  border-color: #c8892a;
 }
 
 .form input[type="file"]::file-selector-button {
@@ -332,15 +351,15 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .form input[type="file"]::file-selector-button:hover {
   background: #1a160d;
-  border-color: #C8892A;
-  color: #E8E0CC;
+  border-color: #c8892a;
+  color: #e8e0cc;
 }
 
 .inviteActions {
@@ -355,21 +374,23 @@
   flex: 1;
   padding: 7px 0;
   background: rgba(200, 137, 42, 0.15);
-  border: 1px solid #C8892A;
+  border: 1px solid #c8892a;
   border-radius: 4px;
   font-family: "Cinzel", serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .acceptBtn:hover {
-  background: #C8892A;
-  color: #0A0A0F;
+  background: #c8892a;
+  color: #0a0a0f;
 }
 
 .rejectBtn {
@@ -383,14 +404,16 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #8B1A1A;
+  color: #8b1a1a;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .rejectBtn:hover {
-  background: #8B1A1A;
-  color: #E8E0CC;
+  background: #8b1a1a;
+  color: #e8e0cc;
 }
 
 .loadMoreTrigger {

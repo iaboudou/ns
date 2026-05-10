@@ -8,9 +8,7 @@ export default function Layout({ children }) {
         <UsersList />
       </div>
 
-      <div className={styles.right}>
-        {children}
-      </div>
+      <div className={styles.right}>{children}</div>
     </div>
   );
 }

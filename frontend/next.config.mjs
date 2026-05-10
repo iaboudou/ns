@@ -4,15 +4,15 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:4001/api/:path*",
+        destination: "http://backend:4001/api/:path*",
       },
       {
         source: "/pics/:path*",
-        destination: "http://localhost:4001/pics/:path*",
+        destination: "http://backend:4001/pics/:path*",
       },
       {
         source: "/hassession",
-        destination: "http://localhost:4001/hassession",
+        destination: "http://backend:4001/hassession",
       },
     ];
   },

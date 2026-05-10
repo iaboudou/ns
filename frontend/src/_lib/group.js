@@ -1,4 +1,7 @@
-const BASE = typeof window === "undefined" ? "http://localhost:4001/api/groups" : "/api/groups";
+const BASE =
+  typeof window === "undefined"
+    ? "http://backend:4001/api/groups"
+    : "/api/groups";
 
 export async function GetGroups(tab, search = "", lastId = "", lastTime = "") {
   const resp = await fetch(

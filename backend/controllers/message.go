@@ -128,7 +128,6 @@ func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg mo
 		client.Ws.WriteJSON(map[string]any{
 			"event":       "history",
 			"messages":    messages,
-			"hasMore":     len(messages) == 10,
 			"receiver_Id": msg.ReceiverID,
 			"isGroup":     true,
 			"portKey":     msg.PortKey,

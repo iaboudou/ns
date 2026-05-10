@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./leftbar.module.css";
 import {
-  Handshake,
   Users,
   MessageSquare,
   CircleUser,
@@ -61,7 +60,6 @@ export default function Leftbar() {
   };
 
   return (
-    <nav className={styles.leftbar}>
       <div className={styles.barElementContainer}>
         <Link
           href="/"
@@ -112,6 +110,5 @@ export default function Leftbar() {
           {loading ? "..." : <LogOut />}
         </button>
       </div>
-    </nav>
   );
 }

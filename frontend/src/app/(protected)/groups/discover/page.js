@@ -53,7 +53,7 @@ export default function DiscoverGroups() {
       },
       {
         threshold: 0.1,
-      }
+      },
     );
 
     observer.observe(observerRef.current);
@@ -72,28 +72,19 @@ export default function DiscoverGroups() {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {groups.length === 0 ? (
-        <p>
-          There is not any group for now. You can come back later or better
-          create your own !
-        </p>
-      ) : (
-        <div className={cardStyles.groupsList}>
-          {groups.map((g) => (
-            <DisplayNewGroup
-              key={g.id}
-              group={g}
-              setGroups={setGroups}
-            />
-          ))}
-        </div>
-      )}
+      {groups.length === 0
+        ? <p>
+            There is not any group for now. You can come back later or better
+            create your own !
+          </p>
+        : <div className={cardStyles.groupsList}>
+            {groups.map((g) => (
+              <DisplayNewGroup key={g.id} group={g} setGroups={setGroups} />
+            ))}
+          </div>}
 
       {hasMore && (
-        <div
-          ref={observerRef}
-          className={styles.loadMoreTrigger}
-        >
+        <div ref={observerRef} className={styles.loadMoreTrigger}>
           {loading ? "Loading..." : ""}
         </div>
       )}

@@ -7,24 +7,63 @@
   padding: 40px 28px 24px;
   margin-bottom: 8px;
   clip-path: polygon(
-    0% 1%, 2% 0%, 4% 1.5%, 6% 0.5%, 8% 1.8%,
-    10% 0.2%, 13% 1.2%, 16% 0%, 20% 1%, 25% 0.3%,
-    30% 1.5%, 35% 0%, 40% 1%, 45% 0.2%, 50% 1.5%,
-    55% 0%, 60% 1.2%, 65% 0.5%, 70% 1.8%, 75% 0%,
-    80% 1%, 85% 0.3%, 90% 1.5%, 95% 0.2%, 100% 1%,
-    100% 99%, 98% 100%, 95% 98.5%, 92% 100%, 88% 99%,
-    84% 100%, 80% 98.5%, 75% 100%, 70% 99%, 65% 100%,
-    60% 98.8%, 55% 100%, 50% 99%, 45% 100%, 40% 98.5%,
-    35% 100%, 30% 99.2%, 25% 100%, 20% 98.8%, 15% 100%,
-    10% 99%, 5% 100%, 2% 99%, 0% 100%
+    0% 1%,
+    2% 0%,
+    4% 1.5%,
+    6% 0.5%,
+    8% 1.8%,
+    10% 0.2%,
+    13% 1.2%,
+    16% 0%,
+    20% 1%,
+    25% 0.3%,
+    30% 1.5%,
+    35% 0%,
+    40% 1%,
+    45% 0.2%,
+    50% 1.5%,
+    55% 0%,
+    60% 1.2%,
+    65% 0.5%,
+    70% 1.8%,
+    75% 0%,
+    80% 1%,
+    85% 0.3%,
+    90% 1.5%,
+    95% 0.2%,
+    100% 1%,
+    100% 99%,
+    98% 100%,
+    95% 98.5%,
+    92% 100%,
+    88% 99%,
+    84% 100%,
+    80% 98.5%,
+    75% 100%,
+    70% 99%,
+    65% 100%,
+    60% 98.8%,
+    55% 100%,
+    50% 99%,
+    45% 100%,
+    40% 98.5%,
+    35% 100%,
+    30% 99.2%,
+    25% 100%,
+    20% 98.8%,
+    15% 100%,
+    10% 99%,
+    5% 100%,
+    2% 99%,
+    0% 100%
   );
   box-shadow:
-    2px 4px 16px rgba(0,0,0,0.55),
-    inset 0 0 40px rgba(139,90,30,0.12);
+    2px 4px 16px rgba(0, 0, 0, 0.55),
+    inset 0 0 40px rgba(139, 90, 30, 0.12);
 }
 
 .createpost::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -7px;
   left: 50%;
@@ -33,21 +72,22 @@
   height: 14px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #c0c0c0, #4a4a4a 60%, #1a1a1a);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
   z-index: 2;
 }
 
 .createpost::after {
-  content: '⸻ POST A QUEST ⸻';
+  content: "⸻ POST A QUEST ⸻";
   position: absolute;
   top: 14px;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   text-align: center;
   font-family: "Cinzel", serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.3em;
-  color: rgba(100,70,20,0.45);
+  color: rgba(100, 70, 20, 0.45);
   pointer-events: none;
 }
 
@@ -70,18 +110,18 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(100,70,20,0.35);
-  background: rgba(100,70,20,0.1);
+  border: 2px solid rgba(100, 70, 20, 0.35);
+  background: rgba(100, 70, 20, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(100,70,20,0.5);
+  color: rgba(100, 70, 20, 0.5);
   flex-shrink: 0;
   filter: sepia(20%);
 }
 
 .IMAGEICON {
-  color: rgba(100,70,20,0.5);
+  color: rgba(100, 70, 20, 0.5);
 }
 
 .userName {
@@ -94,8 +134,8 @@
 
 .postBtn {
   padding: 8px 20px;
-  background: #8B1A1A;
-  border: 1px solid rgba(139,26,26,0.5);
+  background: #8b1a1a;
+  border: 1px solid rgba(139, 26, 26, 0.5);
   border-radius: 2px;
   font-family: "Cinzel", serif;
   font-size: 10px;
@@ -104,16 +144,22 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  box-shadow: 1px 2px 6px rgba(0,0,0,0.4);
+  transition:
+    background 0.2s,
+    transform 0.1s;
+  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.4);
 }
-.postBtn:hover { background: #a01f1f; }
-.postBtn:active { transform: scale(0.97); }
+.postBtn:hover {
+  background: #a01f1f;
+}
+.postBtn:active {
+  transform: scale(0.97);
+}
 
 .textarea {
   width: 100%;
-  background: rgba(100,70,20,0.06);
-  border: 1px dashed rgba(100,70,20,0.3);
+  background: rgba(100, 70, 20, 0.06);
+  border: 1px dashed rgba(100, 70, 20, 0.3);
   border-radius: 2px;
   padding: 12px 14px;
   font-family: "Crimson Text", serif;
@@ -128,8 +174,13 @@
   transition: border-color 0.2s;
   margin-bottom: 12px;
 }
-.textarea:focus { border-color: rgba(100,70,20,0.6); }
-.textarea::placeholder { color: rgba(80,50,10,0.4); font-style: italic; }
+.textarea:focus {
+  border-color: rgba(100, 70, 20, 0.6);
+}
+.textarea::placeholder {
+  color: rgba(80, 50, 10, 0.4);
+  font-style: italic;
+}
 
 .bottomRow {
   display: flex;
@@ -143,25 +194,29 @@
   align-items: center;
 }
 
-.fileInput { display: none; }
+.fileInput {
+  display: none;
+}
 
 .fileLabel {
   display: flex;
   align-items: center;
   gap: 7px;
   padding: 6px 12px;
-  background: rgba(100,70,20,0.08);
-  border: 1px solid rgba(100,70,20,0.25);
+  background: rgba(100, 70, 20, 0.08);
+  border: 1px solid rgba(100, 70, 20, 0.25);
   border-radius: 2px;
   cursor: pointer;
   transition: border-color 0.2s;
 }
-.fileLabel:hover { border-color: rgba(100,70,20,0.5); }
+.fileLabel:hover {
+  border-color: rgba(100, 70, 20, 0.5);
+}
 
 .filename {
   font-family: "Crimson Text", serif;
   font-size: 12px;
-  color: rgba(80,50,10,0.6);
+  color: rgba(80, 50, 10, 0.6);
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -169,8 +224,8 @@
 }
 
 .privacySelect {
-  background: rgba(100,70,20,0.08);
-  border: 1px solid rgba(100,70,20,0.25);
+  background: rgba(100, 70, 20, 0.08);
+  border: 1px solid rgba(100, 70, 20, 0.25);
   border-radius: 2px;
   padding: 6px 12px;
   font-family: "Crimson Text", serif;
@@ -180,7 +235,9 @@
   cursor: pointer;
   transition: border-color 0.2s;
 }
-.privacySelect:focus { border-color: rgba(100,70,20,0.5); }
+.privacySelect:focus {
+  border-color: rgba(100, 70, 20, 0.5);
+}
 
 .selectFriendInput {
   width: 100%;
@@ -192,8 +249,8 @@
 
 .searchInput {
   width: 100%;
-  background: rgba(100,70,20,0.06);
-  border: 1px dashed rgba(100,70,20,0.3);
+  background: rgba(100, 70, 20, 0.06);
+  border: 1px dashed rgba(100, 70, 20, 0.3);
   border-radius: 2px;
   padding: 9px 14px;
   font-family: "Crimson Text", serif;
@@ -203,8 +260,13 @@
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
-.searchInput:focus { border-color: rgba(100,70,20,0.55); }
-.searchInput::placeholder { color: rgba(80,50,10,0.4); font-style: italic; }
+.searchInput:focus {
+  border-color: rgba(100, 70, 20, 0.55);
+}
+.searchInput::placeholder {
+  color: rgba(80, 50, 10, 0.4);
+  font-style: italic;
+}
 
 .selectedusers {
   display: flex;
@@ -216,15 +278,15 @@
   font-family: "Crimson Text", serif;
   font-style: italic;
   font-size: 12px;
-  color: rgba(80,50,10,0.45);
+  color: rgba(80, 50, 10, 0.45);
 }
 
 .selecteduserscontainer {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(100,70,20,0.12);
-  border: 1px solid rgba(100,70,20,0.25);
+  background: rgba(100, 70, 20, 0.12);
+  border: 1px solid rgba(100, 70, 20, 0.25);
   border-radius: 20px;
   padding: 3px 10px 3px 4px;
 }
@@ -234,11 +296,11 @@
   height: 22px;
   border-radius: 50%;
   object-fit: cover;
-  background: rgba(100,70,20,0.1);
+  background: rgba(100, 70, 20, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(100,70,20,0.5);
+  color: rgba(100, 70, 20, 0.5);
 }
 
 .selecteduserscontainer span {
@@ -250,13 +312,15 @@
 .selecteduserscontainer button {
   background: none;
   border: none;
-  color: rgba(80,50,10,0.5);
+  color: rgba(80, 50, 10, 0.5);
   cursor: pointer;
   font-size: 12px;
   padding: 0;
   transition: color 0.2s;
 }
-.selecteduserscontainer button:hover { color: #8B1A1A; }
+.selecteduserscontainer button:hover {
+  color: #8b1a1a;
+}
 
 .usersList {
   display: flex;
@@ -266,7 +330,9 @@
   overflow-y: auto;
   scrollbar-width: none;
 }
-.usersList::-webkit-scrollbar { display: none; }
+.usersList::-webkit-scrollbar {
+  display: none;
+}
 
 .userItem {
   display: flex;
@@ -277,18 +343,20 @@
   border: 1px solid transparent;
   border-radius: 2px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   text-align: left;
   width: 100%;
 }
 .userItem:hover {
-  background: rgba(100,70,20,0.1);
-  border-color: rgba(100,70,20,0.25);
+  background: rgba(100, 70, 20, 0.1);
+  border-color: rgba(100, 70, 20, 0.25);
 }
 
 .activeUser {
-  background: rgba(100,70,20,0.15);
-  border-color: rgba(139,26,26,0.4);
+  background: rgba(100, 70, 20, 0.15);
+  border-color: rgba(139, 26, 26, 0.4);
 }
 
 .userAvatar {
@@ -296,11 +364,11 @@
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
-  background: rgba(100,70,20,0.1);
+  background: rgba(100, 70, 20, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(100,70,20,0.5);
+  color: rgba(100, 70, 20, 0.5);
   flex-shrink: 0;
 }
 

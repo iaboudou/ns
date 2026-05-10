@@ -25,9 +25,7 @@ export default function CreatePost({ CREATEPOST }) {
 
   // profile picture on home
   const imageURL = myInfo?.profile_image;
-  const fullImageURL = imageURL
-    ? `/pics/${imageURL}`
-    : null;
+  const fullImageURL = imageURL ? `/pics/${imageURL}` : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,24 +64,20 @@ export default function CreatePost({ CREATEPOST }) {
           <div className={styles.userInfo}>
             {/* profile picture */}
             <Link href={`/profile/me`}>
-              {imageURL ? (
-                <img
-                  className={styles.profileImage}
-                  src={`${fullImageURL}`}
-                  alt="profile"
-                />
-              ) : (
-                <div className={styles.profileImage}>
-                  <User className={styles.IMAGEICON} />
-                </div>
-              )}
+              {imageURL
+                ? <img
+                    className={styles.profileImage}
+                    src={`${fullImageURL}`}
+                    alt="profile"
+                  />
+                : <div className={styles.profileImage}>
+                    <User className={styles.IMAGEICON} />
+                  </div>}
             </Link>
 
             {/* user full name*/}
             <span className={styles.userName}>
-              {myInfo?.firstname +
-                " " +
-                myInfo?.lastname}
+              {myInfo?.firstname + " " + myInfo?.lastname}
             </span>
           </div>
           <button type="submit" className={styles.postBtn}>

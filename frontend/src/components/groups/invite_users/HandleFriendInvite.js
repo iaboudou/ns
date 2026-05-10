@@ -1,14 +1,14 @@
-import { getUsers } from '@/_lib/group';
-import styles from '@/components/groups/styles/singleGroup.module.css';
-import style from '@/components/groups/styles/groups.module.css';
-import { useEffect, useState } from 'react';
-import DisplayUser from './DisplayUsers';
+import { getUsers } from "@/_lib/group";
+import styles from "@/components/groups/styles/singleGroup.module.css";
+import style from "@/components/groups/styles/groups.module.css";
+import { useEffect, useState } from "react";
+import DisplayUser from "./DisplayUsers";
 
 export default function InviteFriends({ groupId }) {
   const [users, setUsers] = useState([]);
   const [hasMore, setHasmore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const handleFetchUsers = async (currentSearch, isReset = false) => {
     if (!hasMore && !isReset) return;
@@ -51,14 +51,25 @@ export default function InviteFriends({ groupId }) {
   return (
     <>
       <p>Invite Friends</p>
-      <input className={style.input} type="text" placeholder="looking for someone ?" value={search} onChange={(e) => setSearch(e.target.value)} maxLength={30} />
+      <input
+        className={style.input}
+        type="text"
+        placeholder="looking for someone ?"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        maxLength={30}
+      />
       <div className={styles.userList}>
         {users.map((u) => (
           <DisplayUser key={u.id} u={u} groupId={groupId} setUsers={setUsers} />
         ))}
         {hasMore && (
-          <button className={styles.loadMoreBtn} onClick={() => handleFetchUsers(search)} disabled={loading}>
-            {loading ? 'Loading...' : 'Load More'}
+          <button
+            className={styles.loadMoreBtn}
+            onClick={() => handleFetchUsers(search)}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load More"}
           </button>
         )}
       </div>

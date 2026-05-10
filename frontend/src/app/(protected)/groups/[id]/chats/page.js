@@ -13,22 +13,21 @@ export default function GroupChat() {
   const [myID, setMyID] = useState(null);
   const scrollRef = useRef(null);
 
-  const { messages, sendMessage, port, hasMoreMap } = useWebSocket();
-  const hasMore = hasMoreMap[params.id] !== false;
+  const { messages, sendMessage, port, hasMore } = useWebSocket();
 
   // fetch my personnal info=
   useEffect(() => {
     const fetchMe = async () => {
       try {
         const resp = await fetch(`/api/getpersonalinfo`, {
-          credentials: "include"
+          credentials: "include",
         });
         const res = await resp.json();
-        // 
+        //
         if (res.user) {
           setMyID(res.user.id);
         }
-      } catch { }
+      } catch {}
     };
     fetchMe();
   }, []);
@@ -38,16 +37,17 @@ export default function GroupChat() {
     const fetchGroup = async () => {
       try {
         const resp = await fetch(`/api/groups/${params.id}`, {
-          credentials: "include"
+          credentials: "include",
         });
         const res = await resp.json();
         if (res.code === 200) {
           setGroupInfo(res.data);
         }
-      } catch { }
+      } catch {}
     };
     if (params.id) fetchGroup();
   }, [params.id]);
+
   // fetch messages in case the user reconnect
   useEffect(() => {
     if (port && params.id) {
@@ -63,9 +63,13 @@ export default function GroupChat() {
   }, [port, params.id]);
 
   // filter messages for this specific group
-  const conversationMessages = messages.filter(
-    (msg) => msg.group_id === params.id || (msg.is_group && msg.receiver_Id === params.id)
-  ).sort((a, b) => a.created_at - b.created_at);
+  const conversationMessages = messages
+    .filter(
+      (msg) =>
+        msg.group_id === params.id ||
+        (msg.is_group && msg.receiver_Id === params.id),
+    )
+    .sort((a, b) => a.created_at - b.created_at);
 
   // scroll to bottom when messages change
   useEffect(() => {
@@ -90,23 +94,37 @@ export default function GroupChat() {
     });
   };
 
-  const commonEmojis = ["👍", "😀", "😂", "🥰", "😎", "🤔", "😅", "🔥", "❤️", "🙏", "✨", "🎉"];
+  const commonEmojis = [
+    "👍",
+    "😀",
+    "😂",
+    "🥰",
+    "😎",
+    "🤔",
+    "😅",
+    "🔥",
+    "❤️",
+    "🙏",
+    "✨",
+    "🎉",
+  ];
 
   return (
     <div className={styles.chatContainer}>
       <div className={styles.chatHeader}>
-        {groupInfo ? (
-          <>
-            <span className={styles.headerName}>{groupInfo.title}</span>
-            <span className={styles.headerNick}> ({groupInfo.members} members)</span>
-          </>
-        ) : (
-          `Loading group chat...`
-        )}
+        {groupInfo
+          ? <>
+              <span className={styles.headerName}>{groupInfo.title}</span>
+              <span className={styles.headerNick}>
+                {" "}
+                ({groupInfo.members} members)
+              </span>
+            </>
+          : `Loading group chat...`}
       </div>
 
       <div className={styles.messagesArea} ref={scrollRef}>
-        {hasMore && conversationMessages.length >= 10 && (
+        {hasMore && (
           <button className={styles.loadMore} onClick={handleLoadMore}>
             Load older messages
           </button>
@@ -141,12 +159,12 @@ export default function GroupChat() {
           </button>
           {showEmojis && (
             <div className={styles.emojiPicker}>
-              {commonEmojis.map(emoji => (
+              {commonEmojis.map((emoji) => (
                 <span
                   key={emoji}
                   className={styles.emojiItem}
                   onClick={() => {
-                    setInputText(prev => prev + emoji);
+                    setInputText((prev) => prev + emoji);
                     setShowEmojis(false);
                   }}
                 >
@@ -171,7 +189,11 @@ export default function GroupChat() {
               if (content === "") return;
               sendMessage({
                 type: "send",
-                payload: { type: "group_chat", receiver_Id: params.id, content: content },
+                payload: {
+                  type: "group_chat",
+                  receiver_Id: params.id,
+                  content: content,
+                },
               });
               setInputText("");
             }

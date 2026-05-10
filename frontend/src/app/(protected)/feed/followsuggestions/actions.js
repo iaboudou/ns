@@ -1,4 +1,3 @@
-
 import { handleUnauthorized } from "@/_lib/redirect";
 
 /**
@@ -7,7 +6,7 @@ import { handleUnauthorized } from "@/_lib/redirect";
 export async function GetUsers(setUsers) {
   try {
     const res = await fetch(`/api/getsuggestionfollowers`, {
-      credentials: "include"
+      credentials: "include",
     });
 
     if (handleUnauthorized(res)) return false;
@@ -28,7 +27,6 @@ export async function GetUsers(setUsers) {
 
     setUsers(data.data);
     return true;
-
   } catch {
     return false;
   }
@@ -43,11 +41,11 @@ export async function FollowUser(userId) {
       method: "POST",
       credentials: "include",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        followed_id: userId
-      })
+        followed_id: userId,
+      }),
     });
 
     if (handleUnauthorized(res)) return null;
@@ -58,7 +56,6 @@ export async function FollowUser(userId) {
 
     const data = await res.json();
     return data?.message || null;
-
   } catch {
     return null;
   }

@@ -5,24 +5,25 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"rtf/config"
 )
 
 // / USER
 type U struct {
-	ID        string
-	Nickname  string
-	Firstname string
-	Lastname  string
-	Email     string
-	Password  string
-	Birthday  string
-	Gender    string
-	About     string
-	Avatar    string
-	SessionID string
-	AccountPrivacy  bool
+	ID             string
+	Nickname       string
+	Firstname      string
+	Lastname       string
+	Email          string
+	Password       string
+	Birthday       string
+	Gender         string
+	About          string
+	Avatar         string
+	SessionID      string
+	AccountPrivacy bool
 }
 
 func USERDATA(r *http.Request) U {
@@ -78,6 +79,14 @@ func CanInsertUser(user *U) error {
 
 	if len(user.About) > 70 {
 		return fmt.Errorf("About me max 70 chars")
+	}
+
+	parsedDOB, _ := time.Parse("2006-01-02", user.Birthday)
+	now := time.Now()
+	age := int(now.Sub(parsedDOB).Hours() / 24 / 365.25)
+
+	if age < 15 || age > 200 {
+		return fmt.Errorf("you can't use this website")
 	}
 
 	return nil

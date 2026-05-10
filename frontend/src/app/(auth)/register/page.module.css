@@ -10,7 +10,7 @@
 }
 
 .formRegister {
-  background: #0A0A0F;
+  background: #0a0a0f;
   border: 1px solid #2a1f0f;
   border-right: none;
   border-radius: 18px 0 0 18px;
@@ -28,7 +28,7 @@
   font-family: "Cinzel", "Palatino Linotype", serif;
   font-size: 26px;
   font-weight: 900;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.08em;
   margin: 0 0 8px;
 }
@@ -40,7 +40,7 @@
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   margin-bottom: 6px;
   opacity: 0.85;
 }
@@ -67,7 +67,7 @@
   padding: 12px 14px;
   font-family: "Crimson Text", serif;
   font-size: 15px;
-  color: #E8E0CC;
+  color: #e8e0cc;
   outline: none;
   transition: border-color 0.2s;
   letter-spacing: 0.03em;
@@ -79,7 +79,7 @@
 .formRegister input[type="password"]:focus,
 .formRegister input[type="date"]:focus,
 .formRegister textarea:focus {
-  border-color: #C8892A;
+  border-color: #c8892a;
 }
 
 .formRegister input::placeholder,
@@ -110,12 +110,14 @@
   color: #6b5a3e;
   cursor: pointer;
   box-sizing: border-box;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .formRegister input[type="file"]:hover {
-  border-color: #C8892A;
-  color: #E8E0CC;
+  border-color: #c8892a;
+  color: #e8e0cc;
 }
 
 .formRegister input[type="file"]::file-selector-button {
@@ -128,15 +130,15 @@
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .formRegister input[type="file"]::file-selector-button:hover {
   background: #1a160d;
-  border-color: #C8892A;
-  color: #E8E0CC;
+  border-color: #c8892a;
+  color: #e8e0cc;
   box-shadow: 0 0 8px rgba(200, 137, 42, 0.3);
 }
 
@@ -168,7 +170,7 @@
 }
 
 .eyeBtn:hover {
-  color: #C8892A;
+  color: #c8892a;
 }
 
 .row {
@@ -191,7 +193,7 @@
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.03em;
-  color: #E8E0CC;
+  color: #e8e0cc;
   text-transform: none;
   display: flex;
   align-items: center;
@@ -202,7 +204,7 @@
 }
 
 .radioGroup input[type="radio"] {
-  accent-color: #C8892A;
+  accent-color: #c8892a;
   width: 14px;
   height: 14px;
   cursor: pointer;
@@ -211,17 +213,19 @@
 .formRegister button[type="submit"] {
   width: 100%;
   padding: 14px;
-  background: #C8892A;
+  background: #c8892a;
   border: none;
   border-radius: 6px;
   font-family: "Cinzel", "Palatino Linotype", serif;
   font-size: 11px;
   font-weight: 700;
-  color: #0A0A0F;
+  color: #0a0a0f;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    transform 0.1s;
   margin-top: 4px;
 }
 
@@ -237,7 +241,7 @@
   font-family: "Crimson Text", serif;
   font-style: italic;
   font-size: 13px;
-  color: #8B1A1A;
+  color: #8b1a1a;
   letter-spacing: 0.03em;
   display: block;
   padding: 10px 14px;
@@ -255,16 +259,16 @@
 }
 
 .footer a {
-  color: #C8892A;
+  color: #c8892a;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .footer a:hover {
-  color: #8B1A1A;
+  color: #8b1a1a;
 }
 
-.page>img {
+.page > img {
   width: 46%;
   max-width: 560px;
   border-radius: 0 18px 18px 0;
@@ -288,7 +292,7 @@
     max-width: 100%;
   }
 
-  .page>img {
+  .page > img {
     display: none;
   }
 

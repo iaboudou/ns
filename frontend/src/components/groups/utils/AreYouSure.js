@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { DeleteGroup, LeaveGroup } from '@/_lib/group';
-import styles from '@/components/groups/styles/singleGroup.module.css';
-import { useRouter } from 'next/navigation';
+import { DeleteGroup, LeaveGroup } from "@/_lib/group";
+import styles from "@/components/groups/styles/singleGroup.module.css";
+import { useRouter } from "next/navigation";
 
 export default function AreYouSure({ Message, groupId, setHoverTab }) {
   const router = useRouter();
@@ -16,13 +16,13 @@ export default function AreYouSure({ Message, groupId, setHoverTab }) {
           <button
             onClick={(e) => {
               e.preventDefault();
-              Message === 'delete group'
+              Message === "delete group"
                 ? DeleteGroup(groupId).catch((err) => alert(err.message))
                 : LeaveGroup(groupId).catch((err) => {
                     alert(err.message);
-                    router.replace('/groups/joins');
+                    router.replace("/groups/joins");
                   });
-              router.replace('/groups/joins');
+              router.replace("/groups/joins");
             }}
           >
             Yes
@@ -30,7 +30,7 @@ export default function AreYouSure({ Message, groupId, setHoverTab }) {
           <button
             onClick={(e) => {
               e.preventDefault();
-              setHoverTab('');
+              setHoverTab("");
             }}
           >
             No

@@ -13,11 +13,7 @@ export default function GroupHeader({ group, id }) {
       {/* Image */}
       <img
         className={styles.groupImage}
-        src={
-          group.img
-            ? `/pics/${group.img}`
-            : "/pics/pub.png"
-        }
+        src={group.img ? `/pics/${group.img}` : "/pics/pub.png"}
         alt={group.title}
       />
 
@@ -33,21 +29,19 @@ export default function GroupHeader({ group, id }) {
           >
             Invite Followers
           </button>
-          {group.isCreator ? (
-            <button
-              className={styles.secondaryButton}
-              onClick={() => setHoverTab("delete group")}
-            >
-              Delete Group
-            </button>
-          ) : (
-            <button
-              className={styles.secondaryButton}
-              onClick={() => setHoverTab("leave group")}
-            >
-              Leave Group
-            </button>
-          )}
+          {group.isCreator
+            ? <button
+                className={styles.secondaryButton}
+                onClick={() => setHoverTab("delete group")}
+              >
+                Delete Group
+              </button>
+            : <button
+                className={styles.secondaryButton}
+                onClick={() => setHoverTab("leave group")}
+              >
+                Leave Group
+              </button>}
         </div>
       </div>
 

@@ -43,8 +43,10 @@ self.addEventListener("connect", (e) => {
             try {
               const data = JSON.parse(e.data);
               if (data.event === "online_users") onlineUsers = data.users || [];
-              if (data.event === "join" && !onlineUsers.includes(data.newcomer)) onlineUsers.push(data.newcomer);
-              if (data.event === "leave") onlineUsers = onlineUsers.filter((id) => id !== data.left);
+              if (data.event === "join" && !onlineUsers.includes(data.newcomer))
+                onlineUsers.push(data.newcomer);
+              if (data.event === "leave")
+                onlineUsers = onlineUsers.filter((id) => id !== data.left);
               broadcast(data);
             } catch (err) {}
           };

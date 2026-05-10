@@ -99,8 +99,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		help.RespondNotOK(w, "badrequest")
 
 		help.Respond(w, &models.Response{
-			Code: http.StatusBadRequest,
-
+			Code:    http.StatusBadRequest,
 			Message: "invalid credential",
 		})
 		return

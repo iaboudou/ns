@@ -16,9 +16,7 @@ export default function Post({ POST }) {
 
   // profile image
   const profileimage = POST.post.profile_image;
-  const fullprofileimage = profileimage
-    ? `/pics/${profileimage}`
-    : "";
+  const fullprofileimage = profileimage ? `/pics/${profileimage}` : "";
 
   if (!POST.post) return null;
 
@@ -51,11 +49,9 @@ export default function Post({ POST }) {
                 : `/profile/me`
             }
           >
-            {fullprofileimage ? (
-              <img src={fullprofileimage} className={styles.profileImg} />
-            ) : (
-              <Users className={styles.placeholderIcon} />
-            )}
+            {fullprofileimage
+              ? <img src={fullprofileimage} className={styles.profileImg} />
+              : <Users className={styles.placeholderIcon} />}
           </Link>
         }
 

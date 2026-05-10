@@ -1,11 +1,15 @@
-import { sendGroupInvite } from '@/_lib/group';
-import styles from '@/components/groups/styles/singleGroup.module.css';
+import { sendGroupInvite } from "@/_lib/group";
+import styles from "@/components/groups/styles/singleGroup.module.css";
 
 export default function DisplayUser({ u, groupId, setUsers }) {
   return (
     <div className={styles.userItem}>
       <div className={styles.userLeft}>
-        <img src={u.profile_image ? `/pics/${u.profile_image}` : '/default.jpg'} className={styles.userAvatar} alt="" />
+        <img
+          src={u.profile_image ? `/pics/${u.profile_image}` : "/default.jpg"}
+          className={styles.userAvatar}
+          alt=""
+        />
 
         <div className={styles.userText}>
           <div className={styles.userNickname}>{u.nickname}</div>
@@ -21,7 +25,7 @@ export default function DisplayUser({ u, groupId, setUsers }) {
           sendGroupInvite(groupId, u.id)
             .then(() => {
               setUsers((prev) => prev.filter((user) => user.id != u.id));
-              alert('invite sent');
+              alert("invite sent");
             })
             .catch((err) => alert(err.message));
         }}

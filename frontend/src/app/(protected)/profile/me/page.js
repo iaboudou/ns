@@ -81,14 +81,12 @@ export default function ProfilePage() {
         {users.map((u) => (
           <div key={u.id} className={styles.userWrapper}>
             <Link href={`/profile/${u.id}`} className={styles.userListItem}>
-              {u.profile_image ? (
-                <img
-                  src={`/pics/${u.profile_image}`}
-                  className={styles.smallAvatar}
-                />
-              ) : (
-                <User className={styles.placeholderIcon} />
-              )}
+              {u.profile_image
+                ? <img
+                    src={`/pics/${u.profile_image}`}
+                    className={styles.smallAvatar}
+                  />
+                : <User className={styles.placeholderIcon} />}
               <span className={styles.userName}>
                 {u.firstname} {u.lastname}
               </span>
@@ -183,11 +181,9 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.profileInfo}>
-            {fullImageURL ? (
-              <img className={styles.profileAvatar} src={fullImageURL} />
-            ) : (
-              <User className={styles.profileAvatar} />
-            )}
+            {fullImageURL
+              ? <img className={styles.profileAvatar} src={fullImageURL} />
+              : <User className={styles.profileAvatar} />}
             <div className={styles.nameandprivacybuttoncontainer}>
               <div className={styles.flnname}>
                 <h1 className={styles.profileName}>

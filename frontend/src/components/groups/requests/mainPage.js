@@ -26,20 +26,18 @@ export default function GroupRequests({ id }) {
 
   return (
     <>
-      {requests.length === 0 ? (
-        <p>There is no requests for now but you can invite people !</p>
-      ) : (
-        <>
-          {requests.map((u) => (
-            <RequestCard
-              key={u.id}
-              user={u}
-              groupId={id}
-              setRequests={setRequests}
-            />
-          ))}
-        </>
-      )}
+      {requests.length === 0
+        ? <p>There is no requests for now but you can invite people !</p>
+        : <>
+            {requests.map((u) => (
+              <RequestCard
+                key={u.id}
+                user={u}
+                groupId={id}
+                setRequests={setRequests}
+              />
+            ))}
+          </>}
 
       {hasMore && (
         <button

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { SendVote } from '@/_lib/group';
-import styles from '@/components/groups/styles/EventCard.module.css';
-import { useState } from 'react';
+import { SendVote } from "@/_lib/group";
+import styles from "@/components/groups/styles/EventCard.module.css";
+import { useState } from "react";
 
 export default function EventCard({ event, groupId }) {
   const [vote, setVote] = useState(event.voted);
@@ -10,31 +10,31 @@ export default function EventCard({ event, groupId }) {
   const [notgoing, setNotGoing] = useState(event.notGoingCount);
 
   const dateObj = new Date(event.date);
-  const month = dateObj.toLocaleString('en', { month: 'short' });
+  const month = dateObj.toLocaleString("en", { month: "short" });
   const day = dateObj.getDate();
-  const fullDate = dateObj.toLocaleString('en', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
+  const fullDate = dateObj.toLocaleString("en", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
   });
-  const time = dateObj.toLocaleString('en', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const time = dateObj.toLocaleString("en", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   const handleVote = async (newVote) => {
     if (vote === newVote) return;
 
-    if (newVote === 'going') {
+    if (newVote === "going") {
       setGoing((g) => g + 1);
-      if (vote === 'notgoing') {
+      if (vote === "notgoing") {
         setNotGoing((n) => n - 1);
       }
     }
 
-    if (newVote === 'notgoing') {
+    if (newVote === "notgoing") {
       setNotGoing((n) => n + 1);
-      if (vote === 'going') {
+      if (vote === "going") {
         setGoing((g) => g - 1);
       }
     }
@@ -83,10 +83,16 @@ export default function EventCard({ event, groupId }) {
 
           <div className={styles.sectionLabel}>Your response</div>
           <div className={styles.voteRow}>
-            <button className={`${styles.voteBtn} ${vote === 'going' ? styles.activeGoing : ''}`} onClick={() => handleVote('going')}>
+            <button
+              className={`${styles.voteBtn} ${vote === "going" ? styles.activeGoing : ""}`}
+              onClick={() => handleVote("going")}
+            >
               <span className={styles.btnDot} /> Going
             </button>
-            <button className={`${styles.voteBtn} ${vote === 'notgoing' ? styles.activeNotgoing : ''}`} onClick={() => handleVote('notgoing')}>
+            <button
+              className={`${styles.voteBtn} ${vote === "notgoing" ? styles.activeNotgoing : ""}`}
+              onClick={() => handleVote("notgoing")}
+            >
               <span className={styles.btnDot} /> Not going
             </button>
           </div>
@@ -94,7 +100,9 @@ export default function EventCard({ event, groupId }) {
           <div className={styles.creatorRow}>
             <div className={styles.creatorText}>
               Created by
-              {event.authorNickname ? <p>{event.authorNickname}</p> : <p>{event.authorName}</p>}
+              {event.authorNickname
+                ? <p>{event.authorNickname}</p>
+                : <p>{event.authorName}</p>}
             </div>
           </div>
         </div>

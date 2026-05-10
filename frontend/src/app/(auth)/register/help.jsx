@@ -10,7 +10,6 @@ export async function fetchRegister(formData) {
   return [true, null];
 }
 
-
 export function ValidateInput(formData) {
   const { email, password, firstname, lastname, dob, gender, nickname, about } =
     Object.fromEntries(formData.entries());
@@ -18,9 +17,9 @@ export function ValidateInput(formData) {
   if (!email || !password || !firstname || !lastname || !dob || !gender)
     return ["all required fields", false];
 
-
   const age = Math.floor(
-    (Date.now() - new Date(dob + "T00:00:00").getTime()) / (1000 * 60 * 60 * 24 * 365.25)
+    (Date.now() - new Date(dob + "T00:00:00").getTime()) /
+      (1000 * 60 * 60 * 24 * 365.25),
   );
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))

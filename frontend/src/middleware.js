@@ -20,7 +20,7 @@ export async function middleware(request) {
   // check session validation
   if (session) {
     try {
-      const res = await fetch(`http://localhost:4001/hassession`, {
+      const res = await fetch(`http://backend:4001/hassession`, {
         method: "GET",
         headers: { Cookie: `session_id=${session}` },
       });
@@ -34,7 +34,7 @@ export async function middleware(request) {
       if (!res.ok) {
         if (!isAuthPage) {
           const response = NextResponse.redirect(
-            new URL("/login", request.url)
+            new URL("/login", request.url),
           );
           response.cookies.delete("session_id");
           return response;

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import styles from './followsuggestions.module.css';
-import { FollowUser, GetUsers } from './actions';
-import { useState, useEffect } from 'react';
-import { Users } from 'lucide-react';
+import Link from "next/link";
+import styles from "./followsuggestions.module.css";
+import { FollowUser, GetUsers } from "./actions";
+import { useState, useEffect } from "react";
+import { Users } from "lucide-react";
 
 export default function FollowSuggestions() {
   const [suggestions, setUsers] = useState([]);
@@ -22,16 +22,19 @@ export default function FollowSuggestions() {
     setUsers((prev) =>
       prev.map((user) => {
         if (user.id === userId) {
-          if (message === 'follow have been successfully') {
-            return { ...user, interactionStatus: 'following' };
-          } else if (message === 'request have been sent') {
-            return { ...user, interactionStatus: 'requested' };
-          } else if (message === 'follow deleted' || message === 'follow request deleted') {
-            return { ...user, interactionStatus: 'none' };
+          if (message === "follow have been successfully") {
+            return { ...user, interactionStatus: "following" };
+          } else if (message === "request have been sent") {
+            return { ...user, interactionStatus: "requested" };
+          } else if (
+            message === "follow deleted" ||
+            message === "follow request deleted"
+          ) {
+            return { ...user, interactionStatus: "none" };
           }
         }
         return user;
-      })
+      }),
     );
   };
 
@@ -44,14 +47,14 @@ export default function FollowSuggestions() {
         {suggestions.map((user) => {
           // get image
           const profileimage = user?.profile_image;
-          const fullprofileimage = profileimage ? `/pics/${profileimage}` : '';
+          const fullprofileimage = profileimage ? `/pics/${profileimage}` : "";
 
           return (
             <li key={user.id} className={styles.item}>
               <Link href={`/profile/${user.id}`}>
-                {
-                  fullprofileimage ? <img src={fullprofileimage} className={styles.avatar} /> : <Users className={styles.placeholderIcon} />
-                }
+                {fullprofileimage
+                  ? <img src={fullprofileimage} className={styles.avatar} />
+                  : <Users className={styles.placeholderIcon} />}
               </Link>
 
               <div className={styles.meta}>
@@ -60,8 +63,18 @@ export default function FollowSuggestions() {
                 </span>
               </div>
 
-              <button className={styles.followBtn} type="button" onClick={() => handleFollow(user.id)}>
-                {user.interactionStatus === 'following' ? 'unfollow' : user.interactionStatus === 'requested' ? 'requested' : user.account_privacy ? 'request' : 'follow'}
+              <button
+                className={styles.followBtn}
+                type="button"
+                onClick={() => handleFollow(user.id)}
+              >
+                {user.interactionStatus === "following"
+                  ? "unfollow"
+                  : user.interactionStatus === "requested"
+                    ? "requested"
+                    : user.account_privacy
+                      ? "request"
+                      : "follow"}
               </button>
             </li>
           );

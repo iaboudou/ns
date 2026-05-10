@@ -48,12 +48,12 @@ export default function UsersList() {
         isReset
           ? newUsers
           : (prev) => {
-            const map = new Map(prev.map((u) => [u.id, u]));
-            newUsers.forEach((u) => {
-              map.set(u.id, u);
-            });
-            return Array.from(map.values());
-          },
+              const map = new Map(prev.map((u) => [u.id, u]));
+              newUsers.forEach((u) => {
+                map.set(u.id, u);
+              });
+              return Array.from(map.values());
+            },
       );
     } catch (err) {
       alert(err.message);

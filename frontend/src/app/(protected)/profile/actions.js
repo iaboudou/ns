@@ -1,5 +1,3 @@
-
-
 //
 export async function fetchSwitchPrivacy() {
   let res = await fetch(`/api/switchaccountprivacy`, {

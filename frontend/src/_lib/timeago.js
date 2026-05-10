@@ -3,7 +3,6 @@ export function timeAgo(date) {
 
   let past;
   if (typeof date === "number") {
-
     past = date < 10000000000 ? date * 1000 : date;
   } else {
     past = new Date(date).getTime();
@@ -23,4 +22,3 @@ export function timeAgo(date) {
   let d = new Date(past).toLocaleDateString();
   return d === "Invalid Date" ? "now" : d;
 }
-

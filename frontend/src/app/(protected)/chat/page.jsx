@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import ChatWindow from "@/components/chat/ChatWindow";
 import { useEffect } from "react";

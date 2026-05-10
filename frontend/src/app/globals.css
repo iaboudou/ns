@@ -2,11 +2,11 @@ html,
 body {
   height: auto;
   min-height: 100%;
-  background-color: #0A0A0F;
+  background-color: #0a0a0f;
 }
 
 body {
-  color: #E8E0CC;
+  color: #e8e0cc;
   margin: 0;
   padding: 0;
   overflow-y: auto;

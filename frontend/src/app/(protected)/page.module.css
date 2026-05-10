@@ -4,7 +4,7 @@
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
-  background: #0A0A0F;
+  background: #0a0a0f;
 }
 
 .leftbar {
@@ -22,7 +22,8 @@
   scrollbar-width: none;
 
   border-right: 1px solid #2a1f0f;
-  background: #0A0A0F;
+  /* background: #0a0a0f; */
+
 }
 
 .leftbar::-webkit-scrollbar {
@@ -33,8 +34,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-
-  background: #0A0A0F;
+  background: #0a0a0f;
 }
 
 .posts {
@@ -49,10 +49,6 @@
   min-height: 100vh;
 }
 
-.LEFT {
-  display: none;
-}
-
 .MIDDLE {
   flex-grow: 1;
   min-width: 0;
@@ -61,8 +57,8 @@
 
   border-right: 1px solid #2a1f0f;
 
-  background: #0A0A0F;
-  color: #E8E0CC;
+  background: #0a0a0f;
+  color: #e8e0cc;
 
   font-family: "Crimson Text", "Georgia", serif;
 }

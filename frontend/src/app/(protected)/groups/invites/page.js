@@ -54,15 +54,13 @@ export default function DiscoverGroups() {
 
   return (
     <>
-      {groups.length === 0 ? (
-        <p>You have no groups invites for now</p>
-      ) : (
-        <div className={cardStyles.groupsList}>
-          {groups.map((g) => (
-            <DisplayGroupInvite key={g.id} group={g} setGroups={setGroups} />
-          ))}
-        </div>
-      )}
+      {groups.length === 0
+        ? <p>You have no groups invites for now</p>
+        : <div className={cardStyles.groupsList}>
+            {groups.map((g) => (
+              <DisplayGroupInvite key={g.id} group={g} setGroups={setGroups} />
+            ))}
+          </div>}
 
       {hasMore && (
         <div ref={observerRef} className={styles.loadMoreTrigger}>

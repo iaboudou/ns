@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
 import styles from "@/components/groups/styles/groups.module.css";
 import cardStyles from "@/components/groups/styles/groups-cards.module.css";
-
 import HandleCreateGroup from "@/components/groups/joins/CreateGroup";
 import DisplayMyGroup from "@/components/groups/joins/DisplayMyGroups";
-
 import handleFetchGroups from "@/components/groups/utils/fetchGroups";
 
 export default function DiscoverGroups() {
@@ -55,21 +52,19 @@ export default function DiscoverGroups() {
   return (
     <>
       <div className={cardStyles.groupsList}>
-        {showCreateGroupForm ? (
-          <HandleCreateGroup
-            setGroups={setGroups}
-            setShowCreateGroupForm={setShowCreateGroupForm}
-          />
-        ) : (
-          <button
-            type="button"
-            className={cardStyles.createGroupCard}
-            onClick={() => setShowCreateGroupForm((v) => !v)}
-          >
-            <span className={cardStyles.createGroupIcon}>✦</span>
-            <span className={cardStyles.createGroupLabel}>Create Group</span>
-          </button>
-        )}
+        {showCreateGroupForm
+          ? <HandleCreateGroup
+              setGroups={setGroups}
+              setShowCreateGroupForm={setShowCreateGroupForm}
+            />
+          : <button
+              type="button"
+              className={cardStyles.createGroupCard}
+              onClick={() => setShowCreateGroupForm((v) => !v)}
+            >
+              <span className={cardStyles.createGroupIcon}>✦</span>
+              <span className={cardStyles.createGroupLabel}>Create Group</span>
+            </button>}
 
         {groups.map((g) => (
           <DisplayMyGroup key={g.id} group={g} />

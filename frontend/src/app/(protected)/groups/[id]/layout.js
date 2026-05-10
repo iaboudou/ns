@@ -1,9 +1,9 @@
-import styles from '@/components/groups/styles/singleGroup.module.css';
-import { cookies } from 'next/headers';
-import Link from 'next/link';
-import { GetGroup } from '@/_lib/group';
-import GroupHeader from '@/components/groups/header/GroupHeader';
-import { redirect } from 'next/navigation';
+import styles from "@/components/groups/styles/singleGroup.module.css";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import { GetGroup } from "@/_lib/group";
+import GroupHeader from "@/components/groups/header/GroupHeader";
+import { redirect } from "next/navigation";
 
 export default async function SingleGroupLayout({ children, params }) {
   const { id } = await params;
@@ -16,7 +16,7 @@ export default async function SingleGroupLayout({ children, params }) {
     group = await GetGroup(id, cookie);
   } catch (err) {
     //show a not found or a server error later
-    redirect('/groups/joins');
+    redirect("/groups/joins");
   }
 
   return (
@@ -36,8 +36,11 @@ export default async function SingleGroupLayout({ children, params }) {
           </Link>
 
           {group.isCreator && (
-            <Link className={styles.groupFeedLink} href={`/groups/${id}/requests`}>
-            Requests
+            <Link
+              className={styles.groupFeedLink}
+              href={`/groups/${id}/requests`}
+            >
+              Requests
             </Link>
           )}
         </div>

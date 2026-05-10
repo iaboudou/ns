@@ -16,7 +16,7 @@
   font-weight: 700;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   margin: 0 0 20px;
   opacity: 0.85;
   padding-bottom: 12px;
@@ -30,7 +30,9 @@
   padding: 12px 0;
   border-bottom: 1px solid #13110a;
 }
-.infoRow:last-child { border-bottom: none; }
+.infoRow:last-child {
+  border-bottom: none;
+}
 
 .infoLabel {
   font-family: "Cinzel", serif;
@@ -47,6 +49,6 @@
 .infoValue {
   font-family: "Crimson Text", serif;
   font-size: 15px;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.02em;
 }

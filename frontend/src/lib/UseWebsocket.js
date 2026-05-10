@@ -18,7 +18,7 @@ export const WebSocketProvider = ({ children }) => {
   const portKeyRef = useRef(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [hasMoreMap, setHasMoreMap] = useState({});
+  const [hasMore, setHasMore] = useState(false);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [myInfo, setMyInfo] = useState(null);
@@ -105,12 +105,9 @@ export const WebSocketProvider = ({ children }) => {
           setMessages((oldMsg) => {
             const map = new Map(oldMsg.map((m) => [m.id, m]));
             msg.data.messages.forEach((m) => map.set(m.id, m));
-            return Array.from(map.values()).sort((a, b) => a.id - b.id);
+            return Array.from(map.values());
           });
-          setHasMoreMap((prev) => ({
-            ...prev,
-            [msg.data.receiver_id]: msg.data.hasMore,
-          }));
+          setHasMore(msg.data.messages.length >= 10);
           break;
         }
 
@@ -212,7 +209,7 @@ export const WebSocketProvider = ({ children }) => {
         onlineUsers,
         messages,
         setMessages,
-        hasMoreMap,
+        hasMore,
         sendMessage: sendMessage,
         unreadNotifCount,
         setUnreadNotifCount,

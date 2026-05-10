@@ -15,7 +15,10 @@
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
 
   background-size: cover;
   background-position: center;
@@ -25,22 +28,26 @@
 .groupCard:hover {
   border-color: rgba(201, 168, 76, 0.55);
   transform: translateY(-4px);
-  box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.65), 0 0 12px rgba(201, 168, 76, 0.12);
+  box-shadow:
+    2px 8px 24px rgba(0, 0, 0, 0.65),
+    0 0 12px rgba(201, 168, 76, 0.12);
 }
 
 .groupCard::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom,
-      transparent 30%,
-      rgba(10, 8, 5, 0.6) 60%,
-      rgba(10, 8, 5, 0.96) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba(10, 8, 5, 0.6) 60%,
+    rgba(10, 8, 5, 0.96) 100%
+  );
   z-index: 1;
 }
 
 .groupCard::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 8px;
   left: 8px;
@@ -103,7 +110,10 @@
   gap: 10px;
   cursor: pointer;
   background: #1a1814;
-  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
   box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.4);
 }
 
@@ -114,7 +124,7 @@
 }
 
 .createGroupCard::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 8px;
   left: 8px;
@@ -166,20 +176,22 @@
   width: calc(100% - 28px);
   padding: 8px 0;
   background: rgba(200, 137, 42, 0.15);
-  border: 1px solid #C8892A;
+  border: 1px solid #c8892a;
   border-radius: 4px;
   font-family: "Cinzel", serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .groupCard .primaryButton:hover,
 .askToJoinBtn:hover {
-  background: #C8892A;
-  color: #0A0A0F;
+  background: #c8892a;
+  color: #0a0a0f;
 }

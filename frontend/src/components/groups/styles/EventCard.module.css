@@ -7,11 +7,13 @@
   border: 1px solid #2a1f0f;
   border-radius: 10px;
   overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .card:hover {
   border-color: #3d2e1a;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .banner {
@@ -30,7 +32,7 @@
   justify-content: center;
   min-width: 52px;
   padding: 10px 8px;
-  background: #0A0A0F;
+  background: #0a0a0f;
   border: 1px solid #2a1f0f;
   border-radius: 6px;
   flex-shrink: 0;
@@ -42,14 +44,14 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
 }
 
 .day {
   font-family: "Cinzel", serif;
   font-size: 26px;
   font-weight: 900;
-  color: #E8E0CC;
+  color: #e8e0cc;
   line-height: 1;
 }
 
@@ -64,7 +66,7 @@
   font-family: "Cinzel", serif;
   font-size: 15px;
   font-weight: 700;
-  color: #E8E0CC;
+  color: #e8e0cc;
   letter-spacing: 0.05em;
   white-space: nowrap;
   overflow: hidden;
@@ -100,7 +102,7 @@
 .desc {
   font-family: "Crimson Text", serif;
   font-size: 14px;
-  color: #9D8EC7;
+  color: #9d8ec7;
   line-height: 1.65;
   margin: 0;
 }
@@ -116,7 +118,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C8892A;
+  color: #c8892a;
   opacity: 0.7;
 }
 
@@ -138,15 +140,15 @@
 }
 
 .going {
-  background: rgba(200,137,42,0.1);
-  border: 1px solid rgba(200,137,42,0.25);
-  color: #C8892A;
+  background: rgba(200, 137, 42, 0.1);
+  border: 1px solid rgba(200, 137, 42, 0.25);
+  color: #c8892a;
 }
 
 .notgoing {
-  background: rgba(139,26,26,0.08);
-  border: 1px solid rgba(139,26,26,0.2);
-  color: #8B1A1A;
+  background: rgba(139, 26, 26, 0.08);
+  border: 1px solid rgba(139, 26, 26, 0.2);
+  color: #8b1a1a;
 }
 
 .dot {
@@ -182,7 +184,7 @@
   transition: all 0.2s;
 }
 .voteBtn:hover {
-  color: #E8E0CC;
+  color: #e8e0cc;
   border-color: #3d2e1a;
   background: #13110a;
 }
@@ -196,15 +198,15 @@
 }
 
 .activeGoing {
-  background: rgba(200,137,42,0.12);
-  border-color: #C8892A;
-  color: #C8892A;
+  background: rgba(200, 137, 42, 0.12);
+  border-color: #c8892a;
+  color: #c8892a;
 }
 
 .activeNotgoing {
-  background: rgba(139,26,26,0.1);
-  border-color: rgba(139,26,26,0.5);
-  color: #8B1A1A;
+  background: rgba(139, 26, 26, 0.1);
+  border-color: rgba(139, 26, 26, 0.5);
+  color: #8b1a1a;
 }
 
 .creatorRow {
@@ -224,7 +226,7 @@
 
 .creatorText p {
   margin: 0;
-  color: #C8892A;
+  color: #c8892a;
   font-style: normal;
   font-family: "Cinzel", serif;
   font-size: 11px;
