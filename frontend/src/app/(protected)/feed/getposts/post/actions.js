@@ -32,7 +32,7 @@ export async function fetchComments(post_id, offset) {
   if (!res.ok) {
     return;
   }
-  let json = await res.json();
+  let json = await res.json().catch(() => ({}));
   return json.comments;
 }
 

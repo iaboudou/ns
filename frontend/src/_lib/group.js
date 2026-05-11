@@ -11,7 +11,7 @@ export async function GetGroups(tab, search = "", lastId = "", lastTime = "") {
     },
   );
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 200) return result.data;
   else throw new Error(result.message); //error possible: 500
@@ -23,7 +23,7 @@ export async function GetGroup(id, cookie) {
     headers: { cookie },
   });
 
-  const res = await resp.json();
+  const res = await resp.json().catch(() => ({}));
 
   if (res.code === 200) return res.data;
   else throw new Error(res.message); //error possible: 500/404
@@ -38,7 +38,7 @@ export async function GetData(tab, groupId, lastTime = "", lastId = "") {
     },
   );
 
-  const res = await resp.json();
+  const res = await resp.json().catch(() => ({}));
 
   if (res.code === 200) return res.data;
   else throw new Error(res.message); //error possible: 500/404/403
@@ -57,7 +57,7 @@ export async function getUsers(
       credentials: "include",
     },
   );
-  const res = await resp.json();
+  const res = await resp.json().catch(() => ({}));
 
   if (res.code === 200) return res.data;
   else throw new Error(res.message); //error possible: 500/404
@@ -71,7 +71,7 @@ export async function CreateGroup(formData) {
     next: { revalidate: 0 },
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 201) return result.data;
   else throw new Error(result.message); //error possible: 500/400/409
@@ -92,7 +92,7 @@ export async function CreateEvent(title, description, date, groupId, vote) {
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 201) return result.data;
   else throw new Error(result.message); //error possible: 500/400/409
@@ -107,7 +107,7 @@ export async function SendGroupRequest(groupId) {
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code == 200) return;
   else throw new Error(result.message); // 404/500
@@ -123,7 +123,7 @@ export async function sendGroupInvite(groupId, userId) {
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code == 200) return;
   else throw new Error(result.message); // 400/404/500
@@ -139,7 +139,7 @@ export async function SendVote(eventId, groupId, vote) {
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 200) return;
   else throw new Error(result.message); //error possible: 500/404/400
@@ -161,7 +161,7 @@ export async function SendDecision(
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 200) return;
   else throw new Error(result.message); //error possible: 500/404/400
@@ -176,7 +176,7 @@ export async function DeleteGroup(groupId) {
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 200) return;
   else throw new Error(result.message); //error possible: 500/403/404
@@ -191,7 +191,7 @@ export async function LeaveGroup(groupId) {
     credentials: "include",
   });
 
-  const result = await resp.json();
+  const result = await resp.json().catch(() => ({}));
 
   if (result.code === 200) return;
   else throw new Error(result.message); //error possible: 500/404

@@ -22,7 +22,7 @@ export async function fetchFollowers(id) {
     credentials: "include",
   });
   if (!res.ok) return [];
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   return data?.data || [];
 }
 
@@ -32,7 +32,7 @@ export async function fetchFollowing(id) {
     credentials: "include",
   });
   if (!res.ok) return [];
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   return data?.data || [];
 }
 
@@ -41,7 +41,7 @@ export async function fetchRequests(id) {
     credentials: "include",
   });
   if (!res.ok) return [];
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   return data?.data || [];
 }
 

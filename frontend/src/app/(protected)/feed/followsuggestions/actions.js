@@ -15,7 +15,7 @@ export async function GetUsers(setUsers) {
       return false;
     }
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!data || !data.data) {
       return false;
@@ -54,7 +54,7 @@ export async function FollowUser(userId) {
       return null;
     }
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     return data?.message || null;
   } catch {
     return null;

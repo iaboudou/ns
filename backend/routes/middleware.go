@@ -10,8 +10,6 @@ import (
 // return StatusUnauthorized if the user not loggedin
 func (h *Handler) Middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
 		// check session existance
 		user, err := h.Repo.CheckSessionExistance(r)
 		if err != nil {

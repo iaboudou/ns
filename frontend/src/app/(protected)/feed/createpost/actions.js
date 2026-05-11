@@ -3,7 +3,7 @@ import { handleUnauthorized } from "@/_lib/redirect";
 export async function fetchFriendsUsers(search = "") {
   try {
     const word = encodeURIComponent(search || "");
-    const res = await fetch(`/api/getfriends?q=${word}&allusers=true`, {
+    const res = await fetch(`/api/getfriends?q=${word}`, {
       credentials: "include",
     });
 

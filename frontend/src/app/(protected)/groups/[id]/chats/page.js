@@ -23,7 +23,7 @@ export default function GroupChat() {
         const resp = await fetch(`/api/getpersonalinfo`, {
           credentials: "include",
         });
-        const res = await resp.json();
+        const res = await resp.json().catch(() => ({}));
         //
         if (res.user) {
           setMyID(res.user.id);
@@ -40,7 +40,7 @@ export default function GroupChat() {
         const resp = await fetch(`/api/groups/${params.id}`, {
           credentials: "include",
         });
-        const res = await resp.json();
+        const res = await resp.json().catch(() => ({}));
         if (res.code === 200) {
           setGroupInfo(res.data);
         }

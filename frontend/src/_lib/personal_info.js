@@ -9,7 +9,7 @@ export async function fetchPersonalInfo(uuid) {
     cache: "no-store",
   });
   if (!res.ok) return {};
-  let data = await res.json();
+  let data = await res.json().catch(() => ({}));
 
   return data.user || {};
 }

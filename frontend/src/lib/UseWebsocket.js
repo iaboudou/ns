@@ -34,7 +34,7 @@ export const WebSocketProvider = ({ children }) => {
         const resp = await fetch(`/api/getpersonalinfo`, {
           credentials: "include",
         });
-        const res = await resp.json();
+        const res = await resp.json().catch(() => ({}));
         if (res.user) setMyInfo(res.user);
       } catch {}
     };

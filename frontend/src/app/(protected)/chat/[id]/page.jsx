@@ -29,7 +29,7 @@ export default function Page() {
             credentials: "include",
           },
         );
-        const res = await resp.json();
+        const res = await resp.json().catch(() => ({}));
         if (ignore) return;
 
         if (

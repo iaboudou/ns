@@ -23,6 +23,7 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 		"/api/manage-follow":          handler.Cntrlrs.ManageFollow,
 		"/api/getUsers":               handler.Cntrlrs.GetOtherUsers,
 		"/api/isfollowexist":          handler.Cntrlrs.IsfollowExist,
+		"/pics/":                      handler.Cntrlrs.ServePictures,
 	}
 
 	for path, h := range routes {
@@ -42,7 +43,6 @@ func Routes(mux *http.ServeMux, handler *Handler) {
 	ws := map[string]http.HandlerFunc{
 		"/ws":         handler.Cntrlrs.WebsocketHandler,
 		"/hassession": handler.Cntrlrs.HasSession,
-		"/pics/":      handler.Cntrlrs.ServePictures,
 	}
 	for path, h := range ws {
 		mux.HandleFunc(path, handler.CORSMiddleware(h))

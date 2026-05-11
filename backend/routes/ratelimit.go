@@ -26,7 +26,7 @@ func (h *Handler) RateLimit(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// reinitialize the ratelimiter if 20 sec passed
+		// reinitialize the ratelimiter if 50 sec passed
 		if time.Since(rl.LastTime) > 50*time.Second {
 			rl.Counter = 0
 		}

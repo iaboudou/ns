@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"rtf/models"
 	"rtf/help"
+	"rtf/models"
 )
 
 // create comments handler

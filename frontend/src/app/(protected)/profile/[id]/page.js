@@ -38,7 +38,8 @@ export default function ProfilePage() {
     if (!user?.id) return;
   }, [section, user?.id]);
 
-  const handleFollow = async () => {
+  const handleFollow = async (e) => {
+    e.preventDefault()
     if (!user?.id) return;
     const message = await FollowUser(user.id);
     if (!message) return;
@@ -47,7 +48,9 @@ export default function ProfilePage() {
       setInteractionStatus("following");
       setUser((prev) => ({ ...prev, is_freind: true }));
     } else if (message === "request have been sent") {
-      window.location.reload();
+      // window.location.reload();
+      setInteractionStatus("requested");
+    // router.replace(window.location.pathname)
     } else if (
       message === "follow deleted" ||
       message === "follow request deleted"

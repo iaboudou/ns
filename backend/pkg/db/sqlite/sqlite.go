@@ -329,6 +329,18 @@ func (r *Repo) SwitchAccountPrivacyinDB(userID string) error {
 		return er
 	}
 
+	// if now public, accept all pending follow requests
+	var isPublic bool
+	err := r.Db.QueryRow("SELECT account_privacy FROM users WHERE id = ?", userID).Scan(&isPublic)
+	if err == nil && isPublic {
+		_, _ = r.Db.Exec("UPDATE followers SET status = 'accepted' WHERE following_id = ? AND status = 'pending'", userID)
+		_, _ = r.Db.Exec(`
+			DELETE FROM notifications 
+			WHERE type = 'follow_request' 
+			AND id IN (SELECT notification_id FROM notification_users WHERE user_id = ?)
+		`, userID)
+	}
+
 	return nil
 }
 

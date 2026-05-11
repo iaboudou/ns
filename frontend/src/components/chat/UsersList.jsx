@@ -33,7 +33,7 @@ export default function UsersList() {
         },
       );
 
-      const res = await resp.json();
+      const res = await resp.json().catch(() => ({}));
 
       if (res.code !== 200) {
         alert(res.message);
@@ -209,7 +209,7 @@ async function alreadyfollowhim(receiver) {
     method: "GET",
     credentials: "include",
   });
-  const data = await res?.json();
+  const data = await res?.json().catch(() => ({}));
   if (!res.ok) {
     return null;
   }

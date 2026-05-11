@@ -83,9 +83,9 @@ export default function ProfilePage() {
             <Link href={`/profile/${u.id}`} className={styles.userListItem}>
               {u.profile_image
                 ? <img
-                    src={`/pics/${u.profile_image}`}
-                    className={styles.smallAvatar}
-                  />
+                  src={`/pics/${u.profile_image}`}
+                  className={styles.smallAvatar}
+                />
                 : <User className={styles.placeholderIcon} />}
               <span className={styles.userName}>
                 {u.firstname} {u.lastname}
@@ -108,7 +108,7 @@ export default function ProfilePage() {
                           notif: { type: "follow_request", sender_id: u.id },
                         });
                       })
-                      .catch(() => {})
+                      .catch(() => { })
                   }
                 >
                   Accept
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                           notif: { type: "follow_request", sender_id: u.id },
                         });
                       })
-                      .catch(() => {})
+                      .catch(() => { })
                   }
                 >
                   Reject
