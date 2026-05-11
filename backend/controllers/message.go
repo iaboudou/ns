@@ -8,6 +8,7 @@ import (
 
 	"rtf/models"
 	"rtf/pkg/db/sqlite"
+	"unicode/utf8"
 )
 
 func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
@@ -48,7 +49,7 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 		return errors.New("message is empty")
 	}
 
-	if len(msg.Content) > 200 {
+	if utf8.RuneCountInString(msg.Content) > 200 {
 		return errors.New("message is too long")
 	}
 
@@ -143,7 +144,7 @@ func GroupChat(clients map[string][]*models.Client, db *sql.DB, msg models.Messa
 		return errors.New("message is empty")
 	}
 
-	if len(msg.Content) > 200 {
+	if utf8.RuneCountInString(msg.Content) > 200 {
 		return errors.New("message is too long")
 	}
 

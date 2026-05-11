@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"unicode/utf8"
 	"rtf/models"
 
 	"github.com/gofrs/uuid/v5"
@@ -26,7 +27,7 @@ func HashPassword(password string) (string, error) {
 
 // check if the post content is valid
 func ArePostInfosCorrect(post models.Post) error {
-	if len(post.Content) > 600 {
+	if utf8.RuneCountInString(post.Content) > 600 {
 		return errors.New("post too large")
 	}
 	if len(post.Content) == 0 && len(post.ImageURL) == 0 {
@@ -40,7 +41,7 @@ func IsvalidComment(comment models.Comment) bool {
 	if len(comment.ImageURL) > 0 && len(comment.Content) == 0 {
 		return true
 	}
-	return len(comment.Content) <= 500 && len(comment.Content) > 0
+	return utf8.RuneCountInString(comment.Content) <= 500 && utf8.RuneCountInString(comment.Content) > 0
 }
 
 // this function save a file in the pics folder and return its new name that was generated randomly

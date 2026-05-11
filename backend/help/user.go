@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"unicode/utf8"
 	"rtf/config"
 )
 
@@ -76,7 +77,7 @@ func CanInsertUser(user *U) error {
 	}
 	user.Gender = g
 
-	if len(user.About) > 70 {
+	if utf8.RuneCountInString(user.About) > 70 {
 		return fmt.Errorf("About me max 70 chars")
 	}
 

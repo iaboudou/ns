@@ -154,12 +154,31 @@
 .content {
   height: 100%;
   min-height: 0;
-  overflow: hidden;
+  overflow: auto;
   padding: 28px;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 }
+
+
+/*
+
+.down {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.content {
+  padding: 28px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+*/
 
 .popupOverlay {
   position: fixed;
