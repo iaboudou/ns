@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import styles from "@/app/(protected)/chat/[id]/chat.module.css";
+import groupChatStyles from "./group-chat-overrides.module.css";
 import { useState, useEffect, useRef } from "react";
 import { useWebSocket } from "@/lib/UseWebsocket";
 
@@ -110,20 +111,13 @@ export default function GroupChat() {
   ];
 
   return (
-    <div className={styles.chatContainer}>
-      <div className={styles.chatHeader}>
-        {groupInfo
-          ? <>
-              <span className={styles.headerName}>{groupInfo.title}</span>
-              <span className={styles.headerNick}>
-                {" "}
-                ({groupInfo.members} members)
-              </span>
-            </>
-          : `Loading group chat...`}
-      </div>
-
-      <div className={styles.messagesArea} ref={scrollRef}>
+    <div
+      className={`${styles.chatContainer} ${groupChatStyles.chatContainer}`}
+    >
+      <div
+        className={`${styles.messagesArea} ${groupChatStyles.messagesArea}`}
+        ref={scrollRef}
+      >
         {hasMore && (
           <button className={styles.loadMore} onClick={handleLoadMore}>
             Load older messages

@@ -1,9 +1,9 @@
 .groupsWrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  gap: 0;
+  min-height: 100vh;
   background: #0a0a0f;
-  overflow: hidden;
 }
 
 .tabs {
@@ -13,8 +13,6 @@
   padding: 0 24px;
   border-bottom: 1px solid #2a1f0f;
   background: #0e0c14;
-  flex-shrink: 0;
-  z-index: 20;
 }
 
 .tabButton {
@@ -27,10 +25,7 @@
   text-decoration: none;
   padding: 14px 18px 12px;
   border-bottom: 2px solid transparent;
-  transition:
-    color 0.2s,
-    border-color 0.2s;
-  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .tabButton:hover {
@@ -42,13 +37,180 @@
   color: #c8892a;
   border-bottom-color: #c8892a;
 }
-
 .content {
-  flex: 1;
+  padding: 28px 24px;
   display: flex;
   flex-direction: column;
-  min-height: 0;
   overflow-y: auto;
+  gap: 24px;
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+
+.content::-webkit-scrollbar {
+  display: none;
+}
+
+.groupsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.groupCard {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #2a1f0f;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  background-color: #0e0c14;
+  background-image: repeating-linear-gradient(
+      135deg,
+      #13110a 0px,
+      #13110a 1px,
+      transparent 1px,
+      transparent 18px
+    ),
+    linear-gradient(to bottom, #1a1410, #0e0c14);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.groupCard:hover {
+  border-color: #c8892a;
+  transform: translateY(-4px);
+  box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(200, 137, 42, 0.15);
+}
+
+.groupCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba(10, 8, 15, 0.6) 60%,
+    rgba(10, 8, 15, 0.95) 100%
+  );
+  z-index: 1;
+}
+
+.groupCard::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(200, 137, 42, 0.15);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+  transition: border-color 0.2s;
+}
+
+.groupCard:hover::after {
+  border-color: rgba(200, 137, 42, 0.35);
+}
+
+.groupCard h3 {
+  position: relative;
+  z-index: 3;
+  font-family: "Cinzel", serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e8e0cc;
+  letter-spacing: 0.06em;
+  margin: 0;
+  padding: 0 14px 4px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.groupCard p {
+  position: relative;
+  z-index: 3;
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 12px;
+  color: #9d8ec7;
+  margin: 0;
+  padding: 0 14px 14px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.createGroupCard {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px dashed #2a1f0f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  background: #0e0c14;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.createGroupCard:hover {
+  border-color: #c8892a;
+  background: #13110a;
+  transform: translateY(-4px);
+}
+
+.createGroupCard::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(200, 137, 42, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+  transition: border-color 0.2s;
+}
+
+.createGroupCard:hover::after {
+  border-color: rgba(200, 137, 42, 0.3);
+}
+
+.createGroupIcon {
+  font-size: 28px;
+  color: #c8892a;
+  opacity: 0.7;
+  z-index: 1;
+  line-height: 1;
+}
+
+.createGroupLabel {
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6b5a3e;
+  z-index: 1;
+  transition: color 0.2s;
+}
+
+.createGroupCard:hover .createGroupLabel {
+  color: #c8892a;
 }
 
 .form {
@@ -60,7 +222,6 @@
   flex-direction: column;
   gap: 16px;
   max-width: 480px;
-  margin: 28px 24px;
 }
 
 .formGroup {
@@ -92,6 +253,18 @@
   font-style: italic;
 }
 
+.groupError {
+  font-family: "Crimson Text", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: #8b1a1a;
+  padding: 8px 12px;
+  background: rgba(139, 26, 26, 0.08);
+  border: 1px solid rgba(139, 26, 26, 0.25);
+  border-radius: 6px;
+  margin: 0;
+}
+
 .primaryButton {
   padding: 12px;
   background: #c8892a;
@@ -104,9 +277,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    transform 0.1s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .primaryButton:hover {
@@ -117,9 +288,135 @@
   transform: scale(0.97);
 }
 
+.loadMoreBtn {
+  align-self: center;
+  padding: 10px 28px;
+  background: transparent;
+  border: 1px solid #2a1f0f;
+  border-radius: 6px;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #9d8ec7;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.loadMoreBtn:hover {
+  color: #c8892a;
+  border-color: #c8892a;
+}
+
+.loadMoreBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.form input[type="file"] {
+  width: 100%;
+  background: #13110a;
+  border: 1px solid #2a1f0f;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: "Crimson Text", serif;
+  font-size: 13px;
+  color: #6b5a3e;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.form input[type="file"]:hover {
+  border-color: #c8892a;
+}
+
+.form input[type="file"]::file-selector-button {
+  background: #13110a;
+  border: 1px solid #2a1f0f;
+  border-radius: 4px;
+  padding: 6px 14px;
+  margin-right: 12px;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c8892a;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form input[type="file"]::file-selector-button:hover {
+  background: #1a160d;
+  border-color: #c8892a;
+  color: #e8e0cc;
+}
+
+.inviteActions {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+  padding: 0 14px 14px;
+}
+
+.acceptBtn {
+  flex: 1;
+  padding: 7px 0;
+  background: rgba(200, 137, 42, 0.15);
+  border: 1px solid #c8892a;
+  border-radius: 4px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c8892a;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.acceptBtn:hover {
+  background: #c8892a;
+  color: #0a0a0f;
+}
+
+.rejectBtn {
+  flex: 1;
+  padding: 7px 0;
+  background: rgba(139, 26, 26, 0.1);
+  border: 1px solid rgba(139, 26, 26, 0.4);
+  border-radius: 4px;
+  font-family: "Cinzel", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8b1a1a;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.rejectBtn:hover {
+  background: #8b1a1a;
+  color: #e8e0cc;
+}
+
 .loadMoreTrigger {
   height: 40px;
   width: 100%;
+}
+
+.input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+.input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(1) saturate(2) hue-rotate(10deg);
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 .eventForm {
@@ -135,24 +432,8 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 640px) {
-  .groupsWrapper {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .content {
-    padding-bottom: 80px;
-  }
-
-  .tabs {
-    justify-content: flex-start;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 0 16px;
-  }
-
-  .tabs::-webkit-scrollbar {
-    display: none;
-  }
+.eventForm .formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }

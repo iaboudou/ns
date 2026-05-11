@@ -1,13 +1,17 @@
 .groupsList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(clamp(150px, 20vw, 260px), 1fr)
+  );
+  gap: clamp(10px, 1.8vw, 20px);
   width: 100%;
+  min-width: 0; 
 }
-
 .groupCard {
   position: relative;
   aspect-ratio: 3 / 4;
+  min-height: clamp(220px, 30vw, 360px);
   border-radius: 10px;
   overflow: hidden;
   border: 0.5px solid rgba(201, 168, 76, 0.18);
@@ -16,10 +20,7 @@
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   background-size: cover;
   background-position: center;
   box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.5);
@@ -28,8 +29,7 @@
 .groupCard:hover {
   border-color: rgba(201, 168, 76, 0.55);
   transform: translateY(-4px);
-  box-shadow:
-    2px 8px 24px rgba(0, 0, 0, 0.65),
+  box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.65),
     0 0 12px rgba(201, 168, 76, 0.12);
 }
 
@@ -100,6 +100,7 @@
 .createGroupCard {
   position: relative;
   aspect-ratio: 3 / 4;
+  min-height: clamp(220px, 30vw, 360px);
   border-radius: 10px;
   overflow: hidden;
   border: 1px dashed rgba(201, 168, 76, 0.25);
@@ -110,10 +111,7 @@
   gap: 10px;
   cursor: pointer;
   background: #1a1814;
-  transition:
-    border-color 0.2s,
-    background 0.2s,
-    transform 0.2s;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
   box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.4);
 }
 
@@ -185,9 +183,7 @@
   text-transform: uppercase;
   color: #c8892a;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .groupCard .primaryButton:hover,
@@ -196,9 +192,21 @@
   color: #0a0a0f;
 }
 
+@media (max-width: 1024px) {
+  .groupsList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .groupsList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 600px) {
   .groupsList {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
@@ -209,5 +217,11 @@
   .groupCard p {
     font-size: 11px;
     padding: 0 10px 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .groupsList {
+    grid-template-columns: 1fr;
   }
 }

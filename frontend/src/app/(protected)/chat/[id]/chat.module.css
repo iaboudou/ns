@@ -2,8 +2,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100%;
-  background: #0a0a0f;
+  min-height: 0;
+  max-height: 100vh;  
+  background: #0f0a0a;
   position: relative;
   overflow: hidden;
 }
@@ -293,6 +294,6 @@
 @media (max-width: 640px) {
   .chatContainer {
     height: 100%;
-    padding-bottom: 80px;
+    padding-bottom: 300px;
   }
 }

@@ -1,0 +1,13 @@
+.chatContainer {
+  min-height: 0;
+}
+
+.messagesArea {
+  min-height: 0;
+}
+
+@media (max-width: 640px) {
+  .chatContainer {
+    padding-bottom: 0;
+  }
+}
