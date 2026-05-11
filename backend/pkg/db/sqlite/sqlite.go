@@ -87,7 +87,7 @@ func (r *Repo) InsertUserDB(user help.U) error {
 	return nil
 }
 
-// this function is to check if the user already exists 
+// this function is to check if the user already exists
 func (r *Repo) IsUserAlreadyExist(user *help.U) error {
 	var exist int
 	err := r.Db.QueryRow("SELECT 1 FROM users WHERE firstname=? OR lastname=? OR email=?", user.Firstname, user.Lastname, user.Email).Scan(&exist)
@@ -227,9 +227,15 @@ func (r *Repo) InsertPostDB(userID string, post models.Post) (models.Post, error
 	now := time.Now()
 
 	groupID := post.GroupID
-	if groupID == "" {
-		groupID = ""
+
+	if groupID != "" {
+		var exist int
+		err = r.Db.QueryRow("SELECT 1 FROM groups WHERE id = ? ", groupID).Scan(&exist)
+		if err != nil || err == sql.ErrNoRows {
+			return models.Post{}, errors.New("SERVER ERROR")
+		}
 	}
+
 	_, err = r.Db.Exec(
 		`INSERT INTO posts (
 			id, user_id, content, image_url, created_at, privacy, allowed_users, group_id

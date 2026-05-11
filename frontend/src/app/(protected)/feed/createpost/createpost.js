@@ -42,6 +42,10 @@ export default function CreatePost({ CREATEPOST }) {
           ...prev,
           nbrofPosts: prev.nbrofPosts + 1,
         }));
+      }else {
+        if (path.includes('groups')){
+          alert("group not exist")
+        }
       }
       setState((prev) => ({
         ...prev,

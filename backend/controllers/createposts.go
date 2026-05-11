@@ -73,7 +73,7 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 	// insert the post into the DB
 	post, er = c.DB.InsertPostDB(userID, post)
 	if er != nil {
-		http.Error(w, "Server Error", http.StatusInternalServerError)
+		help.RespondNotOK(w, "badrequest")
 		return
 	}
 	post.NumberOfComments = 0

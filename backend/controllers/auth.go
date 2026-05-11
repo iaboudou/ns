@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -20,7 +21,7 @@ func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseMultipartForm(10 << 20) // limit size of form maximum is 10 MB
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		help.Respond(w, &models.Response{
 			Code:    http.StatusBadRequest,
@@ -88,21 +89,23 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseMultipartForm(10 << 20)
+	var req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
+		help.RespondNotOK(w, "badrequest")
+
 		help.Respond(w, &models.Response{
 			Code:    http.StatusBadRequest,
-			Message: "invalid file image",
+			Message: "invalid credential",
 		})
 		return
 	}
 
-	infos := &help.U{
-		Email:    r.FormValue("email"),
-		Password: r.FormValue("password"),
-	}
-
-	userID, er := c.DB.IsUserExist(infos.Email, infos.Password)
+	userID, er := c.DB.IsUserExist(req.Email, req.Password)
 	if er != nil {
 		help.RespondNotOK(w, "badrequest")
 
@@ -136,7 +139,6 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	help.RespondOK(w, user, "user")
 }
 
-// this function does handle the logout
 func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
