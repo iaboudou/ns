@@ -1,7 +1,6 @@
+import { BASE_URL } from "@/config.mjs";
 const BASE =
-  typeof window === "undefined"
-    ? "http://backend:4001/api/groups"
-    : "/api/groups";
+  typeof window === "undefined" ? `${BASE_URL}/api/groups` : "/api/groups";
 
 export async function GetGroups(tab, search = "", lastId = "", lastTime = "") {
   const resp = await fetch(

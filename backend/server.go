@@ -49,7 +49,7 @@ func main() {
 		Addr:    "0.0.0.0:4001",
 		Handler: mux,
 	}
-	fmt.Println("http://backend:4001")
+	fmt.Println("http://localhost:4001")
 
 	log.Fatal(server.ListenAndServe())
 }

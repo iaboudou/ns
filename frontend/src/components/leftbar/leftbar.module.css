@@ -4,7 +4,6 @@
   flex-direction: column;
   align-items: center;
   padding: 28px 0;
-  /* background: #0a0a0f; */
   border-right: 1px solid #2a1f0f;
   height: 100%;
 }
@@ -25,7 +24,7 @@
   width: 56px;
   height: 56px;
   border-radius: 6px;
-  color: #6b5a3e;
+  color: #a89b85;
   text-decoration: none;
   background: none;
   border: 1px solid transparent;
@@ -57,25 +56,25 @@
   position: absolute;
   top: 6px;
   right: 6px;
-  min-width: 16px;
-  height: 16px;
+  min-width: 17px;
+  height: 17px;
   background: #8b1a1a;
   border-radius: 20px;
   font-family: "Cinzel", serif;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   color: #e8e0cc;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 3px;
+  padding: 0 4px;
   line-height: 1;
   box-shadow: 0 0 6px rgba(139, 26, 26, 0.6);
 }
 
 .buttonLink:last-child {
   margin-top: auto;
-  color: #3a2e1e;
+  color: #6b5a3e;
 }
 
 .buttonLink:last-child:hover {

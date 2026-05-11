@@ -11,7 +11,7 @@ export default function DisplayNewGroups({ group, setGroups }) {
           ? {
               backgroundImage: `url(/pics/${group.img})`,
             }
-          : { backgroundImage: `url(/pics/pub.png)` }
+          : { backgroundImage: `url(/static/pub.png)` }
       }
     >
       <h3>{group.title}</h3>

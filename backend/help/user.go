@@ -83,9 +83,12 @@ func CanInsertUser(user *U) error {
 
 	parsedDOB, _ := time.Parse("2006-01-02", user.Birthday)
 	now := time.Now()
-	age := int(now.Sub(parsedDOB).Hours() / 24 / 365.25)
+	age := now.Year() - parsedDOB.Year()
+	if now.Month() < parsedDOB.Month() || (now.Month() == parsedDOB.Month() && now.Day() < parsedDOB.Day()) {
+		age--
+	}
 
-	if age < 15 || age > 200 {
+	if age <= 15 || age >= 200 {
 		return fmt.Errorf("you can't use this website")
 	}
 

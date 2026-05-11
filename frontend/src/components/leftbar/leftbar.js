@@ -60,55 +60,55 @@ export default function Leftbar() {
   };
 
   return (
-      <div className={styles.barElementContainer}>
-        <Link
-          href="/"
-          className={styles.buttonLink}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          title="Home"
-        >
-          <Home />
-        </Link>
+    <div className={styles.barElementContainer}>
+      <Link
+        href="/"
+        className={styles.buttonLink}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        title="Home"
+      >
+        <Home />
+      </Link>
 
-        <Link href="/groups/joins" className={styles.buttonLink} title="Groups">
-          <Users />
-        </Link>
+      <Link href="/groups/joins" className={styles.buttonLink} title="Groups">
+        <Users />
+      </Link>
 
-        <Link href="/chat" className={styles.buttonLink} title="Chat">
-          <MessageSquare />
-        </Link>
+      <Link href="/chat" className={styles.buttonLink} title="Chat">
+        <MessageSquare />
+      </Link>
 
-        <Link
-          href="/notifications"
-          className={styles.buttonLink}
-          title="Notifications"
-          onClick={() => {
-            updateLastseen()
-              .then(() => {
-                port.postMessage({ type: "notifs_seen" });
-              })
-              .catch(console.error);
-          }}
-        >
-          <Bell />
-          {unreadNotifCount > 0 && (
-            <div className={styles.NOTIF}>{unreadNotifCount}</div>
-          )}
-        </Link>
+      <Link
+        href="/notifications"
+        className={styles.buttonLink}
+        title="Notifications"
+        onClick={() => {
+          updateLastseen()
+            .then(() => {
+              port.postMessage({ type: "notifs_seen" });
+            })
+            .catch(console.error);
+        }}
+      >
+        <Bell />
+        {unreadNotifCount > 0 && (
+          <div className={styles.NOTIF}>{unreadNotifCount}</div>
+        )}
+      </Link>
 
-        <Link href="/profile/me" className={styles.buttonLink} title="Profile">
-          <CircleUser />
-        </Link>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className={styles.buttonLink}
-          title="Logout"
-          aria-label="Logout"
-          disabled={loading}
-        >
-          {loading ? "..." : <LogOut />}
-        </button>
-      </div>
+      <Link href="/profile/me" className={styles.buttonLink} title="Profile">
+        <CircleUser />
+      </Link>
+      <button
+        type="button"
+        onClick={handleLogout}
+        className={styles.buttonLink}
+        title="Logout"
+        aria-label="Logout"
+        disabled={loading}
+      >
+        {loading ? "..." : <LogOut />}
+      </button>
+    </div>
   );
 }

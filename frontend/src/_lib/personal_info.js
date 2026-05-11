@@ -1,4 +1,5 @@
-const BASE = typeof window === "undefined" ? "http://backend:4001" : "";
+import { BASE_URL } from "@/config.mjs";
+const BASE = typeof window === "undefined" ? BASE_URL : "";
 
 // get personal info
 export async function fetchPersonalInfo(uuid) {

@@ -17,10 +17,14 @@ export function ValidateInput(formData) {
   if (!email || !password || !firstname || !lastname || !dob || !gender)
     return ["all required fields", false];
 
-  const age = Math.floor(
-    (Date.now() - new Date(dob + "T00:00:00").getTime()) /
-      (1000 * 60 * 60 * 24 * 365.25),
-  );
+  // 
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     return ["Invalid email address", false];
@@ -30,8 +34,10 @@ export function ValidateInput(formData) {
     return ["First name must be 2–12 letters", false];
   if (!/^[a-zA-Z]{2,12}$/.test(lastname))
     return ["Last name must be 2–12 letters", false];
-  if (isNaN(new Date(dob).getTime())) return ["Invalid date", false];
-  if (age < 15 || age > 200) return ["You can't use this website", false];
+  
+  if (isNaN(birthDate.getTime())) return ["Invalid date", false];
+  if (age <= 15 || age >= 200) return ["You must be between 16 and 199 years old", false];
+
   if (!["male", "female"].includes(gender.toLowerCase()))
     return ["Gender must be male or female", false];
   if (nickname && !/^[a-zA-Z\s]{2,30}$/.test(nickname))

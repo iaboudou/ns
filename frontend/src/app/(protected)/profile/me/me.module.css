@@ -1,28 +1,28 @@
 .FATHER {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   background: #0a0a0f;
   color: #e8e0cc;
   font-family: "Crimson Text", "Georgia", serif;
+  overflow: hidden;
 }
 
 .pageWrapper {
   background: #0e0c14;
   border-bottom: 1px solid #2a1f0f;
+  flex-shrink: 0;
 }
 
 .coverPhoto {
   height: 120px;
   background:
     linear-gradient(to bottom, rgba(10, 8, 15, 0.3), rgba(10, 8, 15, 0.8)),
-    repeating-linear-gradient(
-      45deg,
+    repeating-linear-gradient(45deg,
       #13110a 0px,
       #13110a 2px,
       transparent 2px,
-      transparent 14px
-    );
+      transparent 14px);
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
@@ -32,7 +32,7 @@
 }
 
 .infoText,
-.coverPhoto > button {
+.coverPhoto>button {
   font-family: "Cinzel", serif;
   font-size: 10px;
   font-weight: 700;
@@ -51,8 +51,9 @@
     color 0.2s,
     border-color 0.2s;
 }
+
 .infoText:hover,
-.coverPhoto > button:hover {
+.coverPhoto>button:hover {
   color: #c8892a;
   border-color: #c8892a;
 }
@@ -111,7 +112,7 @@
 
 .profileBio {
   font-family: "Crimson Text", serif;
-  font-size: 14px;
+  font-size: 16px;
   color: #e8e0cc;
   margin: 0;
   line-height: 1.6;
@@ -136,6 +137,7 @@
     background 0.2s;
   white-space: nowrap;
 }
+
 .toggleBtn:hover {
   color: #c8892a;
   border-color: #c8892a;
@@ -165,12 +167,13 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #9d8ec7;
+  color: #a89b85;
   cursor: pointer;
   transition:
     color 0.2s,
     border-color 0.2s;
 }
+
 .navBtn:hover {
   color: #c8892a;
 }
@@ -183,6 +186,16 @@
 .MAIN {
   padding: 28px;
   flex: 1;
+  overflow-y: auto;
+}
+
+.MAIN::-webkit-scrollbar {
+  width: 4px;
+}
+
+.MAIN::-webkit-scrollbar-thumb {
+  background: #2a1f0f;
+  border-radius: 2px;
 }
 
 .userListContainer {
@@ -201,6 +214,7 @@
   border-radius: 8px;
   transition: border-color 0.2s;
 }
+
 .userWrapper:hover {
   border-color: #3d2e1a;
 }
@@ -226,7 +240,7 @@
 .placeholderIcon {
   width: 36px;
   height: 36px;
-  color: #3a2e1e;
+  color: #5c4d36;
   flex-shrink: 0;
 }
 
@@ -244,8 +258,8 @@
 .noData {
   font-family: "Crimson Text", serif;
   font-style: italic;
-  font-size: 14px;
-  color: #9d8ec7;
+  font-size: 15px;
+  color: #a89b85;
   padding: 20px 0;
 }
 
@@ -270,6 +284,7 @@
     transform 0.1s;
   border: none;
 }
+
 .actionBtn:active {
   transform: scale(0.96);
 }
@@ -278,6 +293,7 @@
   background: #c8892a;
   color: #0a0a0f;
 }
+
 .acceptBtn:hover {
   background: #d4972e;
 }
@@ -287,6 +303,7 @@
   border: 1px solid rgba(139, 26, 26, 0.4);
   color: #8b1a1a;
 }
+
 .rejectBtn:hover {
   background: rgba(139, 26, 26, 0.1);
   border-color: #8b1a1a;
@@ -299,7 +316,7 @@
   justify-content: center;
   gap: 16px;
   padding: 60px 0;
-  color: #9d8ec7;
+  color: #a89b85;
 }
 
 .privateMessage h2 {
@@ -313,4 +330,24 @@
 
 .lockIcon {
   color: #c8892a;
+}
+
+@media (max-width: 640px) {
+  .MAIN {
+    padding: 16px 16px 80px;
+  }
+
+  .profileAvatar {
+    width: 72px;
+    height: 72px;
+    margin-top: -36px;
+  }
+
+  .profileName {
+    font-size: 18px;
+  }
+
+  .profileInfo {
+    padding: 0 16px 16px;
+  }
 }

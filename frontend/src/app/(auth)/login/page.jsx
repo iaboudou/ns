@@ -109,7 +109,7 @@ export default function Login() {
         </div>
       </form>
 
-      <img src="/pics/sword.png" alt="sword" />
+      <img src="/static/sword.png" alt="sword" />
     </div>
   );
 }

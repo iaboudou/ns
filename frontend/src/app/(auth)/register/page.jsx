@@ -162,7 +162,7 @@ export default function RegisterPage() {
         </div>
       </form>
 
-      <img src="/pics/scroll.png" alt="scroll" />
+      <img src="/static/scroll.png" alt="scroll" />
     </div>
   );
 }

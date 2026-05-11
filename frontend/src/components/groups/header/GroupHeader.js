@@ -13,7 +13,7 @@ export default function GroupHeader({ group, id }) {
       {/* Image */}
       <img
         className={styles.groupImage}
-        src={group.img ? `/pics/${group.img}` : "/pics/pub.png"}
+        src={group.img ? `/pics/${group.img}` : "/static/pub.png"}
         alt={group.title}
       />
 

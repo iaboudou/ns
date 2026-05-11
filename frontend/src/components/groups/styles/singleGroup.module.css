@@ -1,7 +1,7 @@
 .mainWrapper {
   display: flex;
   flex-direction: column;
-  min-height: 70vh;
+  min-height: 100%;
   background: #0a0a0f;
   color: #e8e0cc;
   font-family: "Crimson Text", "Georgia", serif;
@@ -13,6 +13,10 @@
   align-items: center;
   background: #0e0c14;
   border-bottom: 1px solid #2a1f0f;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .groupInfo {
@@ -20,6 +24,8 @@
   align-items: flex-start;
   gap: 24px;
   padding: 28px 28px 20px;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .groupImage {
@@ -31,13 +37,11 @@
   flex-shrink: 0;
   background-color: #13110a;
   background-image:
-    repeating-linear-gradient(
-      135deg,
+    repeating-linear-gradient(135deg,
       #13110a 0px,
       #13110a 1px,
       transparent 1px,
-      transparent 18px
-    ), linear-gradient(to bottom, #1a1410, #0e0c14);
+      transparent 18px), linear-gradient(to bottom, #1a1410, #0e0c14);
 }
 
 .groupMeta {
@@ -115,6 +119,7 @@
   justify-content: center;
   padding: 0 20px;
   border-top: 1px solid #2a1f0f;
+  width: 100%;
 }
 
 .groupFeedLink {
@@ -139,10 +144,14 @@
 
 .down {
   flex: 1;
+  width: 100%;
 }
 
 .content {
   padding: 28px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .popupOverlay {
@@ -177,17 +186,29 @@
     padding: 20px 16px 16px;
   }
 
+  .groupInfo h1 {
+    font-size: 18px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
   .groupActions {
     justify-content: center;
   }
 
   .groupFeedBtn {
+    justify-content: flex-start;
     overflow-x: auto;
     scrollbar-width: none;
+    padding: 0 16px;
   }
 
   .groupFeedBtn::-webkit-scrollbar {
     display: none;
+  }
+
+  .content {
+    padding: 16px;
   }
 }
 

@@ -13,7 +13,7 @@ export default function DisplayMyGroup({ group }) {
               backgroundImage: `url(/pics/${group.img})`,
             }
           : {
-              backgroundImage: `url(/pics/pub.png)`,
+              backgroundImage: `url(/static/pub.png)`,
             }
       }
     >

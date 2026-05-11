@@ -87,7 +87,7 @@
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.3em;
-  color: rgba(100, 70, 20, 0.45);
+  color: rgba(80, 50, 10, 0.55);
   pointer-events: none;
 }
 
@@ -110,25 +110,25 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(100, 70, 20, 0.35);
+  border: 2px solid rgba(100, 70, 20, 0.4);
   background: rgba(100, 70, 20, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(100, 70, 20, 0.5);
+  color: rgba(100, 70, 20, 0.6);
   flex-shrink: 0;
   filter: sepia(20%);
 }
 
 .IMAGEICON {
-  color: rgba(100, 70, 20, 0.5);
+  color: rgba(100, 70, 20, 0.6);
 }
 
 .userName {
   font-family: "Cinzel", serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  color: #3d2008;
+  color: #2e1a05;
   letter-spacing: 0.06em;
 }
 
@@ -158,12 +158,12 @@
 
 .textarea {
   width: 100%;
-  background: rgba(100, 70, 20, 0.06);
-  border: 1px dashed rgba(100, 70, 20, 0.3);
+  background: rgba(100, 70, 20, 0.08);
+  border: 1px dashed rgba(100, 70, 20, 0.35);
   border-radius: 2px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-family: "Crimson Text", serif;
-  font-size: 15px;
+  font-size: 16px;
   color: #2e1a05;
   outline: none;
   resize: none;
@@ -178,7 +178,7 @@
   border-color: rgba(100, 70, 20, 0.6);
 }
 .textarea::placeholder {
-  color: rgba(80, 50, 10, 0.4);
+  color: rgba(60, 40, 10, 0.5);
   font-style: italic;
 }
 
@@ -202,21 +202,21 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 6px 12px;
-  background: rgba(100, 70, 20, 0.08);
-  border: 1px solid rgba(100, 70, 20, 0.25);
+  padding: 8px 14px;
+  background: rgba(100, 70, 20, 0.1);
+  border: 1px solid rgba(100, 70, 20, 0.3);
   border-radius: 2px;
   cursor: pointer;
   transition: border-color 0.2s;
 }
 .fileLabel:hover {
-  border-color: rgba(100, 70, 20, 0.5);
+  border-color: rgba(100, 70, 20, 0.6);
 }
 
 .filename {
   font-family: "Crimson Text", serif;
-  font-size: 12px;
-  color: rgba(80, 50, 10, 0.6);
+  font-size: 13px;
+  color: #5a3a10;
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -224,19 +224,19 @@
 }
 
 .privacySelect {
-  background: rgba(100, 70, 20, 0.08);
-  border: 1px solid rgba(100, 70, 20, 0.25);
+  background: rgba(100, 70, 20, 0.1);
+  border: 1px solid rgba(100, 70, 20, 0.3);
   border-radius: 2px;
-  padding: 6px 12px;
+  padding: 8px 14px;
   font-family: "Crimson Text", serif;
-  font-size: 13px;
-  color: #3d2008;
+  font-size: 14px;
+  color: #2e1a05;
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s;
 }
 .privacySelect:focus {
-  border-color: rgba(100, 70, 20, 0.5);
+  border-color: rgba(100, 70, 20, 0.6);
 }
 
 .selectFriendInput {
@@ -249,22 +249,22 @@
 
 .searchInput {
   width: 100%;
-  background: rgba(100, 70, 20, 0.06);
-  border: 1px dashed rgba(100, 70, 20, 0.3);
+  background: rgba(100, 70, 20, 0.08);
+  border: 1px dashed rgba(100, 70, 20, 0.35);
   border-radius: 2px;
-  padding: 9px 14px;
+  padding: 10px 16px;
   font-family: "Crimson Text", serif;
-  font-size: 14px;
+  font-size: 15px;
   color: #2e1a05;
   outline: none;
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 .searchInput:focus {
-  border-color: rgba(100, 70, 20, 0.55);
+  border-color: rgba(100, 70, 20, 0.6);
 }
 .searchInput::placeholder {
-  color: rgba(80, 50, 10, 0.4);
+  color: rgba(60, 40, 10, 0.5);
   font-style: italic;
 }
 
@@ -277,18 +277,18 @@
 .NouserSelected {
   font-family: "Crimson Text", serif;
   font-style: italic;
-  font-size: 12px;
-  color: rgba(80, 50, 10, 0.45);
+  font-size: 13px;
+  color: #5a3a10;
 }
 
 .selecteduserscontainer {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(100, 70, 20, 0.12);
-  border: 1px solid rgba(100, 70, 20, 0.25);
+  background: rgba(100, 70, 20, 0.15);
+  border: 1px solid rgba(100, 70, 20, 0.3);
   border-radius: 20px;
-  padding: 3px 10px 3px 4px;
+  padding: 4px 12px 4px 5px;
 }
 
 .selecteduseravatar {
@@ -300,26 +300,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(100, 70, 20, 0.5);
+  color: rgba(100, 70, 20, 0.6);
 }
 
 .selecteduserscontainer span {
   font-family: "Crimson Text", serif;
-  font-size: 12px;
-  color: #3d2008;
+  font-size: 13px;
+  color: #2e1a05;
 }
 
 .selecteduserscontainer button {
   background: none;
   border: none;
-  color: rgba(80, 50, 10, 0.5);
+  color: #8b1a1a;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   padding: 0;
-  transition: color 0.2s;
+  transition: opacity 0.2s;
 }
 .selecteduserscontainer button:hover {
-  color: #8b1a1a;
+  opacity: 0.7;
 }
 
 .usersList {
@@ -338,7 +338,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 12px;
+  padding: 8px 14px;
   background: none;
   border: 1px solid transparent;
   border-radius: 2px;
@@ -350,30 +350,30 @@
   width: 100%;
 }
 .userItem:hover {
-  background: rgba(100, 70, 20, 0.1);
-  border-color: rgba(100, 70, 20, 0.25);
+  background: rgba(100, 70, 20, 0.12);
+  border-color: rgba(100, 70, 20, 0.35);
 }
 
 .activeUser {
-  background: rgba(100, 70, 20, 0.15);
-  border-color: rgba(139, 26, 26, 0.4);
+  background: rgba(100, 70, 20, 0.18);
+  border-color: rgba(139, 26, 26, 0.5);
 }
 
 .userAvatar {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
-  background: rgba(100, 70, 20, 0.1);
+  background: rgba(100, 70, 20, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(100, 70, 20, 0.5);
+  color: rgba(100, 70, 20, 0.6);
   flex-shrink: 0;
 }
 
 .userItem span {
   font-family: "Crimson Text", serif;
-  font-size: 14px;
-  color: #3d2008;
+  font-size: 15px;
+  color: #2e1a05;
 }

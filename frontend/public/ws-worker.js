@@ -32,7 +32,8 @@ self.addEventListener("connect", (e) => {
     switch (msg.type) {
       case "connect": {
         if (!socket) {
-          socket = new WebSocket("ws://localhost:4001/ws");
+          const host = self.location.hostname;
+          socket = new WebSocket(`ws://${host}:4001/ws`);
 
           socket.onopen = () => {
             pendingMessages.forEach((m) => socket.send(JSON.stringify(m)));
@@ -48,7 +49,7 @@ self.addEventListener("connect", (e) => {
               if (data.event === "leave")
                 onlineUsers = onlineUsers.filter((id) => id !== data.left);
               broadcast(data);
-            } catch (err) {}
+            } catch (err) { }
           };
 
           socket.onclose = () => {
@@ -58,7 +59,7 @@ self.addEventListener("connect", (e) => {
             broadcast({ event: "ws-close" });
           };
 
-          socket.onerror = (err) => {};
+          socket.onerror = (err) => { };
         }
         break;
       }

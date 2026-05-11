@@ -1,21 +1,24 @@
+import { BASE_URL } from "./src/config.mjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async rewrites() {
     return [
       {
         source: "/api/:path*",
-        destination: "http://backend:4001/api/:path*",
+        destination: `${BASE_URL}/api/:path*`,
       },
       {
         source: "/pics/:path*",
-        destination: "http://backend:4001/pics/:path*",
+        destination: `${BASE_URL}/pics/:path*`,
       },
       {
         source: "/hassession",
-        destination: "http://backend:4001/hassession",
+        destination: `${BASE_URL}/hassession`,
       },
     ];
   },
+  devIndicators: false,
 };
 
 export default nextConfig;

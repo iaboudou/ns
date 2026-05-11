@@ -100,6 +100,7 @@
 .followBtn:hover {
   background: #d4972e;
 }
+
 .followBtn:active {
   transform: scale(0.96);
 }

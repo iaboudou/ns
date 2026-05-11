@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/config.mjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Leftbar from "@/components/leftbar/leftbar";
@@ -12,7 +13,7 @@ export default async function ProtectedLayout({ children }) {
     redirect("/login");
   }
 
-  const res = await fetch(`http://backend:4001/hassession`, {
+  const res = await fetch(`${BASE_URL}/hassession`, {
     method: "GET",
     headers: { Cookie: `session_id=${session}` },
     cache: "no-store",

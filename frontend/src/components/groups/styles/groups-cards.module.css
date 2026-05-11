@@ -1,7 +1,8 @@
 .groupsList {
   display: grid;
-  grid-template-columns: repeat(4, 300px);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
 .groupCard {
@@ -19,7 +20,6 @@
     border-color 0.2s,
     transform 0.2s,
     box-shadow 0.2s;
-
   background-size: cover;
   background-position: center;
   box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.5);
@@ -194,4 +194,20 @@
 .askToJoinBtn:hover {
   background: #c8892a;
   color: #0a0a0f;
+}
+
+@media (max-width: 600px) {
+  .groupsList {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .groupCard h3 {
+    font-size: 11px;
+  }
+
+  .groupCard p {
+    font-size: 11px;
+    padding: 0 10px 10px;
+  }
 }

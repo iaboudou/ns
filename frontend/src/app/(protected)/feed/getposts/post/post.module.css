@@ -127,7 +127,7 @@
 
 .content {
   font-family: "Crimson Text", serif;
-  font-size: 15px;
+  font-size: 16px;
   color: #2e1a05;
   line-height: 1.75;
   letter-spacing: 0.02em;
@@ -151,15 +151,15 @@
   align-items: center;
   gap: 10px;
   padding-top: 10px;
-  border-top: 1px dashed rgba(100, 70, 20, 0.3);
+  border-top: 1px solid rgba(100, 70, 20, 0.2);
 }
 
 .actionBtn {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(100, 70, 20, 0.1);
-  border: 1px solid rgba(100, 70, 20, 0.25);
+  background: rgba(100, 70, 20, 0.08);
+  border: 1px solid rgba(100, 70, 20, 0.2);
   color: #5a3a10;
   font-family: "Cinzel", serif;
   font-size: 10px;
@@ -174,8 +174,8 @@
   text-transform: uppercase;
 }
 .actionBtn:hover {
-  background: rgba(100, 70, 20, 0.2);
-  border-color: rgba(100, 70, 20, 0.5);
+  background: rgba(100, 70, 20, 0.15);
+  border-color: rgba(100, 70, 20, 0.4);
 }
 
 .commentsSection {
