@@ -40,7 +40,6 @@ func USERDATA(r *http.Request) U {
 }
 
 func CanInsertUser(user *U) error {
-	//
 	user.Email = strings.TrimSpace(user.Email)
 	user.Firstname = strings.TrimSpace(user.Firstname)
 	user.Lastname = strings.TrimSpace(user.Lastname)

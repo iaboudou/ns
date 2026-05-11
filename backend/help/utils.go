@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
 	"strings"
 
 	"rtf/models"
@@ -16,7 +15,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// this function try hash the password with bcrypt , any error found will be returned
+// this function try hash the password with bcrypt, any error found will be returned
 func HashPassword(password string) (string, error) {
 	hashed, er := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if er != nil {
@@ -80,6 +79,7 @@ func IsPictureFormatCorrect(file multipart.File, header *multipart.FileHeader) b
 
 	//
 	allowedTypes := map[string]bool{
+		"image/jpg":  true,
 		"image/jpeg": true,
 		"image/png":  true,
 		"image/gif":  true,

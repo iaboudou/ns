@@ -1,3 +1,10 @@
+/**
+ * Handle login request function.
+ * 
+ * @param {email} email 
+ * @param {password} password 
+ * @returns {Promise<boolean>}
+ */
 export async function handleLogin(email, password) {
   const response = await fetch(`/api/login`, {
     method: "POST",
@@ -12,6 +19,12 @@ export async function handleLogin(email, password) {
   return true;
 }
 
+/**
+ * Validates user login input fields.
+ *
+ * @param {FormData} formData - Raw form data submitted by the user
+ * @returns {{ email: string, password: string } | null}
+ */
 export function isValidInput(formData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");

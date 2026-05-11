@@ -6,6 +6,7 @@ import (
 	"rtf/pkg/db/sqlite"
 )
 
+// this function is the start of our web socket
 func (c *Controller) RunBroker() {
 	clients := make(map[string][]*models.Client)
 	db := c.DB.Db

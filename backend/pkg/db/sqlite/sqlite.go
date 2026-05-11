@@ -87,6 +87,7 @@ func (r *Repo) InsertUserDB(user help.U) error {
 	return nil
 }
 
+// this function is to check if the user already exists 
 func (r *Repo) IsUserAlreadyExist(user *help.U) error {
 	var exist int
 	err := r.Db.QueryRow("SELECT 1 FROM users WHERE firstname=? OR lastname=? OR email=?", user.Firstname, user.Lastname, user.Email).Scan(&exist)
