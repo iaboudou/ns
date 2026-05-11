@@ -11,14 +11,13 @@ export default function DisplayGroupInvite({ group, setGroups }) {
     SendDecision(group.id, decision, "", group.invited_by)
       .then(() => {
         if (decision === "accepted")
-          alert(`you are now a member of ${group.title}`);
         setGroups((prev) => prev.filter((g) => g.id !== group.id));
         port.postMessage({
           type: "set_notif",
           notif: { type: "group_invite", sender_id: group.invited_by },
         });
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => console.error(err.message));
   };
 
   return (

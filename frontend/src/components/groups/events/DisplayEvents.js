@@ -41,7 +41,7 @@ export default function EventCard({ event, groupId }) {
 
     SendVote(event.id, groupId, newVote)
       .then(() => setVote(newVote))
-      .catch((err) => alert(err.message));
+      .catch((err) => console.error(err.message));
   };
 
   return (

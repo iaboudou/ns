@@ -17,11 +17,11 @@ export default function AreYouSure({ Message, groupId, setHoverTab }) {
             onClick={(e) => {
               e.preventDefault();
               Message === "delete group"
-                ? DeleteGroup(groupId).catch((err) => alert(err.message))
+                ? DeleteGroup(groupId).catch((err) => console.error(err.message))
                 : LeaveGroup(groupId).catch((err) => {
-                    alert(err.message);
-                    router.replace("/groups/joins");
-                  });
+                  console.error(err.message);
+                  router.refresh();
+                });
               router.replace("/groups/joins");
             }}
           >

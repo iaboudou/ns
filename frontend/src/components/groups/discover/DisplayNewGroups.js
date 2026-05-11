@@ -23,7 +23,7 @@ export default function DisplayNewGroups({ group, setGroups }) {
             .then(() =>
               setGroups((prev) => prev.filter((g) => g.id !== group.id)),
             )
-            .catch((err) => alert(err.message));
+            .catch((err) => console.error(err.message));
         }}
       >
         ask to join

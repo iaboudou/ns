@@ -25,7 +25,7 @@ export default async function handleFetchData(
       return Array.from(map.values());
     });
   } catch (err) {
-    if (err.message !== "not creator") alert(err.message);
+    if (err.message !== "not creator") console.error(err.message);
     else router.replace(`/groups/${groupId}/posts`);
   } finally {
     setLoading(false);

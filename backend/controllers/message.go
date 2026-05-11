@@ -199,17 +199,15 @@ func GroupChat(clients map[string][]*models.Client, db *sql.DB, msg models.Messa
 func GetUnreadNotificationCountWS(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
 	var count int
 
-	for userID := range clients {
-		err := db.QueryRow(`
+	err := db.QueryRow(`
     	SELECT COUNT(*)
     	FROM notification_users nu
     	JOIN users u ON u.id = nu.user_id
     	WHERE nu.user_id = ?
     	AND nu.created_at > u.last_notif_seen
-		`, userID).Scan(&count)
-		if err != nil {
-			return err
-		}
+		`, msg.SenderID).Scan(&count)
+	if err != nil {
+		return err
 	}
 
 	if cs, ok := clients[msg.SenderID]; ok {

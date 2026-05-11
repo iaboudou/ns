@@ -37,14 +37,15 @@
   color: #c8892a;
   border-bottom-color: #c8892a;
 }
+
 .content {
   padding: 28px 24px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   gap: 24px;
-  scrollbar-width: none; 
-  -ms-overflow-style: none; 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .content::-webkit-scrollbar {
@@ -70,13 +71,11 @@
   cursor: pointer;
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   background-color: #0e0c14;
-  background-image: repeating-linear-gradient(
-      135deg,
+  background-image: repeating-linear-gradient(135deg,
       #13110a 0px,
       #13110a 1px,
       transparent 1px,
-      transparent 18px
-    ),
+      transparent 18px),
     linear-gradient(to bottom, #1a1410, #0e0c14);
   background-size: cover;
   background-position: center;
@@ -93,12 +92,10 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 30%,
-    rgba(10, 8, 15, 0.6) 60%,
-    rgba(10, 8, 15, 0.95) 100%
-  );
+  background: linear-gradient(to bottom,
+      transparent 30%,
+      rgba(10, 8, 15, 0.6) 60%,
+      rgba(10, 8, 15, 0.95) 100%);
   z-index: 1;
 }
 
@@ -421,19 +418,59 @@
 
 .eventForm {
   background: #0e0c14;
-  border: 1px solid #2a1f0f;
+  border: 0.5px solid rgba(201, 168, 76, 0.18);
   border-radius: 10px;
-  overflow: hidden;
-  padding: 18px 24px;
+
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+
   width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+
   box-sizing: border-box;
+  box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.5);
 }
 
 .eventForm .formGroup {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.eventForm input,
+.eventForm textarea,
+.eventForm select {
+  width: 100%;
+  background: #1a1814;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: 4px;
+  color: #f0e6cc;
+  padding: 8px 10px;
+  font-family: "Crimson Text", serif;
+  font-size: 13px;
+}
+
+.eventForm input:focus,
+.eventForm textarea:focus,
+.eventForm select:focus {
+  outline: none;
+  border-color: #c9a84c;
+}
+
+.eventForm label {
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9a8e76;
+}
+
+@media (max-width: 600px) {
+  .eventForm {
+    max-width: 100%;
+    padding: 14px;
+  }
 }

@@ -56,7 +56,7 @@ export default function UsersList() {
             },
       );
     } catch (err) {
-      alert(err.message);
+      console.error(err.message);
     } finally {
       setLoading(false);
     }

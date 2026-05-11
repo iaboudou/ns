@@ -18,7 +18,7 @@ export default function RequestCard({ user, groupId, setRequests }) {
         });
         routeur.refresh();
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => console.error(err.message));
   };
 
   return (

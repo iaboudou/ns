@@ -47,7 +47,7 @@ export default function HandleCreateGroup({
           })
           .catch((err) => {
             if (err.message === "Something wrong happened. Please try later") {
-              alert(err.message);
+             console.error(err.message);
             } else {
               setError(err.message);
             }

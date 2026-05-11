@@ -33,7 +33,7 @@ export default function InviteFriends({ groupId }) {
             },
       );
     } catch (err) {
-      alert(err.message);
+     console.error(err.message);
     } finally {
       setLoading(false);
     }

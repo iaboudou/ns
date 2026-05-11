@@ -25,9 +25,8 @@ export default function DisplayUser({ u, groupId, setUsers }) {
           sendGroupInvite(groupId, u.id)
             .then(() => {
               setUsers((prev) => prev.filter((user) => user.id != u.id));
-              alert("invite sent");
             })
-            .catch((err) => alert(err.message));
+            .catch((err) => console.error(err.message));
         }}
       >
         Invite

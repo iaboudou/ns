@@ -1,13 +1,13 @@
 .groupsList {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(clamp(150px, 20vw, 260px), 1fr)
-  );
+  grid-template-columns: repeat(auto-fit,
+      minmax(150px, 260px));
   gap: clamp(10px, 1.8vw, 20px);
+
+  justify-content: start;
   width: 100%;
-  min-width: 0; 
 }
+
 .groupCard {
   position: relative;
   aspect-ratio: 3 / 4;

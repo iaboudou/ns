@@ -15,7 +15,6 @@ export async function createcomment(state, post_id) {
     }
 
     const json = await res.json().catch(() => ({}));
-    json.comment.created_at = Date.now().toLocaleString();
     return json.comment || null;
   } catch {
     return null;

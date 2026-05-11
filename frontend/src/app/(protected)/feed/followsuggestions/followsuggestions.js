@@ -38,13 +38,13 @@ export default function FollowSuggestions() {
     );
   };
 
-  if (!suggestions || suggestions.length == 0) return null;
+  if (!suggestions || suggestions.length == 0) return <h3>no suggestions users exist</h3>;
   return (
     <div className={styles.followsuggestions}>
       <span className={styles.header}>People you may want to follow</span>
 
       <ul className={styles.list}>
-        {suggestions.map((user) => {
+        {suggestions && suggestions.map((user) => {
           // get image
           const profileimage = user?.profile_image;
           const fullprofileimage = profileimage ? `/pics/${profileimage}` : "";

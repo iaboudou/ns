@@ -36,7 +36,7 @@ export default function CreatePost({ CREATEPOST }) {
         post.firstname = myInfo?.firstname;
         post.lastname = myInfo?.lastname;
         post.profile_image = myInfo?.profile_image;
-
+        
         CREATEPOST.onPostCreated(post);
         CREATEPOST.setState((prev) => ({
           ...prev,

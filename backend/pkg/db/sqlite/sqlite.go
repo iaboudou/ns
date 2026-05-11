@@ -232,7 +232,7 @@ func (r *Repo) InsertPostDB(userID string, post models.Post) (models.Post, error
 		var exist int
 		err = r.Db.QueryRow("SELECT 1 FROM groups WHERE id = ? ", groupID).Scan(&exist)
 		if err != nil || err == sql.ErrNoRows {
-			return models.Post{}, errors.New("SERVER ERROR")
+			return models.Post{}, errors.New("bad request")
 		}
 	}
 
