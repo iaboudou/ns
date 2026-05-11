@@ -47,7 +47,7 @@ export default function ProfilePage() {
       setInteractionStatus("following");
       setUser((prev) => ({ ...prev, is_freind: true }));
     } else if (message === "request have been sent") {
-      setInteractionStatus("requested");
+      window.location.reload();
     } else if (
       message === "follow deleted" ||
       message === "follow request deleted"
