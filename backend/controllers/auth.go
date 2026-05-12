@@ -97,23 +97,12 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		help.RespondNotOK(w, "badrequest")
-
-		help.Respond(w, &models.Response{
-			Code:    http.StatusBadRequest,
-			Message: "invalid credential",
-		})
 		return
 	}
 
 	userID, er := c.DB.IsUserExist(req.Email, req.Password)
 	if er != nil {
 		help.RespondNotOK(w, "badrequest")
-
-		help.Respond(w, &models.Response{
-			Code: http.StatusBadRequest,
-
-			Message: "invalid credential",
-		})
 		return
 	}
 
