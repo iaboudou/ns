@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   useContext,
@@ -55,6 +56,14 @@ export const WebSocketProvider = ({ children }) => {
           portKeyRef.current = msg.data.portKey;
           setPort(worker.port);
           worker.port.postMessage({ type: "connect" });
+          break;
+        }
+
+        case "switch_privacy": {
+          setNotifications((oldNotif) =>
+            oldNotif.filter((n) => n.type !== "follow_request"),
+          );
+          setUnreadNotifCount((prev) => prev - msg.data.request_count);
           break;
         }
 
@@ -131,8 +140,12 @@ export const WebSocketProvider = ({ children }) => {
         }
 
         case "new_notification": {
-          if (!pathnameRef.current.includes("/notifications"))
-            setUnreadNotifCount((prev) => prev + 1);
+          if (!pathnameRef.current.includes("/notifications")) {
+            setUnreadNotifCount((prev) => {
+              if (!prev) prev = 0;
+              return prev + 1;
+            });
+          }
 
           setNotifications((oldNotif) => {
             const map = new Map(oldNotif.map((n) => [n.id, n]));

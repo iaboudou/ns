@@ -5,10 +5,10 @@ import (
 	"errors"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"rtf/models"
 	"rtf/pkg/db/sqlite"
-	"unicode/utf8"
 )
 
 func GetOldMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {

@@ -8,7 +8,6 @@ import DisplayNotification from "@/components/notifications/DisplayNotification"
 export default function NotificationsPage() {
   const { port, notifications, setNotifications } = useWebSocket();
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (port) {
       port.postMessage({

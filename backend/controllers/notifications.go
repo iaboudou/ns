@@ -139,6 +139,7 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 }
 
 func Notify(db *sql.DB, clients map[string][]*models.Client, notif *models.Notification) error {
+	// check if the same notification already exists to avoid spam notif
 	var exists int
 	err := db.QueryRow(`
 		SELECT COUNT(*)
@@ -197,6 +198,5 @@ func Notify(db *sql.DB, clients map[string][]*models.Client, notif *models.Notif
 			}
 		}
 	}
-
 	return nil
 }

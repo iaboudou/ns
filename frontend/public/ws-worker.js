@@ -49,7 +49,7 @@ self.addEventListener("connect", (e) => {
               if (data.event === "leave")
                 onlineUsers = onlineUsers.filter((id) => id !== data.left);
               broadcast(data);
-            } catch (err) { }
+            } catch (err) {}
           };
 
           socket.onclose = () => {
@@ -59,7 +59,7 @@ self.addEventListener("connect", (e) => {
             broadcast({ event: "ws-close" });
           };
 
-          socket.onerror = (err) => { };
+          socket.onerror = (err) => {};
         }
         break;
       }
@@ -80,6 +80,14 @@ self.addEventListener("connect", (e) => {
 
       case "set_notif": {
         broadcast({ event: "set_notif", notif: msg.notif });
+        break;
+      }
+
+      case "switch_privacy": {
+        broadcast({
+          event: "switch_privacy",
+          request_count: msg.request_count,
+        });
         break;
       }
 

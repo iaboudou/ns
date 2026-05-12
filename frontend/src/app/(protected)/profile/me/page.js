@@ -17,7 +17,7 @@ import { Lock, User } from "lucide-react";
 import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function ProfilePage() {
-  const { myInfo, setNotifications, port } = useWebSocket();
+  const { myInfo, port } = useWebSocket();
   const router = useRouter();
 
   //
@@ -69,6 +69,16 @@ export default function ProfilePage() {
     let switched = await fetchSwitchPrivacy();
     if (switched) {
       setUser((prev) => ({ ...prev, is_public: !user.is_public }));
+      port.postMessage({
+        type: "switch_privacy",
+        payload: {
+          request_count: requests.length,
+        },
+      });
+      if (section === "requests") {
+        setSection("posts");
+        router.replace("/profile/me?section=posts");
+      }
     }
   }
 
@@ -81,12 +91,14 @@ export default function ProfilePage() {
         {users.map((u) => (
           <div key={u.id} className={styles.userWrapper}>
             <Link href={`/profile/${u.id}`} className={styles.userListItem}>
-              {u.profile_image
-                ? <img
+              {u.profile_image ? (
+                <img
                   src={`/pics/${u.profile_image}`}
                   className={styles.smallAvatar}
                 />
-                : <User className={styles.placeholderIcon} />}
+              ) : (
+                <User className={styles.placeholderIcon} />
+              )}
               <span className={styles.userName}>
                 {u.firstname} {u.lastname}
               </span>
@@ -108,7 +120,7 @@ export default function ProfilePage() {
                           notif: { type: "follow_request", sender_id: u.id },
                         });
                       })
-                      .catch(() => { })
+                      .catch(() => {})
                   }
                 >
                   Accept
@@ -128,7 +140,7 @@ export default function ProfilePage() {
                           notif: { type: "follow_request", sender_id: u.id },
                         });
                       })
-                      .catch(() => { })
+                      .catch(() => {})
                   }
                 >
                   Reject
@@ -181,9 +193,11 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.profileInfo}>
-            {fullImageURL
-              ? <img className={styles.profileAvatar} src={fullImageURL} />
-              : <User className={styles.profileAvatar} />}
+            {fullImageURL ? (
+              <img className={styles.profileAvatar} src={fullImageURL} />
+            ) : (
+              <User className={styles.profileAvatar} />
+            )}
             <div className={styles.nameandprivacybuttoncontainer}>
               <div className={styles.flnname}>
                 <h1 className={styles.profileName}>
