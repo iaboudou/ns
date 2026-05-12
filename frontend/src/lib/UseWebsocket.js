@@ -141,7 +141,7 @@ export const WebSocketProvider = ({ children }) => {
 
         case "new_notification": {
           if (!pathnameRef.current.includes("/notifications")) {
-            setUnreadNotifCount((prev) => {
+            setUnreadNotifCount((prev) => {              
               if (!prev) prev = 0;
               return prev + 1;
             });

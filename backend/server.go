@@ -16,7 +16,7 @@ import (
 func main() {
 	database, er := sqlite.InitDB()
 	if er != nil {
-		log.Fatal(er)
+		return
 	}
 
 	// initialize

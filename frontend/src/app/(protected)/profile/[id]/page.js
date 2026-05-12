@@ -19,6 +19,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [section, setSection] = useState(s);
   const [interactionStatus, setInteractionStatus] = useState();
+  const [hasAccess, setAccess] = useState(false);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -28,6 +29,7 @@ export default function ProfilePage() {
     (async () => {
       let data = await fetchPersonalInfo(uuid);
       setUser(data);
+      setAccess(data.is_public || data.is_freind);
       if (data?.interaction_status) {
         setInteractionStatus(data.interaction_status);
       }
@@ -39,24 +41,27 @@ export default function ProfilePage() {
   }, [section, user?.id]);
 
   const handleFollow = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!user?.id) return;
     const message = await FollowUser(user.id);
     if (!message) return;
 
     if (message === "follow have been successfully") {
+      setAccess(true);
       setInteractionStatus("following");
       setUser((prev) => ({ ...prev, is_freind: true }));
     } else if (message === "request have been sent") {
       // window.location.reload();
       setInteractionStatus("requested");
-    // router.replace(window.location.pathname)
+      // router.replace(window.location.pathname)
+      setAccess(false);
     } else if (
       message === "follow deleted" ||
       message === "follow request deleted"
     ) {
       setInteractionStatus("none");
       setUser((prev) => ({ ...prev, is_freind: false }));
+      setAccess(false);
     }
   };
 
@@ -80,8 +85,6 @@ export default function ProfilePage() {
   }
 
   //
-  const hasAccess = user.is_public || user.is_freind;
-
   //
   const imageURL = user.profile_image;
   const fullImageURL = imageURL ? `/pics/${imageURL}` : "";
@@ -103,9 +106,11 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.profileInfo}>
-            {fullImageURL
-              ? <img className={styles.profileAvatar} src={fullImageURL} />
-              : <User className={styles.profileAvatar} />}
+            {fullImageURL ? (
+              <img className={styles.profileAvatar} src={fullImageURL} />
+            ) : (
+              <User className={styles.profileAvatar} />
+            )}
             <div className={styles.nameandprivacybuttoncontainer}>
               <div className={styles.flnname}>
                 <h1 className={styles.profileName}>
@@ -150,12 +155,14 @@ export default function ProfilePage() {
 
       {/* MAIN */}
       <div className={styles.MAIN}>
-        {hasAccess
-          ? main_content
-          : <div className={styles.privateMessage}>
-              <Lock size={48} className={styles.lockIcon} />
-              <h2>This Profile is Private</h2>
-            </div>}
+        {hasAccess ? (
+          main_content
+        ) : (
+          <div className={styles.privateMessage}>
+            <Lock size={48} className={styles.lockIcon} />
+            <h2>This Profile is Private</h2>
+          </div>
+        )}
       </div>
     </div>
   );

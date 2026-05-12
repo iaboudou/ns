@@ -82,20 +82,46 @@ func ManageRequest(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, 
 
 	if request.InvitedBy != "" {
 		_, err = db.Exec(`
-			DELETE FROM notifications
-			WHERE group_id = ?
-			AND type = 'group_invite'
-			AND sender_id = ?
-			AND id IN (SELECT notification_id FROM notification_users WHERE user_id = ?)
-		`, groupID, request.InvitedBy, userID)
+        DELETE FROM notification_users
+        WHERE user_id = ?
+        AND notification_id IN (
+            SELECT id FROM notifications
+            WHERE group_id = ?
+            AND type = 'group_invite'
+            AND sender_id = ?
+        )
+    `, userID, groupID, request.InvitedBy)
+		if err != nil {
+			help.RespondServerError(w)
+			return
+		}
+		_, err = db.Exec(`
+        DELETE FROM notifications
+        WHERE group_id = ?
+        AND type = 'group_invite'
+        AND sender_id = ?
+    `, groupID, request.InvitedBy)
 	} else {
 		_, err = db.Exec(`
-			DELETE FROM notifications
-			WHERE group_id = ?
-			AND type = 'group_request'
-			AND sender_id = ?
-			AND id IN (SELECT notification_id FROM notification_users WHERE user_id = ?)
-		`, groupID, request.Sender, userID)
+        DELETE FROM notification_users
+        WHERE user_id = ?
+        AND notification_id IN (
+            SELECT id FROM notifications
+            WHERE group_id = ?
+            AND type = 'group_request'
+            AND sender_id = ?
+        )
+    `, userID, groupID, request.Sender)
+		if err != nil {
+			help.RespondServerError(w)
+			return
+		}
+		_, err = db.Exec(`
+        DELETE FROM notifications
+        WHERE group_id = ?
+        AND type = 'group_request'
+        AND sender_id = ?
+    `, groupID, request.Sender)
 	}
 
 	if err != nil {

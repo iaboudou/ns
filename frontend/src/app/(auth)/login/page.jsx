@@ -70,6 +70,8 @@ export default function Login() {
             required
             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             title="Valid email required"
+            minLength={5}
+            maxLength={60}
           />
         </div>
 

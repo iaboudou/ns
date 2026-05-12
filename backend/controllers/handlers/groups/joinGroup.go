@@ -53,9 +53,9 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 		return
 	}
 
-	if currentUserID == groupCreatorID {
+	if Type == "invite" {
 		hub.Notif <- models.Notification{
-			SenderID:   groupCreatorID,
+			SenderID:   currentUserID,
 			ReceiverID: userID,
 			Type:       "group_invite",
 			GroupID:    groupID,

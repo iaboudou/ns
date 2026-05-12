@@ -1,5 +1,3 @@
-PRAGMA foreign_keys = ON;
-
 CREATE TABLE notification_users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     notification_id TEXT NOT NULL,

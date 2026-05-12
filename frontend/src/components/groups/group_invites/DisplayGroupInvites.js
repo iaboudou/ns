@@ -4,13 +4,11 @@ import cardStyles from "@/components/groups/styles/groups-cards.module.css";
 import { useWebSocket } from "@/lib/UseWebsocket";
 
 export default function DisplayGroupInvite({ group, setGroups }) {
-  console.log(group);
   const { port } = useWebSocket();
 
   const handleDecision = async (decision) => {
     SendDecision(group.id, decision, "", group.invited_by)
       .then(() => {
-        if (decision === "accepted")
         setGroups((prev) => prev.filter((g) => g.id !== group.id));
         port.postMessage({
           type: "set_notif",

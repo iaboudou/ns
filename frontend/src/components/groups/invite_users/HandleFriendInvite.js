@@ -33,7 +33,7 @@ export default function InviteFriends({ groupId }) {
             },
       );
     } catch (err) {
-     console.error(err.message);
+      console.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ export default function InviteFriends({ groupId }) {
 
   return (
     <>
-      <p>Invite Friends</p>
+      <p>Invite Followers</p>
       <input
         className={style.input}
         type="text"

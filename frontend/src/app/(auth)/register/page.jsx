@@ -47,7 +47,7 @@ export default function RegisterPage() {
               minLength={2}
               maxLength={12}
               pattern="^[a-zA-Z]{2,12}$"
-              title="First name must be 2–12 letters"
+              title="First name must be 2-12 letters"
             />
           </div>
           <div>
@@ -60,7 +60,7 @@ export default function RegisterPage() {
               minLength={2}
               maxLength={12}
               pattern="^[a-zA-Z]{2,12}$"
-              title="Last name must be 2–12 letters"
+              title="Last name must be 2-12 letters"
             />
           </div>
         </div>
@@ -74,6 +74,8 @@ export default function RegisterPage() {
             required
             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             title="Valid email required"
+            minLength={5}
+            maxLength={60}
           />
         </div>
 
@@ -137,7 +139,7 @@ export default function RegisterPage() {
             minLength={2}
             maxLength={30}
             pattern="^[a-zA-Z\s]{2,30}$"
-            title="Nickname must be 2–30 letters/spaces"
+            title="Nickname must be 2-30 letters/spaces"
           />
         </div>
 
