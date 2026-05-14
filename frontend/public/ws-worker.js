@@ -86,7 +86,6 @@ self.addEventListener("connect", (e) => {
       case "switch_privacy": {
         broadcast({
           event: "switch_privacy",
-          req_count: msg.req_count,
         });
         break;
       }

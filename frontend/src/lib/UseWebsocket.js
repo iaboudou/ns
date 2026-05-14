@@ -63,10 +63,6 @@ export const WebSocketProvider = ({ children }) => {
           setNotifications((oldNotif) =>
             oldNotif.filter((n) => n.type !== "follow_request"),
           );
-
-          console.log(notifications.length);
-          setUnreadNotifCount(notifications.length - msg.req_count);
-          break;
         }
 
         case "online_users": {
@@ -200,19 +196,6 @@ export const WebSocketProvider = ({ children }) => {
     [port],
   );
 
-  // will be used to postMessage in case of focus
-  const sendFocus = useCallback(
-    (tabName) => {
-      if (port && portKey) {
-        port.postMessage({
-          type: "focus",
-          payload: { tab: tabName, portKey: portKey },
-        });
-      }
-    },
-    [port, portKey],
-  );
-
   return (
     <WebSocketContext.Provider
       value={{
@@ -227,7 +210,6 @@ export const WebSocketProvider = ({ children }) => {
         setUnreadNotifCount,
         notifications,
         setNotifications,
-        sendFocus,
         myInfo,
         readConversations,
       }}

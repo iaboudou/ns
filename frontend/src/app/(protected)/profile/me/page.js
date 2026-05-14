@@ -68,11 +68,22 @@ export default function ProfilePage() {
   async function handleSwitchAccountPrivacy() {
     let switched = await fetchSwitchPrivacy();
     if (switched) {
+      if (!user.is_public) {
+        port.postMessage({
+          type: "switch_privacy",
+        });
+
+        port.postMessage({
+          type: "send",
+          payload: {
+            type: "unread_notif",
+          },
+        });
+      }
+
+      setRequests([]);
+
       setUser((prev) => ({ ...prev, is_public: !user.is_public }));
-      port.postMessage({
-        type: "switch_privacy",
-        req_count: requests.length,
-      });
 
       if (section === "requests") {
         setSection("posts");
