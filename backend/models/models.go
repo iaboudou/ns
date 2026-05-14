@@ -153,3 +153,9 @@ type Notification struct {
 	Type       string
 	GroupID    string
 }
+
+type Request struct {
+	Sender    string `json:"sender"`
+	Decicion  string `json:"decision"`
+	InvitedBy string `json:"invited_by"`
+}

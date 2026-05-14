@@ -72,9 +72,7 @@ export default function FollowSuggestions() {
                   ? "unfollow"
                   : user.interactionStatus === "requested"
                     ? "requested"
-                    : user.account_privacy
-                      ? "request"
-                      : "follow"}
+                    : user.account_privacy ? "request" : "follow"}
               </button>
             </li>
           );

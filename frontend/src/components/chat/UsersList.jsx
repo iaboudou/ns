@@ -143,18 +143,7 @@ export default function UsersList() {
             className={styles.userItem}
             onClick={async (e) => {
               e.preventDefault();
-              const receiver = u.id;
-              const f = await alreadyfollowhim(receiver);
-              if (f) {
-                setWarning("");
-                router.push(`/chat/${u.id}`);
-              } else {
-                setWarning(
-                  `You can't send a message to ${u.firstname} ${u.lastname}. This user has a private profile and is not following you.`,
-                );
-                router.replace(`/chat`);
-                return;
-              }
+              router.push(`/chat/${u.id}`);
 
               setUsers((prev) =>
                 prev.map((usr) =>

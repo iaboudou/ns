@@ -7,6 +7,7 @@ import (
 
 	"rtf/help"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 )
 
 func ManageRequest(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, userID string) {
@@ -21,11 +22,7 @@ func ManageRequest(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, 
 		return
 	}
 
-	var request struct {
-		Sender    string `json:"sender"`
-		Decicion  string `json:"decision"`
-		InvitedBy string `json:"invited_by"`
-	}
+	request := models.Request{}
 
 	err = json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -50,80 +47,23 @@ func ManageRequest(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID, 
 		}
 	}
 
-	var res sql.Result
-	switch request.Decicion {
-	case "rejected":
-		res, err = db.Exec(`DELETE FROM group_members WHERE group_id = ? AND user_id = ?`, groupID, request.Sender)
-	case "accepted":
-		res, err = db.Exec(`UPDATE group_members SET status = ? WHERE group_id = ? AND user_id = ?`, request.Decicion, groupID, request.Sender)
-	default:
-		help.Respond(w, &models.Response{Code: http.StatusBadRequest, Message: "unknown decision"})
-		return
-	}
-
+	err = sqlite.UpdateRequest(db, &request, groupID)
 	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
-	row, err := res.RowsAffected()
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
-	if row == 0 {
-		help.Respond(w, &models.Response{
-			Code:    http.StatusNotFound,
-			Message: "this ressources doesn't exist",
-		})
-		return
-	}
-
-	if request.InvitedBy != "" {
-		_, err = db.Exec(`
-        DELETE FROM notification_users
-        WHERE user_id = ?
-        AND notification_id IN (
-            SELECT id FROM notifications
-            WHERE group_id = ?
-            AND type = 'group_invite'
-            AND sender_id = ?
-        )
-    `, userID, groupID, request.InvitedBy)
-		if err != nil {
+		switch err.Error() {
+		case "unknown decision":
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: err.Error(),
+			})
+		case "":
+			help.RespondNotFound(w, "ressource doesn't exists")
+		default:
 			help.RespondServerError(w)
-			return
 		}
-		_, err = db.Exec(`
-        DELETE FROM notifications
-        WHERE group_id = ?
-        AND type = 'group_invite'
-        AND sender_id = ?
-    `, groupID, request.InvitedBy)
-	} else {
-		_, err = db.Exec(`
-        DELETE FROM notification_users
-        WHERE user_id = ?
-        AND notification_id IN (
-            SELECT id FROM notifications
-            WHERE group_id = ?
-            AND type = 'group_request'
-            AND sender_id = ?
-        )
-    `, userID, groupID, request.Sender)
-		if err != nil {
-			help.RespondServerError(w)
-			return
-		}
-		_, err = db.Exec(`
-        DELETE FROM notifications
-        WHERE group_id = ?
-        AND type = 'group_request'
-        AND sender_id = ?
-    `, groupID, request.Sender)
+		return
 	}
 
+	err = sqlite.RemoveNotif(db, &request, userID, groupID)
 	if err != nil {
 		help.RespondServerError(w)
 		return

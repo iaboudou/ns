@@ -10,7 +10,6 @@ export default function GroupChat() {
   const params = useParams();
   const [inputText, setInputText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const [groupInfo, setGroupInfo] = useState(null);
   const [myID, setMyID] = useState(null);
   const scrollRef = useRef(null);
 
@@ -33,21 +32,6 @@ export default function GroupChat() {
     fetchMe();
   }, []);
 
-  // fetch group details for the header
-  useEffect(() => {
-    const fetchGroup = async () => {
-      try {
-        const resp = await fetch(`/api/groups/${params.id}`, {
-          credentials: "include",
-        });
-        const res = await resp.json().catch(() => ({}));
-        if (res.code === 200) {
-          setGroupInfo(res.data);
-        }
-      } catch {}
-    };
-    if (params.id) fetchGroup();
-  }, [params.id]);
 
   // fetch messages in case the user reconnect
   useEffect(() => {

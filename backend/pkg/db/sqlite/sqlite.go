@@ -333,12 +333,36 @@ func (r *Repo) SwitchAccountPrivacyinDB(userID string) error {
 	var isPublic bool
 	err := r.Db.QueryRow("SELECT account_privacy FROM users WHERE id = ?", userID).Scan(&isPublic)
 	if err == nil && isPublic {
-		_, _ = r.Db.Exec("UPDATE followers SET status = 'accepted' WHERE following_id = ? AND status = 'pending'", userID)
-		_, _ = r.Db.Exec(`
-			DELETE FROM notifications 
-			WHERE type = 'follow_request' 
-			AND id IN (SELECT notification_id FROM notification_users WHERE user_id = ?)
-		`, userID)
+		tx, err := r.Db.Begin()
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+
+		_, _ = tx.Exec("UPDATE followers SET status = 'accepted' WHERE follower_id  = ? AND status = 'pending'", userID)
+
+		_, err = tx.Exec(`
+        DELETE FROM notification_users
+        WHERE user_id = ?
+        AND notification_id IN (
+            SELECT id FROM notifications
+            WHERE type = 'follow_request'
+        )`, userID)
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Exec(`
+        DELETE FROM notifications
+        WHERE type = 'follow_request'
+        AND id NOT IN (
+            SELECT notification_id FROM notification_users
+        )`)
+		if err != nil {
+			return err
+		}
+
+		return tx.Commit()
 	}
 
 	return nil
@@ -449,10 +473,9 @@ func (r *Repo) IstheUserFreind(user *models.User, mainuserID string) error {
 		user.InteractionStatus = "none"
 		return nil
 	}
-
 	//
 	var status string
-	err := r.Db.QueryRow(` SELECT status FROM followers WHERE follower_id=? AND following_id=?`, mainuserID, user.ID).Scan(&status)
+	err := r.Db.QueryRow(` SELECT status FROM followers WHERE following_id=? AND follower_id=?`, mainuserID, user.ID).Scan(&status)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			user.InteractionStatus = "none"
@@ -482,12 +505,12 @@ func (r *Repo) GetTotalComments(PostID string) (int, error) {
 	return total, er
 }
 
-func (r *Repo) IsFollower(userID, otherID string) (bool, error) {
+func (r *Repo) IsFollower(viewerID, userPOSTid string) (bool, error) {
 	var status string
 	err := r.Db.QueryRow(`
 		SELECT status 
 		FROM followers 
-		WHERE follower_id = ? AND following_id = ?`, userID, otherID).Scan(&status)
+		WHERE following_id = ? AND follower_id = ?`, viewerID, userPOSTid).Scan(&status)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
@@ -556,7 +579,7 @@ func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, e
 		FROM users 
 		WHERE id != ? 
 		AND id NOT IN (
-			SELECT following_id FROM followers WHERE follower_id = ?
+			SELECT follower_id FROM followers WHERE following_id = ?
 		)`, userID, userID)
 	if er != nil {
 		return nil, er
@@ -580,16 +603,17 @@ func (r *Repo) GetSuggestionUsersDB(userID string) ([]models.FollowSuggestion, e
 func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 	// Check if follow already exists
 	var status string
-	err := r.Db.QueryRow(`SELECT status FROM followers WHERE follower_id = ? AND following_id = ?`, userID, followedID).Scan(&status)
+	err := r.Db.QueryRow(`SELECT status FROM followers WHERE follower_id = ? AND following_id = ?`, followedID, userID).Scan(&status)
 	if err == nil {
 		// If it exists, delete it
-		_, err = r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, userID, followedID)
+		_, err = r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, followedID, userID)
 		if err != nil {
 			return "", err
 		}
 		if status == "pending" {
 			return "follow request deleted", nil
 		}
+
 		return "follow deleted", nil
 	}
 
@@ -599,6 +623,7 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	isPrivate = !isPrivate
 	// Create the follow
 	id, err := uuid.NewV4()
@@ -616,7 +641,7 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 	_, err = r.Db.Exec(`
 	INSERT INTO followers (id, follower_id, following_id, status)
 	VALUES (?, ?, ?, ?)
-	`, id.String(), userID, followedID, finalStatus)
+	`, id.String(), followedID, userID, finalStatus)
 	if err != nil {
 		return "", err
 	}
@@ -625,32 +650,71 @@ func (r *Repo) FollowUserDB(userID string, followedID string) (string, error) {
 		//
 	}
 
+	// sender
+
 	return message, nil
 }
 
 // this function is to answer to the request wether you accept or now if your profile is privet
-func (r *Repo) ManageFollowDB(followerID string, followingID string, decision string) error {
+func (r *Repo) ManageFollowDB(followingID string, followedID string, decision string) error {
 	if decision == "accepted" {
-		_, err := r.Db.Exec(`UPDATE followers SET status = 'accepted' WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
+		_, err := r.Db.Exec(`UPDATE followers SET status = 'accepted' WHERE follower_id = ? AND following_id = ?`, followedID, followingID)
 		if err != nil {
 			return err
 		}
 	} else if decision == "rejected" {
-		_, err := r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, followerID, followingID)
+
+		var exist bool
+		err := r.Db.QueryRow(`SELECT 1 FROM followers WHERE follower_id = ? AND following_id = ? AND status = "accepted"`, followedID, followingID).Scan(&exist)
+		if err != nil && err != sql.ErrNoRows {
+			return err
+		}
+
+		if exist {
+			return nil
+		}
+		_, err = r.Db.Exec(`DELETE FROM followers WHERE follower_id = ? AND following_id = ?`, followedID, followingID)
 		if err != nil {
 			return err
 		}
 	}
 
+	tx, err := r.Db.Begin()
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
 	// Dans les deux cas, supprimer la notification follow_request
-	_, err := r.Db.Exec(`
-		DELETE FROM notifications
-		WHERE type = 'follow_request'
-		AND sender_id = ?
-		AND id IN (
-			SELECT notification_id FROM notification_users WHERE user_id = ?
-		)
-	`, followerID, followingID)
+	_, err = tx.Exec(`
+			DELETE FROM notification_users
+			WHERE user_id = ?
+			AND notification_id IN (
+				SELECT id FROM notifications
+				WHERE user_id = ?
+				AND type = 'follow_request'
+				AND sender_id = ?
+			)
+		`, followedID, followedID, followingID)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`
+			DELETE FROM notifications
+			WHERE sender_id = ?
+			AND type = 'follow_request'
+			AND sender_id = ?
+		`, followingID, followingID)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -690,8 +754,8 @@ func (r *Repo) GetFollowersDB(targetID string, query string) ([]models.FollowSug
 	q := `
 		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
 		FROM users u
-		JOIN followers f ON u.id = f.follower_id
-		WHERE f.following_id = ? AND f.status = 'accepted'
+		JOIN followers f ON u.id = f.following_id
+		WHERE f.follower_id = ? AND f.status = 'accepted'
 	`
 	args := []any{targetID}
 
@@ -726,8 +790,8 @@ func (r *Repo) GetFollowingDB(targetID string, query string) ([]models.FollowSug
 	q := `
 		SELECT u.id, u.firstname, u.lastname, u.profile_image, u.account_privacy 
 		FROM users u
-		JOIN followers f ON u.id = f.following_id
-		WHERE f.follower_id = ? AND f.status = 'accepted'
+		JOIN followers f ON u.id = f.follower_id
+		WHERE f.following_id = ? AND f.status = 'accepted'
 	`
 	args := []any{targetID}
 
@@ -761,7 +825,7 @@ func (r *Repo) GetFollowRequestsDB(userID string) ([]models.FollowSuggestion, er
 		SELECT id, firstname, lastname, profile_image
 		FROM users
 		WHERE id IN (
-			SELECT follower_id FROM followers WHERE following_id = ? AND status = 'pending'
+			SELECT following_id FROM followers WHERE follower_id = ? AND status = 'pending'
 		)`, userID)
 	if err != nil {
 		return nil, err

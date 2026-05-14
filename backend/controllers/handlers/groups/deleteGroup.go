@@ -29,8 +29,7 @@ func DeleteGroup(w http.ResponseWriter, db *sql.DB, groupID, userID string) {
 		return
 	}
 
-	_, err = db.Exec(`DELETE FROM groups
-			 WHERE id = ? AND creator_id = ?`, groupID, userID)
+	_, err = db.Exec(`DELETE FROM groups WHERE id = ? AND creator_id = ?`, groupID, userID)
 	if err != nil {
 		help.RespondServerError(w)
 		return

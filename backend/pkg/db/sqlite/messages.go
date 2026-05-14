@@ -88,10 +88,25 @@ func SelectOldMessages(db *sql.DB, msg *models.Message) ([]map[string]any, error
 	return messages, nil
 }
 
-func InsertNewMessage(db *sql.DB, msg *models.Message) error {
+func InsertNewMessage(db *sql.DB, msg *models.Message) (bool, error) {
+	sendToReceiver := false
 	messageID, err := uuid.NewV4()
 	if err != nil {
-		return err
+		return sendToReceiver, err
+	}
+
+	var isPublic bool // if the receiver is public continue
+	err = db.QueryRow(`SELECT account_privacy FROM users WHERE id = ?`, msg.ReceiverID).Scan(&isPublic)
+	if err != nil {
+		return sendToReceiver, err
+	}
+
+	followSender := false
+	if !isPublic { // if he is private check his follows
+		err = db.QueryRow(`SELECT 1 FROM followers WHERE follower_id = ? AND following_id = ? AND status = 'accepted'`, msg.SenderID, msg.ReceiverID).Scan(&followSender)
+		if err != nil && err != sql.ErrNoRows {
+			return sendToReceiver, err
+		}
 	}
 
 	msg.ID = messageID.String()
@@ -100,8 +115,15 @@ func InsertNewMessage(db *sql.DB, msg *models.Message) error {
 		INSERT INTO messages (id, sender_id, receiver_id, content, is_not_read, created_at)
 		VALUES (?, ?, ?, ?, 1, ?)
 	`, messageID.String(), msg.SenderID, msg.ReceiverID, msg.Content, msg.CreatedAt)
+	if err != nil {
+		return sendToReceiver, err
+	}
 
-	return err
+	if isPublic || followSender {
+		sendToReceiver = true
+	}
+
+	return sendToReceiver, err
 }
 
 func GetUserByID(db *sql.DB, userID string) (models.User, error) {
@@ -142,7 +164,7 @@ func GetChatUsers(db *sql.DB, userID string) ([]map[string]any, error) {
 	defer rows.Close()
 
 	users := []map[string]any{}
-	
+
 	for rows.Next() {
 		var id, firstname, lastname, profileImage string
 		var lastMsg int64

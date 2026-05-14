@@ -7,6 +7,7 @@ import (
 
 	"rtf/help"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 
 	"github.com/gofrs/uuid/v5"
 )
@@ -60,29 +61,7 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 		return
 	}
 
-	tx, err := db.Begin()
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
-	defer tx.Rollback()
-
-	_, err = tx.Exec(`
-		INSERT INTO groups (
-			id,
-			creator_id,
-			title,
-			description,
-			image
-		)
-		VALUES (?, ?, ?, ?, ?)`,
-		groupId.String(),
-		userID,
-		group.Title,
-		group.Description,
-		group.Image,
-	)
+	err = sqlite.InsertGroupInDB(db, w, userID, groupId, &group)
 	if err != nil {
 		if strings.Contains(strings.ToLower(err.Error()), "unique") {
 			help.Respond(w, &models.Response{
@@ -96,34 +75,13 @@ func CreateGroup(w http.ResponseWriter, r *http.Request, db *sql.DB, userID stri
 		return
 	}
 
-	_, err = tx.Exec(`
-		INSERT INTO group_members (
-			group_id,
-			user_id,
-			role,
-			status
-		)
-		VALUES (?, ?, 'creator', 'accepted')`,
-		groupId.String(),
-		userID,
-	)
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
-	if err := tx.Commit(); err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
 	help.Respond(w, &models.Response{
 		Code: http.StatusCreated,
 		Data: map[string]string{
 			"id":          groupId.String(),
 			"title":       group.Title,
 			"description": group.Description,
-			"img":       group.Image,
+			"img":         group.Image,
 		},
 	})
 }

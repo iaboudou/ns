@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"database/sql"
 	"net/http"
 	"strings"
 
-	"rtf/models"
 	"rtf/help"
+	"rtf/models"
 )
 
 // handle create post
@@ -45,6 +46,35 @@ func (c *Controller) CreatePost(w http.ResponseWriter, r *http.Request) {
 		post.Alloweduserscreate = r.FormValue("allowed_users")
 	} else {
 		post.AllowedUsers = nil
+	}
+
+	if post.GroupID != "" {
+		var exists int
+		err := c.DB.Db.QueryRow(`SELECT 1 FROM groups WHERE id = ?`, post.GroupID).Scan(&exists) // check group existence
+		if err == sql.ErrNoRows {
+			help.RespondNotFound(w, "This group doesn't exist")
+			return
+		}
+
+		if err != nil {
+			help.RespondServerError(w)
+			return
+		}
+
+		var isMember bool
+		err = c.DB.Db.QueryRow(`SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?`, userID, post.GroupID).Scan(&isMember)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				help.Respond(w, &models.Response{
+					Code:    http.StatusBadRequest,
+					Message: "you are not member of the group",
+				})
+				return
+			}
+
+			help.RespondServerError(w)
+			return
+		}
 	}
 
 	// handle the file upload

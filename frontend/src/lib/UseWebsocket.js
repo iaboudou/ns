@@ -63,7 +63,9 @@ export const WebSocketProvider = ({ children }) => {
           setNotifications((oldNotif) =>
             oldNotif.filter((n) => n.type !== "follow_request"),
           );
-          setUnreadNotifCount((prev) => prev - msg.data.request_count);
+
+          console.log(notifications.length);
+          setUnreadNotifCount(notifications.length - msg.req_count);
           break;
         }
 
@@ -141,10 +143,7 @@ export const WebSocketProvider = ({ children }) => {
 
         case "new_notification": {
           if (!pathnameRef.current.includes("/notifications")) {
-            setUnreadNotifCount((prev) => {              
-              if (!prev) prev = 0;
-              return prev + 1;
-            });
+            setUnreadNotifCount(msg.data.notif.count);
           }
 
           setNotifications((oldNotif) => {

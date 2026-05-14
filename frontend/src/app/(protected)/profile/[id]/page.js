@@ -44,6 +44,7 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!user?.id) return;
     const message = await FollowUser(user.id);
+    console.log(message);
     if (!message) return;
 
     if (message === "follow have been successfully") {
@@ -55,10 +56,10 @@ export default function ProfilePage() {
       setInteractionStatus("requested");
       // router.replace(window.location.pathname)
       setAccess(false);
-    } else if (
-      message === "follow deleted" ||
-      message === "follow request deleted"
-    ) {
+    } else if (message === "follow deleted") {
+      setInteractionStatus("none");
+      setUser((prev) => ({ ...prev, is_freind: false }));
+    } else if (message === "follow request deleted") {
       setInteractionStatus("none");
       setUser((prev) => ({ ...prev, is_freind: false }));
       setAccess(false);

@@ -6,22 +6,19 @@ import (
 
 	"rtf/help"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 )
 
 func GetGroupBasicInfo(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID string) {
 	user_id := r.Context().Value("userID").(string)
-
-	info := models.GroupeInfo{IsCreator: false}
-
-	var creator_id string
-	err := db.QueryRow(`
-	SELECT title, description, creator_id, image
-	FROM groups
-	WHERE id = ?
-	`, groupID).Scan(&info.Title, &info.Description, &creator_id, &info.Image)
+	var isMember bool
+	err := db.QueryRow(`SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?`, user_id, groupID).Scan(&isMember)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			help.RespondNotFound(w, "This group doesn't exist")
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: "you are not member of the group",
+			})
 			return
 		}
 
@@ -29,18 +26,26 @@ func GetGroupBasicInfo(w http.ResponseWriter, r *http.Request, db *sql.DB, group
 		return
 	}
 
-	if creator_id == user_id {
-		info.IsCreator = true
-	}
+	info := models.GroupeInfo{IsCreator: false}
 
-	err = db.QueryRow(`SELECT COUNT(*) FROM group_members
-	WHERE status ='accepted' AND group_id = ?`, groupID).Scan(&info.MemberAmount)
+	err = sqlite.SelectGroupDescription(db, &info, groupID, user_id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			help.RespondNotFound(w, "This group doesn't exist")
+			return
+		}
+
+		if err.Error() == "not a member" {
+			help.Respond(w, &models.Response{
+				Code:    http.StatusForbidden,
+				Message: err.Error(),
+			})
+			return
+		}
+
 		help.RespondServerError(w)
 		return
 	}
-
-	// possibility to take unread message count and request number
 
 	help.Respond(w, &models.Response{
 		Code: http.StatusOK,

@@ -92,7 +92,7 @@ func (c *Controller) Follow(w http.ResponseWriter, r *http.Request) {
 
 	help.Respond(w, &models.Response{
 		Code:    http.StatusOK,
-		Message: message,
+		Message: message, 
 	})
 }
 

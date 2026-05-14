@@ -1,7 +1,8 @@
-export async function createcomment(state, post_id) {
+export async function createcomment(state, post_id, path) {
   let formdata = new FormData();
   formdata.append("content", state.text);
   formdata.append("post_id", post_id);
+  formdata.append("path", path);
   if (state.picture) formdata.append("image_url", state.picture);
 
   try {

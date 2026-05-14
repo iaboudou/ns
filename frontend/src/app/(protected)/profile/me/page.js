@@ -71,10 +71,9 @@ export default function ProfilePage() {
       setUser((prev) => ({ ...prev, is_public: !user.is_public }));
       port.postMessage({
         type: "switch_privacy",
-        payload: {
-          request_count: requests.length,
-        },
+        req_count: requests.length,
       });
+
       if (section === "requests") {
         setSection("posts");
         router.replace("/profile/me?section=posts");

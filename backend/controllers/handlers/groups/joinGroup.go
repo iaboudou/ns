@@ -6,6 +6,7 @@ import (
 
 	"rtf/help"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 )
 
 func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.DB, groupID, userID, Type string) {
@@ -21,27 +22,33 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 	}
 
 	currentUserID := r.Context().Value("userID").(string)
+	err = sqlite.InsertGroupMember(db, userID, groupID, currentUserID, Type)
+	if err != nil {
+		if err.Error() == "already member" {
+			help.Respond(w, &models.Response{
+				Code:    http.StatusConflict,
+				Message: err.Error(),
+			})
+			return
+		}
 
-	if Type == "invite" {
-		_, err = db.Exec(
-			`INSERT INTO group_members (group_id, user_id, type, invited_by) VALUES (?, ?, ?, ?)`,
-			groupID, userID, Type, currentUserID,
-		)
-	} else {
-		_, err = db.Exec(
-			`INSERT INTO group_members (group_id, user_id, type) VALUES (?, ?, ?)`,
-			groupID, userID, Type,
-		)
+		help.RespondServerError(w)
+		return
 	}
 
+	err = SendNotif(hub, db, groupID, userID, currentUserID, Type)
 	if err != nil {
 		help.RespondServerError(w)
 		return
 	}
 
+	help.Respond(w, &models.Response{Code: 200})
+}
+
+func SendNotif(hub *models.Hub, db *sql.DB, groupID, userID, currentUserID, Type string) error {
 	var groupCreatorID string
 
-	err = db.QueryRow(`
+	err := db.QueryRow(`
 	SELECT u.id
 	FROM users u
 	JOIN group_members gm ON gm.user_id = u.id
@@ -49,8 +56,7 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 	AND role = 'creator'
 	`, groupID).Scan(&groupCreatorID)
 	if err != nil {
-		help.RespondServerError(w)
-		return
+		return err
 	}
 
 	if Type == "invite" {
@@ -69,5 +75,5 @@ func JoinGroup(w http.ResponseWriter, r *http.Request, hub *models.Hub, db *sql.
 		}
 	}
 
-	help.Respond(w, &models.Response{Code: 200})
+	return nil
 }

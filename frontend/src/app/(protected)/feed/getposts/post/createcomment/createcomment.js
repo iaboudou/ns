@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "./createcomment.module.css";
 import { createcomment } from "./actions";
 import { Image as ImageIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function CreateComment({ post, onCommentCreated }) {
   let postID = post.id;
@@ -11,11 +12,13 @@ export default function CreateComment({ post, onCommentCreated }) {
     text: "",
     picture: null,
   });
+  const path = usePathname()
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!state.text.trim() && !state.picture) return;
-    let comment = await createcomment(state, postID);
-
+    let comment = await createcomment(state, postID, path);
+    if (comment == null) return
     setState({ text: "", picture: null });
     onCommentCreated(postID, comment);
   };

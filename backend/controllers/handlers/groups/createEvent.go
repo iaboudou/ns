@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -14,10 +15,37 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *models.Hub, groupID, userID string) {
+func CreateEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, hub *models.Hub, groupID, userID string) {
+	var exists int
+	err := db.QueryRow(`SELECT 1 FROM groups WHERE id = ?`, groupID).Scan(&exists) // check group existence
+	if err == sql.ErrNoRows {
+		help.RespondNotFound(w, "This group doesn't exist")
+		return
+	}
+
+	if err != nil {
+		help.RespondServerError(w)
+		return
+	}
+
+	var isMember bool
+	err = db.QueryRow(`SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?`, userID, groupID).Scan(&isMember)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: "you are not member of the group",
+			})
+			return
+		}
+
+		help.RespondServerError(w)
+		return
+	}
+
 	var event models.Event
 
-	err := json.NewDecoder(r.Body).Decode(&event)
+	err = json.NewDecoder(r.Body).Decode(&event)
 	if err != nil {
 		help.Respond(w, &models.Response{
 			Code:    http.StatusBadRequest,
@@ -41,55 +69,24 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 		return
 	}
 
-	tx, err := db.Db.Begin()
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
-	defer tx.Rollback()
-
-	_, err = tx.Exec(`
-	INSERT INTO events (id, group_id, creator_id, title, description, event_date)
-	VALUES (?, ?, ?, ?, ?, ?)
-	`, eventId.String(), groupID, userID, event.Title, event.Description, event.Date)
-	if err != nil {
-		tx.Rollback()
-		help.RespondServerError(w)
-		return
-	}
-
-	_, err = tx.Exec(`
-	INSERT INTO event_responses (event_id, user_id, status)
-	VALUES (?, ?, ?)
-	ON CONFLICT(event_id, user_id)
-	DO UPDATE SET status = excluded.status;
-	`, eventId.String(), userID, event.Vote)
-	if err != nil {
-		tx.Rollback()
-		help.RespondServerError(w)
-		return
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
 	hub.Notif <- models.Notification{
 		SenderID: userID,
 		Type:     "event",
 		GroupID:  groupID,
 	}
 
-	var author_nickname, author_firstname, author_lastname string
-	err = db.Db.QueryRow(`SELECT nickname, firstname, lastname FROM users WHERE
-	id = ?`, userID).Scan(&author_nickname, &author_firstname, &author_lastname)
+	err = sqlite.InsertEventInDB(db, userID, groupID, eventId, &event)
 	if err != nil {
 		help.RespondServerError(w)
 		return
 	}
+
+	author, err := sqlite.GetUserByID(db, userID)
+	if err != nil {
+		help.RespondServerError(w)
+		return
+	}
+
 	var goingCount, notGoingCount int
 	if event.Vote == "going" {
 		goingCount++
@@ -107,8 +104,8 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sqlite.Repo, hub *m
 			"goingCount":     goingCount,
 			"notGoingCount":  notGoingCount,
 			"voted":          event.Vote,
-			"authorNickname": author_nickname,
-			"authorName":     author_firstname + " " + author_lastname,
+			"authorNickname": author.Nickname,
+			"authorName":     author.Firstname + " " + author.Lastname,
 		},
 	})
 }

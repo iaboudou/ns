@@ -2,26 +2,61 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
-	"strings"
-	"time"
 
 	"rtf/help"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 )
 
 func GetGroupRequests(w http.ResponseWriter, r *http.Request, db *sql.DB, groupID string) {
 	userID := r.Context().Value("userID").(string)
+	var isMember bool
+	err := db.QueryRow(`SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?`, userID, groupID).Scan(&isMember)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			help.Respond(w, &models.Response{
+				Code:    http.StatusBadRequest,
+				Message: "you are not member of the group",
+			})
+			return
+		}
 
+		help.RespondServerError(w)
+		return
+	}
+
+	err = CheckExistenceAndPermission(db, w, userID, groupID)
+	if err != nil {
+		return
+	}
+
+	last := r.URL.Query().Get("last")
+	lastID := r.URL.Query().Get("lastId")
+
+	users, err := sqlite.SelectGroupRequests(db, groupID, last, lastID)
+	if err != nil {
+		help.RespondServerError(w)
+		return
+	}
+
+	help.Respond(w, &models.Response{
+		Code: http.StatusOK,
+		Data: users,
+	})
+}
+
+func CheckExistenceAndPermission(db *sql.DB, w http.ResponseWriter, userID, groupID string) error {
 	var creatorID string
 	err := db.QueryRow(`SELECT creator_id FROM groups WHERE id = ?`, groupID).Scan(&creatorID)
 	if err == sql.ErrNoRows {
 		help.RespondNotFound(w, "This group doesn't exist")
-		return
+		return err
 	}
 	if err != nil {
 		help.RespondServerError(w)
-		return
+		return err
 	}
 
 	if userID != creatorID {
@@ -29,65 +64,9 @@ func GetGroupRequests(w http.ResponseWriter, r *http.Request, db *sql.DB, groupI
 			Code:    http.StatusForbidden,
 			Message: "not creator",
 		})
-		return
+
+		return errors.New("forbidden")
 	}
 
-	last := r.URL.Query().Get("last")
-	lastID := r.URL.Query().Get("lastId")
-
-	var rows *sql.Rows
-
-	if last == "" {
-		rows, err = db.Query(`
-			SELECT u.id, u.nickname, u.firstname, u.lastname, gm.joined_at
-			FROM group_members gm
-			JOIN users u ON u.id = gm.user_id
-			WHERE gm.group_id = ? AND gm.status = 'pending' AND gm.type = 'request'
-			ORDER BY gm.joined_at DESC, u.id DESC
-			LIMIT 10
-		`, groupID)
-	} else {
-		normalized := strings.Replace(last, "T", " ", 1)
-		normalized = strings.TrimSuffix(normalized, "Z")
-
-		rows, err = db.Query(`
-			SELECT u.id, u.nickname, u.firstname, u.lastname, gm.joined_at
-			FROM group_members gm
-			JOIN users u ON u.id = gm.user_id
-			WHERE gm.group_id = ? AND gm.status = 'pending' AND gm.type = 'request'
-			  AND (gm.joined_at < ? OR (gm.joined_at = ? AND u.id < ?))
-			ORDER BY gm.joined_at DESC, u.id DESC
-			LIMIT 10
-		`, groupID, normalized, normalized, lastID)
-	}
-
-	if err != nil {
-		help.RespondServerError(w)
-		return
-	}
-
-	defer rows.Close()
-
-	users := []map[string]any{}
-
-	for rows.Next() {
-		var id, nickname, firstname, lastname string
-		var joined_at time.Time
-
-		err := rows.Scan(&id, &nickname, &firstname, &lastname, &joined_at)
-		if err != nil {
-			help.RespondServerError(w)
-			return
-		}
-
-		users = append(users, map[string]any{
-			"id":         id,
-			"nickname":   nickname,
-			"firstname":  firstname,
-			"lastname":   lastname,
-			"created_at": joined_at,
-		})
-	}
-
-	help.Respond(w, &models.Response{Code: http.StatusOK, Data: users})
+	return nil
 }

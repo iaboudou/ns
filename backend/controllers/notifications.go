@@ -106,6 +106,19 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 		return err
 	}
 
+	var count int
+
+	err = db.QueryRow(`
+    	SELECT COUNT(*)
+    	FROM notification_users nu
+    	JOIN users u ON u.id = nu.user_id
+    	WHERE nu.user_id = ?
+    	AND nu.created_at > u.last_notif_seen
+		`, notif.ReceiverID).Scan(&count)
+	if err != nil {
+		return err
+	}
+
 	for clientID, clientArr := range clients {
 		if clientID == notif.SenderID || !members[clientID] {
 			continue
@@ -125,6 +138,7 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 					"sender_profile":  sender.ProfileImage,
 					"created_at":      now,
 					"group_id":        notif.GroupID,
+					"count":           count,
 				},
 			})
 			c.Mu.Unlock()
@@ -173,6 +187,18 @@ func Notify(db *sql.DB, clients map[string][]*models.Client, notif *models.Notif
 		return err
 	}
 
+	var count int
+	err = db.QueryRow(`
+    	SELECT COUNT(*)
+    	FROM notification_users nu
+    	JOIN users u ON u.id = nu.user_id
+    	WHERE nu.user_id = ?
+    	AND nu.created_at > u.last_notif_seen
+		`, notif.ReceiverID).Scan(&count)
+	if err != nil {
+		return err
+	}
+
 	if cs, ok := clients[notif.ReceiverID]; ok {
 		for _, c := range cs {
 			c.Mu.Lock()
@@ -189,6 +215,7 @@ func Notify(db *sql.DB, clients map[string][]*models.Client, notif *models.Notif
 					"receiver_id":     notif.ReceiverID,
 					"created_at":      now,
 					"group_id":        notif.GroupID,
+					"count":           count,
 				},
 			})
 			c.Mu.Unlock()

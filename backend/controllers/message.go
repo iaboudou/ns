@@ -55,7 +55,7 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 
 	msg.CreatedAt = time.Now().UnixMilli()
 
-	err := sqlite.InsertNewMessage(db, &msg)
+	sendToreceiver, err := sqlite.InsertNewMessage(db, &msg)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 		conn.Mu.Unlock()
 	}
 
-	if receiverOnline {
+	if receiverOnline && sendToreceiver {
 		for _, conn := range receiverConns {
 			conn.Mu.Lock()
 			conn.Ws.WriteJSON(payload)
@@ -114,6 +114,12 @@ func Chat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) e
 }
 
 func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
+	var isMember bool
+	err := db.QueryRow(`SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?`, msg.SenderID, msg.ReceiverID).Scan(&isMember)
+	if err != nil {
+		return err
+	}
+
 	cs, ok := clients[msg.SenderID]
 	if !ok {
 		return nil

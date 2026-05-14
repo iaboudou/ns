@@ -8,6 +8,7 @@ import (
 
 	"rtf/help"
 	"rtf/models"
+	"rtf/pkg/db/sqlite"
 )
 
 func VoteEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, eventID, userID string) {
@@ -43,11 +44,7 @@ func VoteEvent(w http.ResponseWriter, r *http.Request, db *sql.DB, eventID, user
 		return
 	}
 
-	_, err = db.Exec(`
-			INSERT INTO event_responses (event_id, user_id, status)
-			VALUES (?, ?, ?)
-			ON CONFLICT(event_id, user_id)
-			DO UPDATE SET status = excluded.status;`, eventID, userID, vote)
+	err = sqlite.InsertVoteInDB(db, userID, eventID, vote)
 	if err != nil {
 		help.RespondServerError(w)
 		return
