@@ -146,6 +146,12 @@ func GetOldGroupMessages(clients map[string][]*models.Client, db *sql.DB, msg mo
 }
 
 func GroupChat(clients map[string][]*models.Client, db *sql.DB, msg models.Message) error {
+	var exists int
+	err := db.QueryRow(`SELECT 1 FROM groups WHERE id = ?`, msg.ReceiverID).Scan(&exists) // check group existence
+	if err != nil {
+		return err
+	}
+
 	if len(strings.TrimSpace(msg.Content)) == 0 {
 		return errors.New("message is empty")
 	}
