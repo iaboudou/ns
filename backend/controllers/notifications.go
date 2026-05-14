@@ -70,7 +70,6 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 	if err != nil {
 		return err
 	}
-
 	now := time.Now().UTC().Format("2006-01-02 15:04:05")
 
 	rows, err := db.Query(`
@@ -84,7 +83,6 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 
 	members := map[string]bool{}
 	var receivers []string
-
 	for rows.Next() {
 		var uid string
 		if err := rows.Scan(&uid); err != nil {
@@ -106,22 +104,22 @@ func BroadCastEventCreation(db *sql.DB, clients map[string][]*models.Client, not
 		return err
 	}
 
-	var count int
+	for clientID, clientArr := range clients {
+		if clientID == notif.SenderID || !members[clientID] {
+			continue
+		}
 
-	err = db.QueryRow(`
+		var count int
+
+		err = db.QueryRow(`
     	SELECT COUNT(*)
     	FROM notification_users nu
     	JOIN users u ON u.id = nu.user_id
     	WHERE nu.user_id = ?
     	AND nu.created_at > u.last_notif_seen
-		`, notif.ReceiverID).Scan(&count)
-	if err != nil {
-		return err
-	}
-
-	for clientID, clientArr := range clients {
-		if clientID == notif.SenderID || !members[clientID] {
-			continue
+		`, clientID).Scan(&count)
+		if err != nil {
+			return err
 		}
 
 		for _, c := range clientArr {
